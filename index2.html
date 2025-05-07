@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة كوارزم | تنظيم وحجز الفعاليات</title>
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts - Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8e44ad;
+            --primary-light: #a55ebd;
+            --secondary: #f5b7ff;
+            --accent: #d4af37;
+            --light: #f9f4f9;
+            --dark: #333333;
+            --rating: #ffaa00;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        /* Custom Button Styles */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .btn-white {
+            background-color: white;
+            color: var(--primary);
+        }
+
+        .btn-white:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .rounded-btn {
+            border-radius: 50px;
+        }
+
+        /* Header & Navigation */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .navbar-brand i {
+            margin-left: 8px;
+            color: var(--accent);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--dark);
+            font-weight: 500;
+            padding: 8px 15px;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #fff;
+            padding: 50px 0;
+            margin-bottom: 40px;
+            background-image: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(212, 175, 55, 0.1));
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .search-input {
+            position: relative;
+        }
+
+        .search-input i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+
+        /* Categories Section */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .see-all {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .see-all i {
+            margin-right: 5px;
+        }
+
+        .category-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-icon {
+            background-color: var(--secondary);
+            color: var(--primary);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        /* Vendor Cards */
+        .vendor-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 30px;
+            height: 100%;
+        }
+
+        .vendor-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .vendor-image {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .vendor-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .vendor-card:hover .vendor-image img {
+            transform: scale(1.05);
+        }
+
+        .vendor-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .vendor-content {
+            padding: 20px;
+        }
+
+        .vendor-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .vendor-price {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .vendor-location {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .vendor-location i {
+            margin-left: 5px;
+            color: var(--primary);
+        }
+
+        .vendor-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stars {
+            color: var(--rating);
+            margin-left: 5px;
+        }
+
+        /* Featured Section */
+        .featured-vendors {
+            background-color: #fff;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            background-image: linear-gradient(135deg, rgba(245, 183, 255, 0.2), rgba(212, 175, 55, 0.1));
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-left: 15px;
+        }
+
+        .testimonial-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .testimonial-content p {
+            font-style: italic;
+            color: #555;
+        }
+
+        /* CTA Section */
+        .cta {
+            background-color: var(--primary);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .cta h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: white;
+            padding: 60px 0 30px;
+        }
+
+        footer h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        footer ul {
+            list-style: none;
+            padding-right: 0;
+        }
+
+        footer ul li {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            text-decoration: none;
+            color: var(--dark);
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-gem"></i>
+                    منصة كوارزم
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars" style="color: var(--primary);"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">الرئيسية</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">التصنيفات</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">مقدمي الخدمات</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">كيف يعمل</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">اتصل بنا</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-outline-primary rounded-btn">تسجيل دخول</a>
+                        <a href="#" class="btn btn-primary rounded-btn">إنشاء حساب</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 text-center text-lg-end mb-4 mb-lg-0">
+                    <h1>احجز فعاليتك بكل سهولة</h1>
+                    <p>منصة كوارزم تربط بينك وبين أفضل مقدمي خدمات المناسبات والفعاليات في مكان واحد</p>
+                    <a href="#" class="btn btn-primary rounded-btn px-4 py-2">استكشف الخدمات</a>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2069"
+                        alt="منصة كوارزم لتنظيم الفعاليات" class="img-fluid rounded-3 shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="input-group">
+                        <div class="search-input w-100">
+                            <input type="text" class="form-control" placeholder="ابحث عن خدمات المناسبات...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">اختر التصنيف</option>
+                        <option value="halls">قاعات</option>
+                        <option value="chairs">كراسي</option>
+                        <option value="decoration">زينة</option>
+                        <option value="catering">ضيافة</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">اختر المنطقة</option>
+                        <option value="riyadh">الرياض</option>
+                        <option value="jeddah">جدة</option>
+                        <option value="dammam">الدمام</option>
+                        <option value="makkah">مكة</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option value="">نطاق السعر</option>
+                        <option value="low">أقل من 1000 ريال</option>
+                        <option value="medium">1000 - 5000 ريال</option>
+                        <option value="high">أكثر من 5000 ريال</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" class="form-control">
+                </div>
+                <div class="col-12 mt-3">
+                    <button class="btn btn-primary rounded-btn w-100 py-2">بحث</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories mb-5">
+            <div class="section-title">
+                <h2>تصفح حسب التصنيف</h2>
+                <a href="#" class="see-all">عرض الكل <i class="fas fa-arrow-left"></i></a>
+            </div>
+            <div class="row">
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="#" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3>قاعات</h3>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="#" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-chair"></i>
+                        </div>
+                        <h3>كراسي</h3>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="#" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        <h3>طاولات</h3>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="#" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <h3>ضيافة</h3>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="#" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3>زينة</h3>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="#" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <h3>مزارع</h3>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Featured Vendors Section -->
+    <section class="featured-vendors">
+        <div class="container">
+            <div class="section-title">
+                <h2>مقدمي الخدمات المميزين</h2>
+                <a href="#" class="see-all">عرض الكل <i class="fas fa-arrow-left"></i></a>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="vendor-card h-100">
+                        <div class="vendor-image">
+                            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2098"
+                                alt="قاعة الأميرات">
+                            <div class="vendor-badge">مميز</div>
+                        </div>
+                        <div class="vendor-content">
+                            <h3>قاعة الأميرات</h3>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div class="vendor-price">5000 ريال</div>
+                                <div class="vendor-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    الرياض
+                                </div>
+                            </div>
+                            <div class="vendor-rating mb-3">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span>(32 تقييم)</span>
+                            </div>
+                            <a href="#" class="btn btn-primary rounded-btn w-100">حجز</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="vendor-card h-100">
+                        <div class="vendor-image">
+                            <img src="https://img.gathern.co/1400x0/1/YFn1LqPq-gMzIYWsivdENP0kmUr-mlvr.jpg"
+                                alt="مزرعة الواحة">
+                            <div class="vendor-badge">مميز</div>
+                        </div>
+                        <div class="vendor-content">
+                            <h3>مزرعة الواحة</h3>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div class="vendor-price">3500 ريال</div>
+                                <div class="vendor-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    جدة
+                                </div>
+                            </div>
+                            <div class="vendor-rating mb-3">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span>(18 تقييم)</span>
+                            </div>
+                            <a href="#" class="btn btn-primary rounded-btn w-100">حجز</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="vendor-card h-100">
+                        <div class="vendor-image">
+                            <img src="https://aswlfor.com/wp-content/uploads/2025/02/%D8%B7%D8%A7%D9%88%D9%84%D8%A9-%D8%B6%D9%8A%D8%A7%D9%81%D8%A9-%D9%85%D9%84%D9%83%D9%8A%D8%A9-%D9%82%D9%87%D9%88%D8%AC%D9%8A-%D8%A7%D9%84%D8%B7%D8%A7%D9%8A%D9%81--1024x682.png"
+                                alt="خدمات الضيافة الملكية">
+                            <div class="vendor-badge">مميز</div>
+                        </div>
+                        <div class="vendor-content">
+                            <h3>خدمات الضيافة الملكية</h3>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div class="vendor-price">2800 ريال</div>
+                                <div class="vendor-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    الدمام
+                                </div>
+                            </div>
+                            <div class="vendor-rating mb-3">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span>(45 تقييم)</span>
+                            </div>
+                            <a href="#" class="btn btn-primary rounded-btn w-100">حجز</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Latest Services -->
+        <section class="vendors mb-5">
+            <div class="section-title">
+                <h2>أحدث الخدمات</h2>
+                <a href="#" class="see-all">عرض الكل <i class="fas fa-arrow-left"></i></a>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-3">
+                    <div class="vendor-card h-100">
+                        <div class="vendor-image">
+                            <img src="https://khdmatkuwait.com/wp-content/uploads/2024/04/%D8%A7%D9%81%D8%B1%D8%A7%D8%AD-%D9%88%D9%85%D9%86%D8%A7%D8%B3%D8%A8%D8%A7%D8%AA-10.jpg"
+                                alt="كراسي فاخرة">
+                        </div>
+                        <div class="vendor-content">
+                            <h3>كراسي فاخرة</h3>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div class="vendor-price">50 ريال / كرسي</div>
+                                <div class="vendor-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    الرياض
+                                </div>
+                            </div>
+                            <div class="vendor-rating mb-3">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span>(12 تقييم)</span>
+                            </div>
+                            <a href="#" class="btn btn-primary rounded-btn w-100">حجز</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="vendor-card h-100">
+                        <div class="vendor-image">
+                            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2069"
+                                alt="قاعة الفردوس">
+                        </div>
+                        <div class="vendor-content">
+                            <h3>قاعة الفردوس</h3>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div class="vendor-price">7500 ريال</div>
+                                <div class="vendor-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    مكة
+                                </div>
+                            </div>
+                            <div class="vendor-rating mb-3">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span>(28 تقييم)</span>
+                            </div>
+                            <a href="#" class="btn btn-primary rounded-btn w-100">حجز</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="vendor-card h-100">
+                        <div class="vendor-image">
+                            <img src="https://sondosspace.com/wp-content/uploads/2023/03/443.webp" alt="زينات الحفلات">
+                        </div>
+                        <div class="vendor-content">
+                            <h3>زينات الحفلات</h3>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div class="vendor-price">1200 ريال / حفلة</div>
+                                <div class="vendor-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    الرياض
+                                </div>
+                            </div>
+                            <div class="vendor-rating mb-3">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span>(7 تقييمات)</span>
+                            </div>
+                            <a href="#" class="btn btn-primary rounded-btn w-100">حجز</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="vendor-card h-100">
+                        <div class="vendor-image">
+                            <img src="data:image/jpeg;base64,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"
+                                alt="طاولات الرياض">
+                        </div>
+                        <div class="vendor-content">
+                            <h3>طاولات الرياض</h3>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div class="vendor-price">75 ريال / طاولة</div>
+                                <div class="vendor-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    الرياض
+                                </div>
+                            </div>
+                            <div class="vendor-rating mb-3">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span>(15 تقييم)</span>
+                            </div>
+                            <a href="#" class="btn btn-primary rounded-btn w-100">حجز</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials mb-5">
+            <div class="section-title">
+                <h2>آراء العملاء</h2>
+                <a href="#" class="see-all">عرض الكل <i class="fas fa-arrow-left"></i></a>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex mb-3">
+                            <div class="testimonial-avatar">
+                                <img src="https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?q=80&w=1974"
+                                    alt="عميل">
+                            </div>
+                            <div>
+                                <h4 class="mb-1">أحمد السعيد</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-content">
+                            <p>كانت تجربتي مع منصة كوارزم رائعة جداً. وجدت قاعة مناسبة لحفل زفافي بسعر معقول وخدمة
+                                ممتازة. سأستخدم المنصة مرة أخرى بالتأكيد.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex mb-3">
+                            <div class="testimonial-avatar">
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976"
+                                    alt="عميل">
+                            </div>
+                            <div>
+                                <h4 class="mb-1">نورة المطيري</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-content">
+                            <p>سهولة البحث وحجز الخدمات على المنصة جعلت تنظيم حفل تخرجي أمراً سهلاً. المزودين كانوا
+                                محترفين والأسعار تنافسية.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex mb-3">
+                            <div class="testimonial-avatar">
+                                <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=2070"
+                                    alt="عميل">
+                            </div>
+                            <div>
+                                <h4 class="mb-1">محمد العنزي</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-content">
+                            <p>استخدمت منصة كوارزم لتنظيم فعالية شركتنا السنوية. العروض متنوعة والتواصل مع مقدمي الخدمات
+                                سهل وسريع. أنصح بها بشدة.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it Works Section -->
+        <section class="how-it-works mb-5">
+            <div class="section-title">
+                <h2>كيف تعمل المنصة</h2>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="p-4 bg-white rounded-3 shadow-sm">
+                        <div class="mb-3" style="color: var(--primary); font-size: 3rem;">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="mb-3">ابحث عن الخدمة</h3>
+                        <p>استعرض تصنيفات الخدمات المختلفة واختر ما يناسب احتياجاتك.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4 bg-white rounded-3 shadow-sm">
+                        <div class="mb-3" style="color: var(--primary); font-size: 3rem;">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="mb-3">احجز موعدك</h3>
+                        <p>حدد التاريخ والوقت المناسب لك وقم بالحجز مباشرة.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4 bg-white rounded-3 shadow-sm">
+                        <div class="mb-3" style="color: var(--primary); font-size: 3rem;">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <h3 class="mb-3">استمتع بالخدمة</h3>
+                        <p>استمتع بخدمة عالية الجودة واترك تقييمك بعد الانتهاء.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>هل أنت مقدم خدمة؟</h2>
+            <p>انضم إلى منصة كوارزم الآن واعرض خدماتك لآلاف العملاء المحتملين</p>
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="#" class="btn btn-white rounded-btn px-4 py-2">تسجيل كمقدم خدمة</a>
+                <a href="#" class="btn btn-outline-light rounded-btn px-4 py-2">اعرف المزيد</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Partners Section -->
+        <section class="partners mb-5">
+            <div class="section-title">
+                <h2>شركاؤنا</h2>
+            </div>
+            <div class="row align-items-center text-center">
+                <div class="col-6 col-md-2 mb-4">
+                    <img src="" alt="شريك" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-2 mb-4">
+                    <img src="/api/placeholder/120/60" alt="شريك" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-2 mb-4">
+                    <img src="/api/placeholder/120/60" alt="شريك" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-2 mb-4">
+                    <img src="/api/placeholder/120/60" alt="شريك" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-2 mb-4">
+                    <img src="/api/placeholder/120/60" alt="شريك" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-2 mb-4">
+                    <img src="/api/placeholder/120/60" alt="شريك" class="img-fluid">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h3>عن منصة كوارزم</h3>
+                    <p>منصة كوارزم هي المكان الأمثل لربط مقدمي خدمات المناسبات والفعاليات مع العملاء بطريقة سهلة وفعالة.
+                    </p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="#">الرئيسية</a></li>
+                        <li><a href="#">التصنيفات</a></li>
+                        <li><a href="#">مقدمي الخدمات</a></li>
+                        <li><a href="#">كيف يعمل</a></li>
+                        <li><a href="#">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h3>تصنيفات</h3>
+                    <ul>
+                        <li><a href="#">قاعات</a></li>
+                        <li><a href="#">كراسي وطاولات</a></li>
+                        <li><a href="#">زينة وديكور</a></li>
+                        <li><a href="#">ضيافة وطعام</a></li>
+                        <li><a href="#">مزارع واستراحات</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h3>تواصل معنا</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt ms-2"></i> الرياض، المملكة العربية السعودية</li>
+                        <li><i class="fas fa-phone-alt ms-2"></i> +966 12 345 6789</li>
+                        <li><i class="fas fa-envelope ms-2"></i> info@khawarizm.sa</li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="#" class="btn btn-primary rounded-btn">اشترك في النشرة البريدية</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom mt-4 pt-3">
+                <p>&copy; 2025 منصة كوارزم - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // تفعيل التنقل بين صفحات الموقع
+        document.addEventListener('DOMContentLoaded', function () {
+            // تفعيل المكونات التفاعلية في Bootstrap
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // التحقق من وجود عناصر البحث
+            const searchInput = document.querySelector('.search-input input');
+            if (searchInput) {
+                searchInput.addEventListener('focus', function () {
+                    this.parentElement.style.boxShadow = '0 0 0 0.25rem rgba(142, 68, 173, 0.25)';
+                });
+                searchInput.addEventListener('blur', function () {
+                    this.parentElement.style.boxShadow = 'none';
+                });
+            }
+
+            // تفعيل التمرير السلس عند النقر على الروابط
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId !== '#') {
+                        e.preventDefault();
+                        document.querySelector(targetId).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // إضافة تأثيرات ظهور للعناصر عند التمرير
+            const fadeElements = document.querySelectorAll('.vendor-card, .category-card, .testimonial-card');
+
+            const fadeInOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -100px 0px"
+            };
+
+            const fadeInObserver = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, fadeInOptions);
+
+            fadeElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                fadeInObserver.observe(el);
+            });
+        });
+    </script>
+</body>
+
+</html>
