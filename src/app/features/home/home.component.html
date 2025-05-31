@@ -1,0 +1,168 @@
+<!-- Header -->
+<header class="navbar navbar-expand-lg bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-dark" href="#">
+      <span class="text-warning">✨</span> EventBook
+    </a>
+
+    <div class="navbar-nav ms-auto">
+      <div class="nav-item dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          🌐 العربية
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#">العربية</a></li>
+          <li><a class="dropdown-item" href="#">English</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hero Section with Search -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="text-center mb-5">
+          <h1 class="display-4 fw-bold text-dark mb-3">
+            Find Perfect Event Services
+          </h1>
+          <p class="lead text-muted">
+            Discover and book the best venues, decorations, and services for your special events
+          </p>
+        </div>
+
+        <!-- Search Panel -->
+        <div class="search-panel">
+          <form (ngSubmit)="onSearchSubmit()" #searchFormRef="ngForm">
+            <div class="row g-3">
+              <!-- City Dropdown -->
+              <div class="col-md-6 col-lg-3">
+                <label class="form-label text-dark fw-semibold">City *</label>
+                <select class="form-select" [(ngModel)]="searchForm.city" name="city" required>
+                  <option value="">Select City</option>
+                  <option *ngFor="let city of cities" [value]="city">
+                    {{city}}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Event Type Dropdown -->
+              <div class="col-md-6 col-lg-3">
+                <label class="form-label text-dark fw-semibold">Event Type *</label>
+                <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType" required>
+                  <option value="">Select Event Type</option>
+                  <option *ngFor="let type of eventTypes" [value]="type">
+                    {{type}}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Number of People -->
+              <div class="col-md-6 col-lg-2">
+                <label class="form-label text-dark fw-semibold">People</label>
+                <select class="form-select" [(ngModel)]="searchForm.people" name="people">
+                  <option value="">Select number of people</option>
+                  <option *ngFor="let range of peopleRanges" [value]="range.label">
+                    {{range.label}}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Date Picker -->
+              <div class="col-md-6 col-lg-2">
+                <label class="form-label text-dark fw-semibold">Date *</label>
+                <input type="date" class="form-control" [(ngModel)]="searchForm.date" name="date" required>
+              </div>
+
+              <!-- Search Button -->
+              <div class="col-lg-2">
+                <label class="form-label d-none d-lg-block">&nbsp;</label>
+                <button type="submit" class="btn btn-warning w-100 fw-semibold">
+                  Search Services
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Overview -->
+<section class="services-section py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-dark">Our Services</h2>
+      <p class="text-muted">Everything you need for your perfect event</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-6 col-md-4 col-lg-2" *ngFor="let service of services">
+        <div class="service-card text-center">
+          <div class="service-icon">{{service.icon}}</div>
+          <h6 class="mt-3 text-dark">{{service.name}}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <div class="cta-card">
+          <h3 class="fw-bold text-dark mb-3">Are you a vendor?</h3>
+          <p class="text-muted mb-4">
+            Join our platform and reach thousands of customers looking for event services
+          </p>
+          <button class="btn btn-warning btn-lg fw-semibold" (click)="navigateToVendorJoin()">
+            Join Us Today
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-light py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <h5 class="text-warning mb-3">EventBook</h5>
+        <p class="text-light-50">
+          Your trusted partner for finding the perfect event services and venues.
+        </p>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h6 class="mb-3">Quick Links</h6>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-light-50 text-decoration-none">About Us</a></li>
+          <li><a href="#" class="text-light-50 text-decoration-none">Services</a></li>
+          <li><a href="#" class="text-light-50 text-decoration-none">Contact</a></li>
+          <li><a href="#" class="text-light-50 text-decoration-none">Terms</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h6 class="mb-3">Contact Info</h6>
+        <ul class="list-unstyled text-light-50">
+          <li>📧 info&#64;eventbook.com</li>
+          <li>📞 +962 6 123 4567</li>
+          <li>📍 Amman, Jordan</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="my-4">
+    <div class="text-center text-light-50">
+      <p>&copy; 2024 EventBook. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
