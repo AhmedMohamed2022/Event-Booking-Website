@@ -1,32 +1,3 @@
-<!-- <div class="search-results-container">
-  <div class="filters"> -->
-<!-- Add filters here if needed -->
-<!-- </div> -->
-<!-- 
-  <div class="results-grid" *ngIf="results?.length; else noResults">
-    <div class="event-card" *ngFor="let event of results">
-      <div class="event-image">
-        <img [src]="event.images[0]" [alt]="event.name">
-      </div>
-      <div class="event-details">
-        <h3>{{event.name}}</h3>
-        <p class="location">{{event.location.city}}, {{event.location.area}}</p>
-        <p class="capacity">Capacity: {{event.minCapacity}} - {{event.maxCapacity}} people</p>
-        <p class="price">{{event.price | currency:'JOD '}}</p>
-        <div class="supplier-info">
-          <p>Supplier: {{event.supplier.name}}</p>
-          <p>Phone: {{event.supplier.phone}}</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <ng-template #noResults>
-    <div class="no-results">
-      <p>No results found matching your criteria</p>
-    </div>
-  </ng-template>
-</div> -->
 <!-- !-- Header with search info -->
 <div class="search-header">
   <div class="container">
@@ -39,6 +10,24 @@
         <span *ngIf="currentParams.date"> on {{currentParams.date}}</span>
       </p>
     </div>
+  </div>
+</div>
+
+<div class="breadcrumb-section py-2 bg-light">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/']" class="text-muted">Home</a>
+        </li>
+        <li class="breadcrumb-item text-muted" *ngIf="currentParams?.category">
+          {{currentParams.category}}
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Search Results
+        </li>
+      </ol>
+    </nav>
   </div>
 </div>
 
@@ -59,9 +48,9 @@
           <h6 class="filter-title">Categories</h6>
           <div class="category-filters">
             <div class="form-check" *ngFor="let category of filters.categories">
-              <!-- <input class="form-check-input" type="checkbox" [id]="'category-' + category"
-                (change)="onCategoryFilterChange(category, $event.target.checked)"> -->
-
+              <input class="form-check-input" type="checkbox" [id]="'category-' + category"
+                [checked]="filters.selectedCategories.includes(category)"
+                (change)="onCategoryFilterChange(category, $event)">
               <label class="form-check-label" [for]="'category-' + category">
                 {{category}}
               </label>

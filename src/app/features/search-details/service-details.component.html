@@ -1,0 +1,272 @@
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <div class="container">
+    <div class="text-center py-5">
+      <div class="spinner-border text-warning" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted">Loading service details...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error" class="error-container">
+  <div class="container">
+    <div class="alert alert-danger" role="alert">
+      <h6>Oops! Something went wrong</h6>
+      <p class="mb-0">{{error}}</p>
+      <button class="btn btn-outline-danger mt-3" (click)="goBack()">
+        Go Back
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Service Details -->
+<div *ngIf="service && !loading && !error" class="service-detail-container">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-section">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a routerLink="/" class="text-decoration-none">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a (click)="goBack()" class="text-decoration-none cursor-pointer">Search Results</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">{{service.name}}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <!-- Image Gallery -->
+        <div class="image-gallery-section">
+          <div class="main-image" (click)="openImageModal()">
+            <img [src]="service.images?.[currentImageIndex] || '/public/placeholder-image.jpg'" [alt]="service.name"
+              class="main-image-img">
+            <div class="image-overlay">
+              <button class="btn btn-light btn-sm">
+                🔍 View Gallery
+              </button>
+            </div>
+          </div>
+
+          <!-- Image Thumbnails -->
+          <div class="image-thumbnails" *ngIf="service.images?.length > 1">
+            <div class="thumbnail-item" *ngFor="let image of service.images; let i = index"
+              [class.active]="i === currentImageIndex" (click)="selectImage(i)">
+              <img [src]="image" [alt]="service.name + ' image ' + (i+1)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Gallery -->
+        <div class="video-gallery-section" *ngIf="service?.videos?.length">
+          <h3 class="section-title">📹 Videos</h3>
+          <div class="video-grid">
+            <div class="video-item" *ngFor="let video of service.videos; let i = index">
+              <video [src]="video" controls preload="metadata" class="video-preview" (click)="selectVideo(i)">
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Information -->
+        <div class="service-info-section">
+          <div class="service-header">
+            <div class="service-title-area">
+              <h1 class="service-title">{{service.name}}</h1>
+              <div class="service-meta">
+                <span class="category-badge">{{service.category}}</span>
+                <span class="subcategory-badge" *ngIf="service.subcategory">
+                  {{service.subcategory}}
+                </span>
+                <div class="rating">
+                  {{serviceRating}}
+                </div>
+              </div>
+            </div>
+            <div class="service-price">
+              <span class="price-amount">JOD {{service.price}}</span>
+              <small class="price-label">per booking</small>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="location-section">
+            <h3 class="section-title">📍 Location</h3>
+            <div class="location-info">
+              <p class="location-text">
+                <strong>{{service.location.city}}</strong>
+                <span *ngIf="service.location.area">, {{service.location.area}}</span>
+              </p>
+
+              <!-- Google Maps Section -->
+              <div class="map-container" *ngIf="service.location.coordinates">
+                <div class="map-placeholder">
+                  <div class="text-center py-4">
+                    <h5>🗺️ Location Details</h5>
+                    <p class="text-muted mb-3">
+                      Coordinates: {{service.location.coordinates.lat}}, {{service.location.coordinates.lng}}
+                    </p>
+                    <div class="map-actions">
+                      <button class="btn btn-warning me-2" (click)="openGoogleMaps()" *ngIf="googleMapUrl">
+                        🗺️ View on Map
+                      </button>
+                      <button class="btn btn-outline-warning" (click)="openDirections()" *ngIf="directionUrl">
+                        🧭 Get Directions
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="description-section" *ngIf="service.description">
+            <h3 class="section-title">📝 Description</h3>
+            <p class="description-text">{{service.description}}</p>
+          </div>
+
+          <!-- Capacity -->
+          <div class="capacity-section" *ngIf="service.minCapacity && service.maxCapacity">
+            <h3 class="section-title">👥 Capacity</h3>
+            <div class="capacity-info">
+              <div class="capacity-range">
+                <span class="capacity-number">{{service.minCapacity}}</span>
+                <span class="capacity-separator">-</span>
+                <span class="capacity-number">{{service.maxCapacity}}</span>
+                <span class="capacity-label">people</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Available Dates -->
+          <div class="dates-section" *ngIf="service.availableDates?.length">
+            <h3 class="section-title">📅 Available Dates</h3>
+            <div class="dates-grid">
+              <div class="date-item" *ngFor="let date of service.availableDates.slice(0, 6)">
+                {{formatDate(date)}}
+              </div>
+              <div class="date-item more-dates" *ngIf="service.availableDates.length > 6">
+                +{{service.availableDates.length - 6}} more dates
+              </div>
+            </div>
+          </div>
+
+          <!-- Supplier Information -->
+          <div class="supplier-section">
+            <h3 class="section-title">🏢 Supplier Information</h3>
+            <div class="supplier-card">
+              <div class="supplier-info">
+                <h4 class="supplier-name">{{service.supplier.name}}</h4>
+                <p class="supplier-phone">📞 {{service.supplier.phone}}</p>
+              </div>
+              <div class="supplier-actions">
+                <button class="btn btn-outline-warning" (click)="contactSupplier()">
+                  Contact Supplier
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="sidebar">
+          <!-- Booking Card -->
+          <div class="booking-card">
+            <div class="booking-header">
+              <h4 class="booking-title">Ready to book?</h4>
+              <div class="booking-price">
+                <span class="price">JOD {{service.price}}</span>
+                <small>per booking</small>
+              </div>
+            </div>
+
+            <div class="booking-actions">
+              <button *ngIf="shouldShowBookingButton()" class="btn btn-warning btn-lg w-100 mb-3" (click)="bookNow()">
+                📅 Book Now
+              </button>
+
+              <button class="btn btn-outline-warning w-100" [class.btn-lg]="!shouldShowBookingButton()"
+                (click)="contactSupplier()">
+                📞 Contact Supplier
+              </button>
+            </div>
+
+            <div class="booking-note" *ngIf="!shouldShowBookingButton()">
+              <small class="text-muted">
+                <em>Hall and Farm bookings require direct contact with supplier</em>
+              </small>
+            </div>
+          </div>
+
+          <!-- Related Services -->
+          <div class="related-services" *ngIf="relatedServices?.length">
+            <h4 class="related-title">Related Services</h4>
+            <div class="related-list">
+              <div class="related-item" *ngFor="let related of relatedServices"
+                (click)="viewRelatedService(related._id)">
+                <div class="related-image">
+                  <img [src]="related.images?.[0] || '/public/placeholder-image.jpg'" [alt]="related.name">
+                </div>
+                <div class="related-info">
+                  <h6 class="related-name">{{related.name}}</h6>
+                  <p class="related-location">{{related.location.city}}</p>
+                  <div class="related-price">JOD {{related.price}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div class="image-modal" *ngIf="showImageModal" (click)="closeImageModal()">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeImageModal()">×</button>
+    <div class="modal-image-container">
+      <button class="nav-btn prev-btn" (click)="prevImage()" *ngIf="service?.images?.length > 1">
+        ‹
+      </button>
+      <img [src]="service?.images?.[currentImageIndex]" [alt]="service?.name" class="modal-image">
+      <button class="nav-btn next-btn" (click)="nextImage()" *ngIf="service?.images?.length > 1">
+        ›
+      </button>
+    </div>
+    <div class="modal-counter" *ngIf="service?.images?.length > 1">
+      {{currentImageIndex + 1}} / {{service?.images?.length}}
+    </div>
+  </div>
+</div>
+
+<!-- Video Modal -->
+<div class="video-modal" *ngIf="showVideoModal && activeMediaType === 'video'" (click)="closeImageModal()">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeImageModal()">×</button>
+    <div class="modal-video-container">
+      <button class="nav-btn prev-btn" (click)="prevVideo()" *ngIf="service?.videos?.length > 1">‹</button>
+      <video [src]="service?.videos?.[currentVideoIndex]" controls class="modal-video">
+      </video>
+      <button class="nav-btn next-btn" (click)="nextVideo()" *ngIf="service?.videos?.length > 1">›</button>
+    </div>
+    <div class="modal-counter" *ngIf="service?.videos?.length > 1">
+      {{currentVideoIndex + 1}} / {{service?.videos?.length}}
+    </div>
+  </div>
+</div>

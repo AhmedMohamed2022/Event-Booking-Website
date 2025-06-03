@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchService } from '../../core/services/search-result.service';
 import { EventItem } from '../../core/models/event-item.model';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule], // Add RouterModule here
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.css'],
 })
@@ -121,7 +121,10 @@ export class SearchResultComponent implements OnInit {
     }
   }
 
-  onCategoryFilterChange(category: string, checked: boolean) {
+  // Update the onCategoryFilterChange method
+  onCategoryFilterChange(category: string, event: any) {
+    const checked = event.target.checked;
+
     if (checked) {
       this.filters.selectedCategories.push(category);
     } else {
@@ -136,16 +139,15 @@ export class SearchResultComponent implements OnInit {
     this.applyFilters();
   }
 
+  // Update the applyFilters method to be more precise
   applyFilters() {
     this.filteredResults = this.results.filter((item) => {
       // Category filter
       const categoryMatch =
         this.filters.selectedCategories.length === 0 ||
-        this.filters.selectedCategories.some(
-          (cat) =>
-            item.category.toLowerCase().includes(cat.toLowerCase()) ||
-            item.subcategory?.toLowerCase().includes(cat.toLowerCase())
-        );
+        this.filters.selectedCategories.includes(item.category) ||
+        (item.subcategory &&
+          this.filters.selectedCategories.includes(item.subcategory));
 
       // Price filter
       const priceMatch =

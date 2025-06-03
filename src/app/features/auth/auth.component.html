@@ -1,0 +1,196 @@
+<!-- src/app/features/auth/auth.component.html -->
+
+<div class="auth-container">
+  <div class="container-fluid">
+    <div class="row justify-content-center min-vh-100 align-items-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+
+        <!-- Auth Card -->
+        <div class="auth-card">
+          <!-- Header -->
+          <div class="auth-header text-center mb-4">
+            <div class="auth-logo mb-3">
+              <i class="fas fa-calendar-check text-gold"></i>
+            </div>
+            <h2 class="auth-title">{{ pageTitle }}</h2>
+            <p class="auth-subtitle text-muted">
+              Enter your phone number to receive OTP via WhatsApp
+            </p>
+          </div>
+
+          <!-- Progress Indicator -->
+          <div class="progress-indicator mb-4" *ngIf="!showPhoneStep">
+            <div class="progress-step" [class.active]="showPhoneStep" [class.completed]="!showPhoneStep">
+              <i class="fas fa-phone"></i>
+              <span>Phone</span>
+            </div>
+            <div class="progress-line" [class.completed]="showOtpStep"></div>
+            <div class="progress-step" [class.active]="showOtpStep">
+              <i class="fas fa-shield-alt"></i>
+              <span>Verify</span>
+            </div>
+          </div>
+
+          <!-- Alert Messages -->
+          <div class="alert alert-danger" *ngIf="error" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ error }}
+          </div>
+
+          <div class="alert alert-success" *ngIf="successMessage" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ successMessage }}
+          </div>
+
+          <!-- Phone Number Step -->
+          <div class="auth-step" *ngIf="showPhoneStep">
+            <form #phoneForm="ngForm" (ngSubmit)="onSendOtp(phoneForm)" novalidate>
+
+              <!-- Auth Mode Toggle -->
+              <div class="auth-toggle mb-4">
+                <div class="btn-group w-100" role="group">
+                  <input type="radio" class="btn-check" name="authMode" id="loginMode" [checked]="isLoginMode"
+                    (change)="authAction = 'login'">
+                  <label class="btn btn-outline-primary" for="loginMode">Login</label>
+
+                  <input type="radio" class="btn-check" name="authMode" id="registerMode" [checked]="!isLoginMode"
+                    (change)="authAction = 'register'">
+                  <label class="btn btn-outline-primary" for="registerMode">Register</label>
+                </div>
+              </div>
+
+              <!-- Name Field (Register Only) -->
+              <div class="form-group mb-3" *ngIf="!isLoginMode">
+                <label for="userName" class="form-label">Full Name</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fas fa-user text-muted"></i>
+                  </span>
+                  <input type="text" class="form-control" id="userName" name="userName" [(ngModel)]="userName"
+                    placeholder="Enter your full name" required minlength="2" #userNameRef="ngModel"
+                    [class.is-invalid]="userNameRef.invalid && userNameRef.touched">
+                </div>
+                <div class="invalid-feedback" *ngIf="userNameRef.invalid && userNameRef.touched">
+                  <small *ngIf="userNameRef.errors?.['required']">Name is required</small>
+                  <small *ngIf="userNameRef.errors?.['minlength']">Name must be at least 2 characters</small>
+                </div>
+              </div>
+
+              <!-- Phone Number Field -->
+              <div class="form-group mb-4">
+                <label for="phoneNumber" class="form-label">Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fas fa-phone text-muted"></i>
+                  </span>
+                  <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" [(ngModel)]="phoneNumber"
+                    (blur)="formatPhoneNumber()" placeholder="+962 7X XXX XXXX" required
+                    pattern="^(\+962|0)?[7][0-9]{8}$" #phoneRef="ngModel"
+                    [class.is-invalid]="phoneRef.invalid && phoneRef.touched">
+                </div>
+                <div class="invalid-feedback" *ngIf="phoneRef.invalid && phoneRef.touched">
+                  <small *ngIf="phoneRef.errors?.['required']">Phone number is required</small>
+                  <small *ngIf="phoneRef.errors?.['pattern']">Please enter a valid Jordanian phone number</small>
+                </div>
+                <small class="form-text text-muted">
+                  <i class="fab fa-whatsapp text-success me-1"></i>
+                  We'll send OTP via WhatsApp
+                </small>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary btn-lg w-100 mb-3"
+                [disabled]="isLoading || phoneForm.invalid || (!isLoginMode && !isNameValid())">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="fab fa-whatsapp me-2" *ngIf="!isLoading"></i>
+                {{ submitButtonText }}
+              </button>
+
+            </form>
+          </div>
+
+          <!-- OTP Verification Step -->
+          <div class="auth-step" *ngIf="showOtpStep">
+            <form #otpForm="ngForm" (ngSubmit)="onVerifyOtp(otpForm)" novalidate>
+
+              <!-- Phone Display -->
+              <div class="phone-display mb-4">
+                <p class="text-center text-muted">
+                  <i class="fab fa-whatsapp text-success me-2"></i>
+                  OTP sent to <strong>{{ phoneNumber }}</strong>
+                </p>
+              </div>
+
+              <!-- OTP Input -->
+              <div class="form-group mb-4">
+                <label for="otp" class="form-label">Enter OTP Code</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fas fa-shield-alt text-muted"></i>
+                  </span>
+                  <input type="text" class="form-control otp-input" id="otp" name="otp" [(ngModel)]="otp"
+                    placeholder="000000" required pattern="^\d{6}$" maxlength="6" #otpRef="ngModel"
+                    [class.is-invalid]="otpRef.invalid && otpRef.touched">
+                </div>
+                <div class="invalid-feedback" *ngIf="otpRef.invalid && otpRef.touched">
+                  <small *ngIf="otpRef.errors?.['required']">OTP is required</small>
+                  <small *ngIf="otpRef.errors?.['pattern']">Please enter a valid 6-digit OTP</small>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="auth-actions">
+                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3"
+                  [disabled]="isLoading || otpForm.invalid">
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                  <i class="fas fa-check me-2" *ngIf="!isLoading"></i>
+                  Verify & {{ isLoginMode ? 'Login' : 'Register' }}
+                </button>
+
+                <!-- Resend OTP -->
+                <div class="resend-section text-center">
+                  <button type="button" class="btn btn-link text-decoration-none" [disabled]="!canResend"
+                    (click)="onResendOtp()">
+                    <i class="fas fa-redo me-1"></i>
+                    <span *ngIf="canResend">Resend OTP</span>
+                    <span *ngIf="!canResend">Resend in {{ countdown }}s</span>
+                  </button>
+                </div>
+
+                <!-- Back Button -->
+                <button type="button" class="btn btn-outline-secondary w-100 mt-2" (click)="goBackToPhone()">
+                  <i class="fas fa-arrow-left me-2"></i>
+                  Change Phone Number
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Footer Links -->
+          <div class="auth-footer text-center mt-4">
+            <p class="text-muted">
+              <small>
+                By continuing, you agree to our
+                <a href="/terms" class="text-decoration-none">Terms of Service</a>
+                and
+                <a href="/privacy" class="text-decoration-none">Privacy Policy</a>
+              </small>
+            </p>
+
+            <div class="auth-help mt-3">
+              <small class="text-muted">
+                Need help?
+                <a href="mailto:support@eventbooking.com" class="text-decoration-none">
+                  Contact Support
+                </a>
+              </small>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

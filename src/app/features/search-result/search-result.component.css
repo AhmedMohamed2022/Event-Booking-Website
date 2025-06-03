@@ -60,11 +60,11 @@
 
 .filter-title {
   color: var(--primary-dark);
-  font-weight: 600;
-  margin-bottom: 15px;
   font-size: 14px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-bottom: 15px;
 }
 
 /* Category Filters */
@@ -77,14 +77,23 @@
   margin-bottom: 10px;
 }
 
+.form-check-input {
+  border-color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
 .form-check-input:checked {
-  background-color: var(--accent-gold);
-  border-color: var(--accent-gold);
+  background-color: #ffc107;
+  border-color: #ffc107;
 }
 
 .form-check-label {
-  font-size: 14px;
   color: var(--primary-dark);
+  transition: color 0.3s ease;
+}
+
+.form-check:hover .form-check-label {
+  color: var(--accent-gold);
 }
 
 /* Price Range */
@@ -308,6 +317,21 @@
 .no-results h4 {
   color: var(--primary-dark);
   margin-bottom: 15px;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb-section {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--accent-gold);
 }
 
 /* Mobile Responsiveness */

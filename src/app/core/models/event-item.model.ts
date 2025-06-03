@@ -17,5 +17,6 @@ export interface EventItem {
     name: string;
     phone: string;
   };
-  images: string[];
+  images?: string[];
+  videos?: string[]; // Add videos array
 }
