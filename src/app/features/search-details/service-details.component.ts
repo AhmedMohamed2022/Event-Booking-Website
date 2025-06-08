@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventItem } from '../../core/models/event-item.model';
 import { ServiceDetailService } from '../../core/services/ServiceDetails.service';
+import { ChatDialogService } from '../../core/services/chat-dialog.service';
+import { ChatService } from '../../core/services/chat.service'; // Import ChatService
+import { ChatComponent } from '../chat/chat.component'; // Add this import
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-service-detail',
@@ -35,7 +39,10 @@ export class ServiceDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private serviceDetailService: ServiceDetailService
+    private serviceDetailService: ServiceDetailService,
+    private chatDialog: ChatDialogService,
+    private chatService: ChatService, // Inject ChatService
+    private authService: AuthService // Add this
   ) {}
 
   ngOnInit() {
@@ -183,6 +190,61 @@ export class ServiceDetailComponent implements OnInit {
     if (this.directionUrl) {
       window.open(this.directionUrl, '_blank');
     }
+  }
+
+  // Chat method
+  openChat() {
+    console.log('Opening chat...');
+
+    // Check authentication using AuthService
+    this.authService.currentUser$.subscribe((user) => {
+      if (!user) {
+        console.log('User not authenticated, redirecting to login');
+        this.router.navigate(['/login'], {
+          queryParams: {
+            returnUrl: `/service/${this.serviceId}`,
+            action: 'chat',
+          },
+        });
+        return;
+      }
+
+      // Verify supplier exists
+      if (!this.service?.supplier) {
+        console.error('No supplier information found');
+        return;
+      }
+
+      console.log('User authenticated:', user);
+      console.log('Initializing chat with supplier:', {
+        supplierId: this.service.supplier._id,
+        supplierName: this.service.supplier.name,
+      });
+
+      try {
+        // Initialize chat service connection
+        this.chatService.connectSocket();
+
+        // Open chat dialog with supplier info
+        this.chatDialog.openChat(
+          this.service.supplier._id,
+          this.service.supplier.name || 'Supplier'
+        );
+
+        console.log('Chat dialog opened successfully');
+      } catch (error) {
+        console.error('Error opening chat:', error);
+      }
+    });
+  }
+
+  // Update the canChat method to properly decode the token
+  canChat(): boolean {
+    let isClient = false;
+    this.authService.currentUser$.subscribe((user) => {
+      isClient = user?.role === 'client';
+    });
+    return isClient;
   }
 
   // Utility methods

@@ -5,14 +5,44 @@
       <span class="text-warning">✨</span> EventBook
     </a>
 
-    <div class="navbar-nav ms-auto">
+    <div class="navbar-nav ms-auto d-flex align-items-center gap-3">
+      <!-- Language Switcher -->
       <div class="nav-item dropdown">
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-          🌐 العربية
+          🌐 {{ currentLang === 'ar' ? 'العربية' : 'English' }}
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">العربية</a></li>
-          <li><a class="dropdown-item" href="#">English</a></li>
+          <!-- <li><a class="dropdown-item" (click)="switchLanguage('ar')">العربية</a></li>
+          <li><a class="dropdown-item" (click)="switchLanguage('en')">English</a></li> -->
+        </ul>
+      </div>
+
+      <!-- Auth Button -->
+      <ng-container *ngIf="!isAuthenticated">
+        <button class="btn btn-warning" routerLink="/login">
+          <i class="fas fa-sign-in-alt me-2"></i>Sign In
+        </button>
+      </ng-container>
+
+      <!-- User Menu when logged in -->
+      <div class="nav-item dropdown" *ngIf="isAuthenticated">
+        <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="fas fa-user me-2"></i>{{ currentUser?.name }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" [routerLink]="getDashboardLink()">
+              <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <button class="dropdown-item text-danger" (click)="logout()">
+              <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </button>
+          </li>
         </ul>
       </div>
     </div>
@@ -51,10 +81,22 @@
               <!-- Event Type Dropdown -->
               <div class="col-md-6 col-lg-3">
                 <label class="form-label text-dark fw-semibold">Event Type *</label>
-                <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType" required>
+                <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType"
+                  (change)="onEventTypeChange($event)" required>
                   <option value="">Select Event Type</option>
-                  <option *ngFor="let type of eventTypes" [value]="type">
-                    {{type}}
+                  <option *ngFor="let cat of categories" [value]="cat.value">
+                    {{cat.label}}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Service Type if category selected -->
+              <div class="col-md-6 col-lg-3" *ngIf="subcategories.length">
+                <label class="form-label text-dark fw-semibold">Service Type</label>
+                <select class="form-select" [(ngModel)]="searchForm.subcategory" name="subcategory">
+                  <option value="">All Services</option>
+                  <option *ngFor="let sub of subcategories" [value]="sub.value">
+                    {{sub.label}}
                   </option>
                 </select>
               </div>

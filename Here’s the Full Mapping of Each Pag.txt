@@ -1,0 +1,170 @@
+i want your help to complete the front end of a project i'm currently implementing using Angular 19 with Node js . i need you to fully read these instructions and explanations for the project and what i have done so far "",so do what you see better and start implementation following the instructions i gave you all in separate files (pages ".ts,.html,.css,.service.ts") without diverting from the them and structure i'm already using ok?
+Here’s the Full Mapping of Each Page to Its Backend Logic:
+1. 🏠 Home Page
+🔗 No backend API call
+
+🧠 Client enters search params → stored in query string
+
+2. 🔎 Search Results Page
+📡 API: GET /api/events/search
+
+✅ Query Params:
+
+city, area, category, date, people, minPrice, maxPrice
+
+🔐 Public (no token needed)
+
+3. 📄 Service Details Page
+📡 API: GET /api/events/:id
+
+📡 Related: GET /api/events/search?priceRange... (for related services)
+
+🔐 Public
+
+4. 🧾 Booking Page
+📡 API: POST /api/bookings
+
+json
+Copy
+Edit
+{
+  "eventItemId": "string",
+  "eventDate": "YYYY-MM-DD",
+  "numberOfPeople": 100
+}
+🔐 Token required (client)
+
+📡 Response includes totalPrice, paidAmount, etc.
+
+5. 🔐 OTP Login
+📡 POST /api/auth/send-otp → { phone }
+
+📡 POST /api/auth/verify-otp → { phone, otp }
+
+🔐 Saves token in local storage
+
+6. 👤 Client Dashboard
+📡 API: GET /api/bookings/my
+
+📡 Cancel Booking: PATCH /api/bookings/:id/cancel
+
+🔐 Token required
+
+7. 🧑 Supplier Dashboard
+📡 API: GET /api/supplier/dashboard
+
+🔐 Supplier token required
+
+Returns:
+
+json
+Copy
+Edit
+{
+  "totalBookings": 12,
+  "totalRevenue": 2400,
+  "services": [{ id, name, price }],
+  "latestBookings": [...]
+}
+8. 🛠️ Add/Edit Service
+📡 API:
+
+POST /api/events (create)
+
+PATCH /api/events/:id (edit)
+
+🔐 Token required (supplier)
+
+📡 Upload image to Cloudinary first (frontend)
+
+Sample body:
+
+json
+Copy
+Edit
+{
+  "name": "Hall A",
+  "description": "...",
+  "category": "قاعة",
+  "price": 2000,
+  "location": {
+    "city": "Amman",
+    "area": "Tlaa Al Ali",
+    "coordinates": { "lat": 31.9, "lng": 35.9 }
+  },
+  "availableDates": ["2024-06-25", "2024-06-26"]
+}
+9. 🧑‍💻 Admin Dashboard
+📡 API: GET /api/admin/stats
+
+📡 API: GET /api/join (get supplier requests)
+
+🔐 Admin token required
+
+Responses include total users, bookings, revenue, etc.
+
+10. 📮 Join as Supplier Page
+📡 API: POST /api/join
+
+json
+Copy
+Edit
+{
+  "name": "Ahmed",
+  "phone": "0799999999",
+  "city": "Irbid",
+  "serviceType": "Sound",
+  "notes": "I do wedding sound systems"
+}
+🔐 Public
+
+11. 💬 Chat Page
+📡 API: GET /api/chat/:userId → fetch messages
+
+📡 API: POST /api/chat
+
+json
+Copy
+Edit
+{
+  "to": "supplier_id",
+  "text": "Hello, I’m interested in your service"
+}
+🔐 Token required (client or supplier)
+
+12. 🧭 404, Loading, Empty States
+🔗 No backend needed
+
+✅ Just static fallback templates
+
+13. 🌐 Language Toggle
+🌍 You can use i18n via Angular with language files
+
+💡 OR pass ?lang=ar to backend (if backend supports)
+
+✅ Best Practice for Implementing UI per Page:
+Start with prompt + design
+
+Build a standalone Angular component
+
+Use HttpClient to connect to the exact API shown above
+
+Handle:
+
+Token storage (JWT)
+
+Role-based redirection (client/supplier/admin)
+
+API error and loading states
+
+Test using realistic data from backend (seed it if needed)
+
+If you want, I can now:
+
+🔧 Generate Angular stubs for each component with service injection
+
+🛠️ Scaffold folder structure for frontend cleanly
+
+🧪 Help with Postman + test data to simulate full flow
+
+Let me know which step you'd like to take next.

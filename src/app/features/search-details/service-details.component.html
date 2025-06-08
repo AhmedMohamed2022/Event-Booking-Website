@@ -171,8 +171,13 @@
                 <p class="supplier-phone">📞 {{service.supplier.phone}}</p>
               </div>
               <div class="supplier-actions">
-                <button class="btn btn-outline-warning" (click)="contactSupplier()">
-                  Contact Supplier
+                <button class="btn btn-outline-warning me-2" (click)="contactSupplier()">
+                  <i class="fas fa-phone me-2"></i>Call
+                </button>
+
+                <button class="btn btn-warning" (click)="openChat()" [disabled]="!canChat()">
+                  <i class="fas fa-comments me-2"></i>
+                  {{ canChat() ? 'Chat with Supplier' : 'Login to Chat' }}
                 </button>
               </div>
             </div>

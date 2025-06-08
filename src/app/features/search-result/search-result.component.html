@@ -43,16 +43,16 @@
           </button>
         </div>
 
-        <!-- Category Filters -->
-        <div class="filter-section" *ngIf="filters.categories.length > 0">
-          <h6 class="filter-title">Categories</h6>
+        <!-- Service Types Filter -->
+        <div class="filter-section">
+          <h6 class="filter-title">Service Types</h6>
           <div class="category-filters">
-            <div class="form-check" *ngFor="let category of filters.categories">
-              <input class="form-check-input" type="checkbox" [id]="'category-' + category"
-                [checked]="filters.selectedCategories.includes(category)"
-                (change)="onCategoryFilterChange(category, $event)">
-              <label class="form-check-label" [for]="'category-' + category">
-                {{category}}
+            <div class="form-check" *ngFor="let sub of subcategories">
+              <input class="form-check-input" type="checkbox" [id]="'sub-' + sub.value"
+                [checked]="filters.selectedSubcategories.includes(sub.value)"
+                (change)="onSubcategoryFilterChange(sub.value, $event)">
+              <label class="form-check-label" [for]="'sub-' + sub.value">
+                {{sub.label}}
               </label>
             </div>
           </div>

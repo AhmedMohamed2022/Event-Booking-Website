@@ -1,0 +1,103 @@
+/* src/styles.rtl.css */
+
+/* --- General RTL Adjustments --- */
+body {
+  /* Angular usually sets dir="rtl" on html, but for safety you can reiterate */
+  direction: rtl;
+  text-align: right; /* Default text alignment for Arabic */
+}
+
+/* --- Bootstrap RTL Adjustments (if not using RTL Bootstrap directly) --- */
+/* Override common Bootstrap LTR properties */
+.ms-auto {
+  /* margin-left: auto becomes margin-right: auto */
+  margin-left: unset !important;
+  margin-right: auto !important;
+}
+
+.me-auto {
+  /* margin-right: auto becomes margin-left: auto */
+  margin-right: unset !important;
+  margin-left: auto !important;
+}
+
+.text-start {
+  text-align: right !important;
+}
+.text-end {
+  text-align: left !important;
+}
+
+.float-start {
+  float: right !important;
+}
+.float-end {
+  float: left !important;
+}
+
+.border-start {
+  border-left: unset !important;
+  border-right: var(--bs-border-width) var(--bs-border-style)
+    var(--bs-border-color) !important;
+}
+.border-end {
+  border-right: unset !important;
+  border-left: var(--bs-border-width) var(--bs-border-style)
+    var(--bs-border-color) !important;
+}
+
+.ps-*,
+.px-* {
+  /* padding-left */
+  padding-left: unset !important;
+  padding-right: var(
+    --bs-spacer,
+    1rem
+  ) !important; /* Adjust if your BS version uses specific variables */
+}
+.pe-*,
+.px-* {
+  /* padding-right */
+  padding-right: unset !important;
+  padding-left: var(--bs-spacer, 1rem) !important;
+}
+
+.ms-*,
+.mx-* {
+  /* margin-left */
+  margin-left: unset !important;
+  margin-right: var(--bs-spacer, 1rem) !important;
+}
+.me-*,
+.mx-* {
+  /* margin-right */
+  margin-right: unset !important;
+  margin-left: var(--bs-spacer, 1rem) !important;
+}
+
+/* --- Specific Overrides for your components --- */
+
+/* Hero Section Search Panel - labels should align right, inputs might need adjustment */
+.search-panel .form-label {
+  text-align: right;
+}
+
+/* Footer - list items for quick links and contact info */
+footer .list-unstyled {
+  padding-left: unset !important; /* Remove default padding for unordered lists in LTR */
+  padding-right: 0; /* No padding on right for RTL list */
+  text-align: right; /* Ensure list items align right */
+}
+
+footer .list-unstyled li {
+  text-align: right; /* Specific alignment for list items if needed */
+}
+
+/* Adjustments for icons or elements that have a fixed direction */
+/* Example: If you had an icon that points left in LTR and should point right in RTL */
+/* .some-icon-class {
+    transform: scaleX(-1);
+} */
+
+/* You might need to inspect your layout in Arabic mode and add more specific overrides here. */
+/* Using logical properties (margin-inline-start, padding-inline-end etc.) in your main CSS is the best long-term solution to avoid most of these overrides. */

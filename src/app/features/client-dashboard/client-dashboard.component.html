@@ -1,0 +1,173 @@
+<!-- src/app/features/dashboard/dashboard.component.html -->
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <!-- Header -->
+      <div class="dashboard-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="dashboard-title">My Bookings</h1>
+            <p class="dashboard-subtitle text-muted">Manage your event bookings</p>
+          </div>
+          <button class="btn btn-outline-danger" (click)="logout()">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-warning" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading your bookings...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error }}
+        <button type="button" class="btn-close" (click)="error = null"></button>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && !error && bookings.length === 0" class="empty-state text-center py-5">
+        <div class="empty-icon mb-3">
+          <i class="fas fa-calendar-times fa-3x text-muted"></i>
+        </div>
+        <h3 class="text-muted">No Bookings Yet</h3>
+        <p class="text-muted">You haven't made any bookings yet. Start exploring our events!</p>
+        <a [routerLink]="['/']" class="btn btn-warning">Browse Events</a>
+      </div>
+
+      <!-- Bookings List -->
+      <div *ngIf="!loading && !error && bookings.length > 0" class="bookings-grid">
+        <div *ngFor="let booking of bookings; trackBy: trackByBookingId" class="booking-card">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <!-- Event Image -->
+              <div class="event-image-container mb-3">
+                <img [src]="booking.eventItem.images[0] || '/assets/placeholder-event.jpg'"
+                  [alt]="booking.eventItem.name" class="event-image" loading="lazy">
+                <div class="status-badge {{ getStatusBadgeClass(booking.status) }}">
+                  {{ booking.status | titlecase }}
+                </div>
+              </div>
+
+              <!-- Event Details -->
+              <div class="event-details">
+                <h5 class="event-title">{{ booking.eventItem.name }}</h5>
+                <div class="event-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt text-warning"></i>
+                    <span>{{ booking.eventItem.location }}</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-calendar text-warning"></i>
+                    <span>{{ formatDate(booking.eventDate) }}</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-users text-warning"></i>
+                    <span>{{ booking.numberOfPeople }} {{ booking.numberOfPeople === 1 ? 'person' : 'people' }}</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-tag text-warning"></i>
+                    <span>{{ booking.eventItem.category | titlecase }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pricing Details -->
+              <div class="pricing-details mt-3">
+                <div class="price-row">
+                  <span class="price-label">Total Price:</span>
+                  <span class="price-value">{{ formatPrice(booking.totalPrice) }}</span>
+                </div>
+                <div class="price-row">
+                  <span class="price-label">Paid Amount:</span>
+                  <span class="price-value">{{ formatPrice(booking.paidAmount) }}</span>
+                </div>
+                <div *ngIf="booking.totalPrice > booking.paidAmount" class="price-row remaining">
+                  <span class="price-label">Remaining:</span>
+                  <span class="price-value">{{ formatPrice(booking.totalPrice - booking.paidAmount) }}</span>
+                </div>
+              </div>
+
+              <!-- Booking Date -->
+              <div class="booking-date mt-3">
+                <small class="text-muted">
+                  <i class="fas fa-clock me-1"></i>
+                  Booked on {{ formatDate(booking.createdAt) }}
+                </small>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="card-footer bg-transparent border-top-0">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="booking-id">
+                  <small class="text-muted">ID: {{ booking._id.slice(-8) }}</small>
+                </div>
+                <div class="booking-actions">
+                  <button *ngIf="canCancelBooking(booking)" type="button" class="btn btn-outline-danger btn-sm"
+                    [disabled]="cancelling === booking._id" (click)="cancelBooking(booking._id)">
+                    <span *ngIf="cancelling === booking._id" class="spinner-border spinner-border-sm me-1"></span>
+                    <i *ngIf="cancelling !== booking._id" class="fas fa-times me-1"></i>
+                    {{ cancelling === booking._id ? 'Cancelling...' : 'Cancel' }}
+                  </button>
+                  <span *ngIf="!canCancelBooking(booking)" class="text-muted small d-flex align-items-center">
+                    <i *ngIf="booking.status === 'cancelled'" class="fas fa-check-circle text-success me-1"></i>
+                    <i *ngIf="booking.status === 'confirmed'" class="fas fa-info-circle text-warning me-1"></i>
+                    {{ getCancellationMessage(booking) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat with Supplier Button -->
+            <div class="card-footer bg-transparent border-top-0">
+              <button class="btn btn-sm btn-outline-primary" (click)="startChatWithSupplier(booking)"
+                *ngIf="booking.supplier && canChatWithSupplier(booking)" [disabled]="booking.status !== 'confirmed'">
+                <i class="bi bi-chat"></i>
+                {{ booking.status === 'pending' ? 'Chat available after confirmation' : 'Chat with Supplier' }}
+              </button>
+
+              <!-- Show message if pending -->
+              <small class="text-muted" *ngIf="booking.status === 'pending'">
+                Chat will be available once booking is confirmed by supplier
+              </small>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Chats Section -->
+      <div class="chat-section mt-4" *ngIf="showChats">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="section-title">My Conversations</h3>
+          <button class="btn btn-outline-warning" (click)="toggleChats()">
+            <i class="fas" [class.fa-chevron-up]="showChats" [class.fa-chevron-down]="!showChats"></i>
+          </button>
+        </div>
+
+        <div class="chat-list">
+          <div *ngFor="let chat of activeChats" class="chat-preview" (click)="openChat(chat.userId)">
+            <div class="chat-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="chat-info">
+              <h6 class="mb-1">{{chat.userName}}</h6>
+              <p class="text-muted mb-0">{{chat.lastMessage}}</p>
+            </div>
+            <div class="chat-meta">
+              <span class="chat-time">{{formatTime(chat.lastMessageTime)}}</span>
+              <span class="unread-badge" *ngIf="chat.unreadCount">{{chat.unreadCount}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

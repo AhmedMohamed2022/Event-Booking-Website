@@ -1,20 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import {
+  EVENT_TYPES,
+  EVENT_CATEGORIES,
+} from '../../core/models/constants/categories.const';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   // Search form data
   searchForm = {
     city: '',
     eventType: '',
+    subcategory: '', // Add this
     people: '',
     date: '',
   };
@@ -31,16 +37,12 @@ export class HomeComponent {
     'Tafilah',
   ];
 
-  eventTypes = [
-    'Wedding',
-    'Engagement',
-    'Funeral',
-    'Conference',
-    'Birthday',
-    'Corporate Event',
-    'Graduation',
-    'Anniversary',
-  ];
+  // Replace existing eventTypes
+  eventTypes = EVENT_TYPES;
+
+  // Add categories
+  categories = EVENT_CATEGORIES;
+  subcategories: { value: string; label: string }[] = [];
 
   peopleRanges = [
     { min: 50, max: 100, label: '50-100' },
@@ -51,16 +53,36 @@ export class HomeComponent {
     { min: 500, max: null, label: '500+' },
   ];
 
-  services = [
-    { name: 'Event Halls', icon: '🏛️' },
-    { name: 'Decorations', icon: '🎨' },
-    { name: 'Catering', icon: '🍽️' },
-    { name: 'Audio/Video', icon: '🎵' },
-    { name: 'Photography', icon: '📸' },
-    { name: 'Transportation', icon: '🚗' },
-  ];
+  // Update services array to match categories
+  services = EVENT_CATEGORIES.map((cat) => ({
+    name: cat.label,
+    icon: this.getCategoryIcon(cat.value),
+  }));
 
-  constructor(private router: Router) {}
+  private getCategoryIcon(category: string): string {
+    const icons: { [key: string]: string } = {
+      venues: '🏛️',
+      catering: '🍽️',
+      decoration: '🎨',
+      entertainment: '🎵',
+      photography: '📸',
+      equipment: '⚙️',
+    };
+    return icons[category] || '✨';
+  }
+
+  isAuthenticated = false;
+  currentUser: any = null;
+  currentLang = 'en';
+
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+      this.isAuthenticated = !!user;
+    });
+  }
 
   onSearchSubmit() {
     if (
@@ -95,6 +117,34 @@ export class HomeComponent {
   }
 
   navigateToVendorJoin() {
-    this.router.navigate(['/vendor-join']);
+    this.router.navigate(['/join']);
+  }
+
+  getDashboardLink(): string {
+    if (!this.currentUser) return '/';
+
+    switch (this.currentUser.role) {
+      case 'admin':
+        return '/admin-dashboard';
+      case 'supplier':
+        return '/supplier-dashboard';
+      default:
+        return '/client-dashboard';
+    }
+  }
+
+  logout() {
+    if (confirm('Are you sure you want to logout?')) {
+      this.authService.logout();
+    }
+  }
+
+  // Update the onEventTypeChange method
+  onEventTypeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const value = select.value;
+    const category = this.categories.find((c) => c.value === value);
+    this.subcategories = category?.subcategories || [];
+    this.searchForm.subcategory = '';
   }
 }

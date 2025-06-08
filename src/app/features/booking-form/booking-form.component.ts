@@ -117,7 +117,8 @@ export class BookingFormComponent implements OnInit {
 
         // Show success message and redirect after 2 seconds
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/client-dashboard']);
+          alert('Booking created successfully!');
         }, 2000);
       },
       error: (err) => {

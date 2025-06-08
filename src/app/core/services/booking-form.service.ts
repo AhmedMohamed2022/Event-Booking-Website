@@ -252,7 +252,8 @@ export class BookingFormService {
    */
   private getAuthHeaders(): HttpHeaders {
     const token =
-      localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      localStorage.getItem('auth_token') ||
+      sessionStorage.getItem('auth_token');
 
     if (!token) {
       throw new Error('No authentication token found');

@@ -1,6 +1,10 @@
 // src/app/app.config.ts
 
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import {
   provideRouter,
   withEnabledBlockingInitialNavigation,
@@ -14,32 +18,37 @@ import {
 } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { registerLocaleData } from '@angular/common';
+import localeAr from '@angular/common/locales/ar';
+import { LOCALE_ID } from '@angular/core';
 
 // Import your routes
 import { routes } from './app.routes';
 
 // Import interceptors
-import {
-  authInterceptor,
-  errorInterceptor,
-  loadingInterceptor,
-} from './core/interceptors/auth.interceptor';
+
 import { Observable } from 'rxjs';
+import { authInterceptorFn } from './core/interceptors/auth.interceptor';
+
+registerLocaleData(localeAr);
 
 export const appConfig: ApplicationConfig = {
   providers: [
     // Router configuration
     provideRouter(routes, withEnabledBlockingInitialNavigation()),
+    provideZoneChangeDetection({ eventCoalescing: true }),
 
     // HTTP Client with interceptors
-    provideHttpClient(
-      withInterceptors([authInterceptor, errorInterceptor, loadingInterceptor])
-    ),
+    provideHttpClient(withInterceptors([authInterceptorFn])),
 
     // Animations
     provideAnimations(),
 
     // Forms
     importProvidersFrom(FormsModule, ReactiveFormsModule),
+    {
+      provide: LOCALE_ID,
+      useValue: localStorage.getItem('language') || 'en',
+    },
   ],
 };

@@ -1,0 +1,257 @@
+<div class="supplier-dashboard">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-warning" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3 text-muted">Loading dashboard...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="alert alert-danger" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    {{ error }}
+    <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadDashboard()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="dashboardData && !isLoading" class="dashboard-content">
+
+    <!-- Header Section -->
+    <div class="dashboard-header">
+      <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+          <h1 class="dashboard-title">
+            <i class="fas fa-tachometer-alt me-3"></i>
+            Supplier Dashboard
+          </h1>
+          <p class="text-muted mb-0">Welcome back, {{ dashboardData.supplier.name }}</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <button class="btn btn-primary me-2" [routerLink]="['/supplier/add-service-eng']">
+            <i class="fas fa-plus me-2"></i>Add Service
+          </button>
+          <button class="btn btn-outline-danger" (click)="logout()">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-section mb-5">
+      <div class="row g-3">
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <div class="stat-icon services">
+              <i class="fas fa-concierge-bell"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ dashboardData.supplier.serviceCount }}</h3>
+              <p>Total Services</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <div class="stat-icon bookings">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ dashboardData.supplier.totalBookings }}</h3>
+              <p>Total Bookings</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <div class="stat-icon pending">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ dashboardData.supplier.pendingBookings }}</h3>
+              <p>Pending Bookings</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <div class="stat-icon revenue">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ formatCurrency(dashboardData.supplier.totalRevenue) }}</h3>
+              <p>Total Revenue</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="quick-stats mb-4">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="quick-stat confirmed">
+            <span class="count">{{ dashboardData.supplier.confirmedBookings }}</span>
+            <span class="label">Confirmed</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-stat pending">
+            <span class="count">{{ dashboardData.supplier.pendingBookings }}</span>
+            <span class="label">Pending</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-stat cancelled">
+            <span class="count">{{ dashboardData.supplier.cancelledBookings }}</span>
+            <span class="label">Cancelled</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Bookings Section -->
+    <div class="bookings-section">
+      <div class="section-header">
+        <h2>
+          <i class="fas fa-list me-2"></i>
+          Recent Bookings
+        </h2>
+        <p class="text-muted">Manage your latest booking requests</p>
+      </div>
+
+      <div *ngIf="dashboardData.bookings.length === 0" class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-calendar-times"></i>
+        </div>
+        <h3>No Bookings Yet</h3>
+        <p>Start by adding your services to receive booking requests</p>
+        <button class="btn btn-primary" [routerLink]="['/supplier/add-service-eng']">
+          Add Your First Service
+        </button>
+      </div>
+
+      <div *ngIf="dashboardData.bookings.length > 0" class="bookings-table-wrapper">
+        <div class="table-responsive">
+          <table class="table booking-table">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Client</th>
+                <th>Event Date</th>
+                <th>People</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Booked On</th>
+                <th>Actions</th> <!-- Add this column -->
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <tr *ngFor="let booking of dashboardData.bookings; trackBy: trackByBookingId" class="booking-row"> -->
+              <tr *ngFor="let booking of dashboardData.bookings; " class="booking-row">
+                <td>
+                  <div class="service-info">
+                    <strong>{{ booking.eventItem.name }}</strong>
+                    <small class="d-block text-muted">{{ booking.eventItem.category }}</small>
+                  </div>
+                </td>
+                <td>
+                  <div class="client-info">
+                    <strong>{{ booking.client.name }}</strong>
+                    <small class="d-block text-muted">{{ booking.client.phone }}</small>
+                  </div>
+                </td>
+                <td>
+                  <span class="event-date">{{ formatDate(booking.eventDate) }}</span>
+                </td>
+                <td>
+                  <span class="people-count">{{ booking.numberOfPeople || 'N/A' }}</span>
+                </td>
+                <td>
+                  <span [class]="getStatusClass(booking.status)">
+                    {{ booking.status | titlecase }}
+                  </span>
+                </td>
+                <td>
+                  <div class="amount-info">
+                    <strong>{{ formatCurrency(booking.totalPrice) }}</strong>
+                    <small *ngIf="booking.paidAmount" class="d-block text-success">
+                      Paid: {{ formatCurrency(booking.paidAmount) }}
+                    </small>
+                  </div>
+                </td>
+                <td>
+                  <span class="booking-date">{{ formatDate(booking.createdAt) }}</span>
+                </td>
+                <td>
+                  <div class="booking-actions">
+                    <!-- Show actions only for pending bookings -->
+                    <div *ngIf="booking.status === 'pending'" class="btn-group">
+                      <button class="btn btn-sm btn-success me-2" (click)="confirmBooking(booking._id)"
+                        [disabled]="processingBooking === booking._id">
+                        <span *ngIf="processingBooking === booking._id"
+                          class="spinner-border spinner-border-sm me-1"></span>
+                        <i *ngIf="processingBooking !== booking._id" class="fas fa-check me-1"></i>
+                        Accept
+                      </button>
+                      <button class="btn btn-sm btn-danger" (click)="rejectBooking(booking._id)"
+                        [disabled]="processingBooking === booking._id">
+                        <i class="fas fa-times me-1"></i>
+                        Reject
+                      </button>
+                    </div>
+                    <!-- Show status message for non-pending bookings -->
+                    <span *ngIf="booking.status !== 'pending'" [class]="getStatusClass(booking.status)">
+                      {{ booking.status | titlecase }}
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Overview -->
+    <div class="services-section mt-5" *ngIf="dashboardData.services.length > 0">
+      <div class="section-header">
+        <h2>
+          <i class="fas fa-cogs me-2"></i>
+          Your Services
+        </h2>
+        <p class="text-muted">Manage your service offerings</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="row g-3">
+          <div class="col-md-4 col-sm-6" *ngFor="let service of dashboardData.services">
+            <div class="service-card">
+              <div class="service-header">
+                <h5>{{ service.name }}</h5>
+              </div>
+              <div class="service-actions">
+                <button class="btn btn-sm btn-outline-primary" [routerLink]="['/supplier/edit-service', service._id]">
+                  <i class="fas fa-edit me-1"></i>
+                  Edit
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" [routerLink]="['/supplier/view-service', service._id]">
+                  <i class="fas fa-eye me-1"></i>
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

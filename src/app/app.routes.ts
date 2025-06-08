@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
 import { AuthComponent } from './features/auth/auth.component';
+import { AdminGuard } from './core/guards/admin.guard';
+import { AdminDashboardComponent } from './features/admin-dashboard/admin-dashboard.component';
+import { SupplierDashboardComponent } from './features/supplier-dashboard/supplier-dashboard.component';
+import { RoleGuard } from './core/guards/role.guard';
+import { ViewServiceComponent } from './features/view-service/view-service.component';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'home',
     loadComponent: () =>
       import('./features/home/home.component').then((c) => c.HomeComponent),
   },
@@ -37,5 +42,82 @@ export const routes: Routes = [
       import('./features/booking-form/booking-form.component').then(
         (m) => m.BookingFormComponent
       ),
+  },
+  {
+    path: 'client-dashboard',
+    loadComponent: () =>
+      import('./features/client-dashboard/client-dashboard.component').then(
+        (m) => m.ClientDashboardComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { role: 'client' },
+  },
+  {
+    path: 'join',
+    loadComponent: () =>
+      import('./features/join/join.component').then((m) => m.JoinComponent),
+    title: 'Join Our Network',
+  },
+  {
+    path: 'supplier-dashboard',
+    loadComponent: () =>
+      import('./features/supplier-dashboard/supplier-dashboard.component').then(
+        (m) => m.SupplierDashboardComponent
+      ),
+    canActivate: [RoleGuard],
+    data: { role: 'supplier' },
+    title: 'Supplier Dashboard',
+  },
+  // {
+  //   path: 'add-service',
+  //   loadComponent: () =>
+  //     import('./features/add-service/add-service.component').then(
+  //       (m) => m.AddServiceComponent
+  //     ),
+  //   title: 'Add New Service'
+  // }
+  {
+    path: 'supplier/add-service-eng',
+    loadComponent: () =>
+      import('./features/add-service-eng/add-service-eng.component').then(
+        (m) => m.AddServiceComponent
+      ),
+  },
+  {
+    path: 'supplier/add-service',
+    loadComponent: () =>
+      import('./features/add-service/add-service.component').then(
+        (m) => m.AddServiceComponent
+      ),
+  },
+  {
+    path: 'supplier/edit-service/:id',
+    loadComponent: () =>
+      import('./features/edit-service/edit-service.component').then(
+        (m) => m.EditServiceComponent
+      ),
+  },
+  {
+    path: 'admin-dashboard',
+    loadComponent: () =>
+      import('./features/admin-dashboard/admin-dashboard.component').then(
+        (m) => m.AdminDashboardComponent
+      ),
+    canActivate: [AdminGuard, RoleGuard],
+    data: { role: 'admin' },
+  },
+  {
+    path: 'supplier/view-service/:id',
+    component: ViewServiceComponent,
+  },
+  {
+    path: 'chat/:userId',
+    loadComponent: () =>
+      import('./features/chat/chat.component').then((c) => c.ChatComponent),
+  },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./features/home/home.component').then((c) => c.HomeComponent),
   },
 ];

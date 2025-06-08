@@ -1,494 +1,145 @@
-/* src/app/features/auth/auth.component.css */
-
-/* Color Variables - Light Mode (Default) */
-:root {
-  --primary-white: #ffffff;
-  --primary-dark: #2c2c2c;
-  --accent-gold: #ffc107;
-  --light-gray: #f8f9fa;
-  --text-primary: #2c2c2c;
-  --text-secondary: #6c757d;
-  --text-muted: #6c757d;
-  --border-color: #e9ecef;
-  --success-color: #28a745;
-  --danger-color: #dc3545;
-  --whatsapp-green: #25d366;
-  --shadow-light: rgba(0, 0, 0, 0.1);
-  --shadow-medium: rgba(0, 0, 0, 0.15);
-  --input-bg: #ffffff;
-  --card-bg: #ffffff;
-  --container-bg: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-
-  --border-radius: 12px;
-  --transition: all 0.3s ease;
-}
-
-/* Dark Mode Variables */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary-white: #ffffff;
-    --primary-dark: #1a1a1a;
-    --accent-gold: #ffc107;
-    --light-gray: #2c2c2c;
-    --text-primary: #ffffff;
-    --text-secondary: #b0b0b0;
-    --text-muted: #888888;
-    --border-color: #404040;
-    --success-color: #4caf50;
-    --danger-color: #f44336;
-    --whatsapp-green: #25d366;
-    --shadow-light: rgba(0, 0, 0, 0.3);
-    --shadow-medium: rgba(0, 0, 0, 0.5);
-    --input-bg: #383838;
-    --card-bg: #2c2c2c;
-    --container-bg: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
-  }
-}
-
-/* Main Container */
+/* Auth Container */
 .auth-container {
-  background: var(--container-bg);
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   min-height: 100vh;
-  padding: 20px 0;
-  color: var(--text-primary);
+  padding: 1rem 0;
 }
 
 /* Auth Card */
 .auth-card {
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: 0 10px 30px var(--shadow-light);
-  padding: 2.5rem;
   border: none;
-  position: relative;
-  overflow: hidden;
-  transition: var(--transition);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 44, 44, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-.auth-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--accent-gold), var(--primary-dark));
+.auth-card .card-body {
+  padding: 2rem !important;
 }
 
-.auth-card:hover {
-  box-shadow: 0 15px 35px var(--shadow-medium);
-}
-
-/* Header Styles */
-.auth-header {
-  margin-bottom: 2rem;
-}
-
-.auth-logo {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--accent-gold), #ffb300);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-  font-size: 1.5rem;
-  color: var(--primary-dark);
-  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
-}
-
+/* Typography */
 .auth-title {
-  color: var(--text-primary);
-  font-weight: 700;
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.auth-subtitle {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-/* Progress Indicator */
-.progress-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.progress-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: var(--text-muted);
-  transition: var(--transition);
-  min-width: 80px;
-}
-
-.progress-step i {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--light-gray);
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  transition: var(--transition);
-}
-
-.progress-step span {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.progress-step.active i,
-.progress-step.completed i {
-  background: var(--accent-gold);
-  color: var(--primary-dark);
-  transform: scale(1.1);
-}
-
-.progress-step.active,
-.progress-step.completed {
-  color: var(--text-primary);
-}
-
-.progress-step.active span,
-.progress-step.completed span {
-  color: var(--text-primary);
-}
-
-.progress-line {
-  flex: 1;
-  height: 2px;
-  background: var(--border-color);
-  margin: 0 1rem;
-  position: relative;
-  max-width: 60px;
-}
-
-.progress-line.completed::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--accent-gold);
-  transition: width 0.5s ease;
-}
-
-/* Form Styles */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-label {
-  color: var(--text-primary);
+  color: #2c2c2c;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+}
+
+/* Form Controls */
+.form-floating {
+  margin-bottom: 1rem;
 }
 
 .form-control {
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1rem 0.75rem;
   font-size: 1rem;
-  transition: var(--transition);
-  background: var(--input-bg);
-  color: var(--text-primary);
-}
-
-.form-control::placeholder {
-  color: var(--text-muted);
-  opacity: 0.8;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
 }
 
 .form-control:focus {
-  border-color: var(--accent-gold);
+  border-color: #ffc107;
   box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
-  outline: none;
-  background: var(--input-bg);
+  background-color: #ffffff;
 }
 
-.form-control.is-invalid {
-  border-color: var(--danger-color);
+.form-floating > label {
+  color: #6c757d;
+  padding: 1rem 0.75rem;
 }
 
-.form-control.is-invalid:focus {
-  box-shadow: 0 0 0 0.2rem rgba(244, 67, 54, 0.25);
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: #ffc107;
+  font-weight: 500;
 }
 
-/* Input Group Styles */
-.input-group-text {
-  background: var(--light-gray);
-  border: 2px solid var(--border-color);
-  border-right: none;
-  color: var(--text-muted);
-  font-size: 1rem;
+/* Phone Input */
+.phone-input {
+  font-family: "Courier New", monospace;
+  letter-spacing: 1px;
 }
 
-.input-group .form-control {
-  border-left: none;
-}
-
-.input-group:focus-within .input-group-text {
-  border-color: var(--accent-gold);
-  background: rgba(255, 193, 7, 0.1);
-  color: var(--text-secondary);
-}
-
-.input-group:focus-within .form-control {
-  border-left: 2px solid var(--accent-gold);
-}
-
-/* OTP Input Special Styling */
+/* OTP Input */
 .otp-input {
+  font-family: "Courier New", monospace;
+  font-size: 1.5rem;
+  letter-spacing: 8px;
+  font-weight: 600;
   text-align: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: 0.5rem;
-  padding: 16px;
-  color: var(--text-primary);
 }
 
-/* Button Styles */
-.btn {
-  border-radius: 8px;
-  font-weight: 600;
-  text-transform: none;
-  transition: var(--transition);
-  position: relative;
-  overflow: hidden;
-}
-
+/* Buttons */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-gold), #ffb300);
+  background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
   border: none;
-  color: var(--primary-dark);
-  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+  border-radius: 12px;
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ffb300, var(--accent-gold));
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ffca2c 0%, #ffc107 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
-  color: var(--primary-dark);
+  box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
 }
 
 .btn-primary:active {
   transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
 }
 
 .btn-primary:disabled {
-  background: var(--border-color);
-  color: var(--text-muted);
+  background: #e9ecef;
+  color: #6c757d;
+  transform: none;
   box-shadow: none;
   cursor: not-allowed;
 }
 
-.btn-outline-primary {
-  border: 2px solid var(--accent-gold);
-  color: var(--accent-gold);
-  background: transparent;
-}
-
-.btn-outline-primary:hover,
-.btn-outline-primary.active {
-  background: var(--accent-gold);
-  color: var(--primary-dark);
-  border-color: var(--accent-gold);
-}
-
-.btn-outline-secondary {
-  border: 2px solid var(--border-color);
-  color: var(--text-secondary);
-  background: transparent;
-}
-
-.btn-outline-secondary:hover {
-  background: var(--light-gray);
-  color: var(--text-primary);
-  border-color: var(--text-secondary);
-}
-
 .btn-link {
-  color: var(--accent-gold);
-  font-weight: 600;
+  color: #ffc107;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .btn-link:hover {
-  color: #ffb300;
-  text-decoration: underline !important;
+  color: #ffca2c;
+  text-decoration: underline;
 }
 
-.btn-link:disabled {
-  color: var(--text-muted);
-  cursor: not-allowed;
+/* Back Button */
+.back-btn {
+  color: #6c757d;
+  font-size: 0.875rem;
 }
 
-/* Auth Toggle */
-.auth-toggle .btn-group {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px var(--shadow-light);
-}
-
-.auth-toggle .btn {
-  border-radius: 0;
-  border: none;
-  padding: 12px 20px;
-  font-weight: 600;
-  background: var(--input-bg);
-  color: var(--text-secondary);
-}
-
-.auth-toggle .btn-check:checked + .btn {
-  background: var(--accent-gold);
-  color: var(--primary-dark);
+.back-btn:hover {
+  color: #2c2c2c;
 }
 
 /* Phone Display */
 .phone-display {
-  background: var(--light-gray);
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
   border-radius: 8px;
-  padding: 1rem;
-  border-left: 4px solid var(--whatsapp-green);
-  color: var(--text-primary);
+  padding: 0.75rem;
+  text-align: center;
 }
 
-.phone-display p {
-  margin: 0;
-  color: var(--text-secondary);
+/* Name Field */
+.name-field {
+  animation: slideDown 0.3s ease-out;
 }
 
-.phone-display strong {
-  color: var(--text-primary);
-}
-
-/* Alert Styles */
-.alert {
-  border-radius: 8px;
-  border: none;
-  padding: 1rem 1.25rem;
-  font-weight: 500;
-  margin-bottom: 1.5rem;
-}
-
-.alert-success {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.1),
-    rgba(76, 175, 80, 0.2)
-  );
-  color: var(--success-color);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-}
-
-.alert-danger {
-  background: linear-gradient(
-    135deg,
-    rgba(244, 67, 54, 0.1),
-    rgba(244, 67, 54, 0.2)
-  );
-  color: var(--danger-color);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-}
-
-.alert i {
-  margin-right: 0.5rem;
-}
-
-/* Footer Styles */
-.auth-footer {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.auth-footer p,
-.auth-footer small {
-  color: var(--text-muted);
-}
-
-.auth-footer a {
-  color: var(--accent-gold);
-  font-weight: 500;
-}
-
-.auth-footer a:hover {
-  color: #ffb300;
-  text-decoration: underline;
-}
-
-/* Loading Spinner */
-.spinner-border-sm {
-  width: 1rem;
-  height: 1rem;
-}
-
-/* Text Color Classes */
-.text-muted {
-  color: var(--text-muted) !important;
-}
-
-.text-success {
-  color: var(--success-color) !important;
-}
-
-.text-gold {
-  color: var(--accent-gold) !important;
-}
-
-.text-whatsapp {
-  color: var(--whatsapp-green) !important;
-}
-
-/* Invalid feedback */
-.invalid-feedback {
-  display: block;
-  font-size: 0.875rem;
-  color: var(--danger-color);
-  margin-top: 0.25rem;
-}
-
-/* Form text */
-.form-text {
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-  color: var(--text-muted);
-}
-
-/* Animation for step transitions */
-.auth-step {
-  animation: slideInUp 0.4s ease-out;
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Success checkmark animation */
-.alert-success {
-  animation: slideInDown 0.3s ease-out;
-}
-
-@keyframes slideInDown {
+@keyframes slideDown {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -499,128 +150,153 @@
   }
 }
 
-/* Focus states for accessibility */
-.btn:focus,
-.form-control:focus {
-  outline: 2px solid var(--accent-gold);
-  outline-offset: 2px;
+/* Alerts */
+.alert-sm {
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: none;
+}
+
+.alert-danger {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.alert-success {
+  background: rgba(25, 135, 84, 0.1);
+  color: #198754;
+}
+
+/* Spinner */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Step Transitions */
+.phone-step,
+.otp-step {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive Design */
 @media (max-width: 576px) {
-  .auth-card {
-    padding: 1.5rem;
-    margin: 10px;
-    border-radius: 8px;
+  .auth-container {
+    padding: 0.5rem;
+  }
+
+  .auth-card .card-body {
+    padding: 1.5rem !important;
   }
 
   .auth-title {
     font-size: 1.5rem;
   }
 
-  .progress-step {
-    min-width: 60px;
-  }
-
-  .progress-step i {
-    width: 35px;
-    height: 35px;
-    font-size: 0.9rem;
-  }
-
-  .progress-step span {
-    font-size: 0.7rem;
-  }
-
-  .progress-line {
-    max-width: 40px;
-  }
-
   .otp-input {
-    letter-spacing: 0.25rem;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
+    letter-spacing: 4px;
   }
 }
 
-@media (max-width: 400px) {
-  .auth-container {
-    padding: 10px 0;
-  }
-
-  .auth-card {
-    padding: 1rem;
-  }
-
-  .auth-logo {
-    width: 50px;
-    height: 50px;
-    font-size: 1.25rem;
-  }
-
-  .auth-title {
-    font-size: 1.25rem;
-  }
-
-  .form-control {
-    padding: 10px 12px;
-  }
-
-  .btn-lg {
-    padding: 12px 16px;
+@media (max-width: 375px) {
+  .otp-input {
+    font-size: 1rem;
+    letter-spacing: 2px;
   }
 }
 
-/* Dark mode specific overrides for better contrast */
-@media (prefers-color-scheme: dark) {
-  .auth-logo {
-    color: #1a1a1a; /* Ensure logo icon is always dark on gold background */
-  }
+/* Bootstrap Icons (if not included globally) */
+.bi::before {
+  vertical-align: -0.125em;
+}
 
-  .btn-primary {
-    color: #1a1a1a; /* Ensure button text is always dark on gold background */
-  }
+/* Form Validation States */
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
 
-  .btn-primary:hover:not(:disabled) {
-    color: #1a1a1a;
-  }
+.form-control.is-valid {
+  border-color: #198754;
+}
 
-  .btn-outline-primary.active,
-  .btn-check:checked + .btn-outline-primary {
-    color: #1a1a1a;
-  }
+/* Focus States for Accessibility */
+.btn:focus-visible,
+.form-control:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 2px;
+}
 
-  .auth-toggle .btn-check:checked + .btn {
-    color: #1a1a1a;
-  }
+/* Loading State */
+.loading-overlay {
+  position: relative;
+}
 
-  /* Ensure WhatsApp green is visible in dark mode */
-  .fab.fa-whatsapp,
-  .text-whatsapp {
-    color: #25d366 !important;
-  }
+.loading-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  pointer-events: none;
+}
 
-  /* Better visibility for form elements */
-  .form-control:focus {
-    background: var(--input-bg);
-    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.15);
-  }
+/* Subtle animations */
+.form-control,
+.btn {
+  transition: all 0.2s ease-in-out;
+}
 
-  /* Improve alert visibility in dark mode */
-  .alert-success {
-    background: linear-gradient(
-      135deg,
-      rgba(76, 175, 80, 0.15),
-      rgba(76, 175, 80, 0.25)
-    );
-    border: 1px solid rgba(76, 175, 80, 0.4);
+/* Error shake animation */
+@keyframes shake {
+  0%,
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(0);
   }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-3px);
+  }
+}
 
-  .alert-danger {
-    background: linear-gradient(
-      135deg,
-      rgba(244, 67, 54, 0.15),
-      rgba(244, 67, 54, 0.25)
-    );
-    border: 1px solid rgba(244, 67, 54, 0.4);
+.alert-danger {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Success pulse animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
   }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.alert-success {
+  animation: pulse 0.6s ease-in-out;
 }

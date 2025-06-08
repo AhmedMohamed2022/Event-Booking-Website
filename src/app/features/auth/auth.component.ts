@@ -1,323 +1,195 @@
-// src/app/features/auth/auth.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
-import {
-  OtpSendRequest,
-  OtpVerifyRequest,
-  AuthState,
-} from '../../core/models/auth.model';
-
-type AuthStep = 'phone' | 'otp' | 'register';
-type AuthAction = 'login' | 'register';
+import { AuthResponse, User } from '../../core/models/auth.model';
 
 @Component({
   selector: 'app-auth',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css'],
 })
-export class AuthComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class AuthComponent implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  // Component State
-  currentStep: AuthStep = 'phone';
-  authAction: AuthAction = 'login';
-
-  // Form Data
-  phoneNumber: string = '';
+  // Form data
+  phone: string = '';
   otp: string = '';
-  userName: string = '';
+  name: string = '';
 
-  // UI State
+  // UI state
+  currentStep: 'phone' | 'otp' = 'phone';
   isLoading: boolean = false;
   error: string = '';
-  successMessage: string = '';
-  otpSent: boolean = false;
-  countdown: number = 0;
-  canResend: boolean = true;
+  success: string = '';
+  isNewUser: boolean = false;
+  returnUrl: string = '';
 
-  // OTP Session
-  private otpId: string = '';
-  private countdownInterval: any;
+  ngOnInit() {
+    // Get return URL from route params
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 
-  // Phone validation
-  readonly phonePattern = /^(\+962|0)?(7[789])\d{7}$/;
-  readonly jordanianCities = [
-    'Amman',
-    'Irbid',
-    'Zarqa',
-    'Aqaba',
-    'Salt',
-    'Madaba',
-    'Karak',
-    'Tafilah',
-  ];
+    // Store return URL in auth service
+    if (this.returnUrl) {
+      this.authService.setRedirectUrl(this.returnUrl);
+    }
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnInit(): void {
-    this.subscribeToAuthState();
-    this.checkRedirectUrl();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.clearCountdown();
-  }
-
-  private subscribeToAuthState(): void {
-    this.authService.authState$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((state: AuthState) => {
-        this.isLoading = state.loading;
-        this.error = state.error || '';
-
-        if (state.isAuthenticated) {
-          this.handleAuthSuccess();
-        }
-      });
-  }
-
-  private checkRedirectUrl(): void {
-    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-    if (returnUrl) {
-      this.authService.setRedirectUrl(returnUrl);
+    // Check if already authenticated
+    if (this.authService.isAuthenticated()) {
+      this.redirectUser();
     }
   }
 
-  // Toggle between login and register
-  toggleAuthAction(): void {
-    this.authAction = this.authAction === 'login' ? 'register' : 'login';
-    this.resetForm();
-  }
-
-  // Phone number formatting
-  formatPhoneNumber(): void {
-    let cleaned = this.phoneNumber.replace(/\D/g, '');
-
-    if (cleaned.startsWith('962')) {
-      cleaned = '+' + cleaned;
-    } else if (cleaned.startsWith('07')) {
-      cleaned = '+962' + cleaned.substring(1);
-    } else if (cleaned.startsWith('7')) {
-      cleaned = '+9627' + cleaned.substring(1);
-    } else if (!cleaned.startsWith('+962') && cleaned.length === 10) {
-      cleaned = '+962' + cleaned;
+  async sendOTP() {
+    // Name validation remains the same
+    if (!this.name.trim() || this.name.trim().length < 2) {
+      this.error = 'Please enter your full name (minimum 2 characters)';
+      return;
     }
 
-    this.phoneNumber = cleaned;
-  }
-
-  // Validate phone number
-  isPhoneValid(): boolean {
-    // Remove any spaces or special characters except + sign
-    const cleanPhone = this.phoneNumber.trim().replace(/[^\d+]/g, '');
-
-    // Check if the number matches either format
-    if (cleanPhone.startsWith('+962')) {
-      // For +962 format, should be exactly 13 chars (+962 7xx xxx xxx)
-      return (
-        cleanPhone.length === 13 && /^\+962(7[789])\d{7}$/.test(cleanPhone)
-      );
-    } else if (cleanPhone.startsWith('07')) {
-      // For 07 format, should be exactly 10 chars (07xx xxx xxx)
-      return cleanPhone.length === 10 && /^07[789]\d{7}$/.test(cleanPhone);
-    } else if (cleanPhone.startsWith('7')) {
-      // For 7 format, should be exactly 9 chars (7xx xxx xxx)
-      return cleanPhone.length === 9 && /^7[789]\d{7}$/.test(cleanPhone);
+    if (!this.phone.trim()) {
+      this.error = 'Please enter your phone number';
+      return;
     }
 
-    return false;
-  }
-
-  // Validate OTP
-  isOtpValid(): boolean {
-    return this.otp.length === 6 && /^\d{6}$/.test(this.otp);
-  }
-
-  // Validate user name
-  isNameValid(): boolean {
-    return this.userName.trim().length >= 2;
-  }
-
-  // Send OTP
-  async onSendOtp(form: NgForm): Promise<void> {
-    if (!form.valid || !this.isPhoneValid()) {
+    // Updated Jordan phone number validation
+    const jordanPhoneRegex = /^(\+962|962|0)?7[789]\d{7}$/;
+    if (!jordanPhoneRegex.test(this.phone.replace(/[\s\-\(\)]/g, ''))) {
       this.error = 'Please enter a valid Jordanian phone number';
       return;
     }
 
-    this.formatPhoneNumber();
-    this.clearMessages();
-
-    const request: OtpSendRequest = {
-      phone: this.phoneNumber,
-      action: this.authAction,
-      ...(this.authAction === 'register' && { name: this.userName }),
-    };
+    this.isLoading = true;
+    this.error = '';
+    this.success = '';
 
     try {
-      const response = await this.authService.sendOtp(request).toPromise();
+      // Clean phone number before sending to API
+      const cleanPhone = this.phone.replace(/[\s\-\(\)]/g, '');
+      await this.authService.sendOTP(cleanPhone, this.name.trim());
+      this.success = 'OTP sent successfully via WhatsApp!';
+      this.currentStep = 'otp';
 
-      if (response?.success) {
-        this.otpId = response.otpId || '';
-        this.successMessage = 'OTP sent via WhatsApp successfully!';
-        this.currentStep = 'otp';
-        this.otpSent = true;
-        this.startCountdown();
-      }
+      setTimeout(() => {
+        this.success = '';
+      }, 3000);
     } catch (error: any) {
-      this.error =
-        error.error?.message || 'Failed to send OTP. Please try again.';
+      this.error = error.message || 'Failed to send OTP. Please try again.';
+    } finally {
+      this.isLoading = false;
     }
   }
 
-  // Verify OTP
-  async onVerifyOtp(form: NgForm): Promise<void> {
-    if (!form.valid || !this.isOtpValid()) {
-      this.error = 'Please enter a valid 6-digit OTP';
+  async verifyOTP() {
+    // Remove the isNewUser check since name is already collected
+    if (!this.otp.trim()) {
+      this.error = 'Please enter the OTP';
       return;
     }
 
-    this.clearMessages();
-
-    const request: OtpVerifyRequest = {
-      phone: this.phoneNumber,
-      otp: this.otp,
-      action: this.authAction,
-      otpId: this.otpId,
-      ...(this.authAction === 'register' && { name: this.userName }),
-    };
-
-    try {
-      const response = await this.authService.verifyOtp(request).toPromise();
-
-      if (response?.token) {
-        this.successMessage =
-          this.authAction === 'register'
-            ? 'Account created successfully!'
-            : 'Login successful!';
-      }
-    } catch (error: any) {
-      this.error = error.error?.message || 'Invalid OTP. Please try again.';
+    if (this.otp.trim().length !== 6) {
+      this.error = 'OTP must be 6 digits';
+      return;
     }
-  }
 
-  // Handle successful authentication
-  private handleAuthSuccess(): void {
-    setTimeout(() => {
-      this.authService.redirectAfterAuth('/');
-    }, 1000);
-  }
-
-  // Resend OTP
-  async onResendOtp(): Promise<void> {
-    if (!this.canResend) return;
-
-    const request: OtpSendRequest = {
-      phone: this.phoneNumber,
-      action: this.authAction,
-      ...(this.authAction === 'register' && { name: this.userName }),
-    };
-
-    try {
-      const response = await this.authService.sendOtp(request).toPromise();
-
-      if (response?.success) {
-        this.otpId = response.otpId || '';
-        this.successMessage = 'New OTP sent successfully!';
-        this.startCountdown();
-      }
-    } catch (error: any) {
-      this.error = error.error?.message || 'Failed to resend OTP';
-    }
-  }
-
-  // Countdown timer
-  private startCountdown(): void {
-    this.countdown = 60;
-    this.canResend = false;
-
-    this.countdownInterval = setInterval(() => {
-      this.countdown--;
-
-      if (this.countdown <= 0) {
-        this.canResend = true;
-        this.clearCountdown();
-      }
-    }, 1000);
-  }
-
-  private clearCountdown(): void {
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-      this.countdownInterval = null;
-    }
-  }
-
-  // Navigation methods
-  goBackToPhone(): void {
-    this.currentStep = 'phone';
-    this.clearMessages();
-    this.clearCountdown();
-  }
-
-  goToRegister(): void {
-    this.currentStep = 'register';
-    this.authAction = 'register';
-    this.clearMessages();
-  }
-
-  // Utility methods
-  private resetForm(): void {
-    this.phoneNumber = '';
-    this.otp = '';
-    this.userName = '';
-    this.currentStep = 'phone';
-    this.clearMessages();
-    this.clearCountdown();
-  }
-
-  private clearMessages(): void {
+    this.isLoading = true;
     this.error = '';
-    this.successMessage = '';
-  }
 
-  // Getters for template
-  get showPhoneStep(): boolean {
-    return this.currentStep === 'phone';
-  }
+    try {
+      const response: AuthResponse = await this.authService.verifyOTP(
+        this.phone.trim(),
+        this.otp.trim(),
+        this.name.trim() // Always send the name
+      );
 
-  get showOtpStep(): boolean {
-    return this.currentStep === 'otp';
-  }
+      // Store JWT and user info
+      this.authService.setToken(response.token);
+      this.authService.setUser(response.user);
 
-  get showRegisterStep(): boolean {
-    return this.currentStep === 'register';
-  }
+      this.success = 'Login successful! Redirecting...';
 
-  get isLoginMode(): boolean {
-    return this.authAction === 'login';
-  }
-
-  get pageTitle(): string {
-    return this.isLoginMode ? 'Login to Your Account' : 'Create New Account';
-  }
-
-  get submitButtonText(): string {
-    if (this.currentStep === 'phone') {
-      return 'Send OTP via WhatsApp';
+      // Redirect after short delay
+      setTimeout(() => {
+        this.redirectUser(response.user);
+      }, 1000);
+    } catch (error: any) {
+      this.error = error.message || 'Invalid OTP. Please try again.';
+    } finally {
+      this.isLoading = false;
     }
-    return this.isLoginMode ? 'Login' : 'Create Account';
+  }
+
+  private redirectUser(user?: User) {
+    const currentUser = user || this.authService.getCurrentUser();
+    const savedReturnUrl = this.authService.getRedirectUrl();
+
+    if (!currentUser) {
+      this.router.navigate(['/']);
+      return;
+    }
+
+    // Handle role-based redirects
+    switch (currentUser.role) {
+      case 'admin':
+        this.router.navigate(['/admin-dashboard']);
+        break;
+      case 'supplier':
+        this.router.navigate(['/supplier-dashboard']);
+        break;
+      default:
+        if (savedReturnUrl) {
+          this.authService.clearRedirectUrl();
+          this.router.navigateByUrl(savedReturnUrl);
+        } else {
+          this.router.navigate(['/']);
+        }
+    }
+  }
+
+  goBack() {
+    this.currentStep = 'phone';
+    this.otp = '';
+    this.name = '';
+    this.error = '';
+    this.success = '';
+    this.isNewUser = false;
+  }
+
+  clearError() {
+    this.error = '';
+  }
+
+  formatPhoneNumber() {
+    // Remove all non-digit characters
+    let value = this.phone.replace(/\D/g, '');
+
+    // Remove leading zeros or country code
+    if (value.startsWith('962')) {
+      value = value.substring(3);
+    } else if (value.startsWith('0')) {
+      value = value.substring(1);
+    }
+
+    // Ensure maximum length of 9 digits for Jordan numbers
+    if (value.length > 9) {
+      value = value.substring(0, 9);
+    }
+
+    // Format as (07X) XXX-XXXX
+    if (value.length > 0) {
+      this.phone =
+        value.length <= 3
+          ? `(${value})`
+          : value.length <= 6
+          ? `(${value.substring(0, 3)}) ${value.substring(3)}`
+          : `(${value.substring(0, 3)}) ${value.substring(
+              3,
+              6
+            )}-${value.substring(6)}`;
+    }
   }
 }

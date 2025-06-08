@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="brandName" datatype="html">
+        <source>EventBook</source>
+        <target>إيفنت بوك</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">4,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="languageSelectorText" datatype="html">
+        <source> 🌐 العربية </source>
+
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">11,12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="arabicLanguageOption" datatype="html">
+        <source>العربية</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">13,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="englishLanguageOption" datatype="html">
+        <source>English</source>
+        <target>الإنجليزية</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">14,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="heroTitle" datatype="html">
+        <source> Find Perfect Event Services </source>
+        <target>ابحث عن خدمات الفعاليات المثالية</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">27,28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="heroSubtitle" datatype="html">
+        <source> Discover and book the best venues, decorations, and services for your special events </source>
+       <target>اكتشف واحجز أفضل الأماكن والديكورات والخدمات لفعالياتك الخاصة</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">30,32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cityLabel" datatype="html">
+        <source>City *</source>
+        <target>المدينة *</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">38,39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectCityOption" datatype="html">
+        <source>Select City</source>
+        <target>اختر المدينة</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">40,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eventTypeLabel" datatype="html">
+        <source>Event Type *</source>
+        <target>نوع الفعالية *</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">48,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectEventTypeOption" datatype="html">
+        <source>Select Event Type</source>
+        <target>اختر نوع الفعالية</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">50,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="peopleLabel" datatype="html">
+        <source>People</source>
+        <target>عدد الأشخاص</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">58,59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectPeopleOption" datatype="html">
+        <source>Select number of people</source>
+        <target>اختر عدد الأشخاص</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">60,61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dateLabel" datatype="html">
+        <source>Date *</source>
+        <target>التاريخ *</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">68,69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="searchServicesButton" datatype="html">
+        <source> Search Services </source>
+        <target>ابحث عن الخدمات</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">75,76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ourServicesTitle" datatype="html">
+        <source>Our Services</source>
+        <target>خدماتنا</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">89,90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ourServicesSubtitle" datatype="html">
+        <source>Everything you need for your perfect event</source>
+        <target>كل ما تحتاجه لفعاليتك المثالية</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">90,93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="vendorCtaTitle" datatype="html">
+        <source>Are you a vendor?</source>
+        <target>هل أنت بائع خدمات؟</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">109,110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="vendorCtaText" datatype="html">
+        <source> Join our platform and reach thousands of customers looking for event services </source>
+        <target>انضم إلى منصتنا واصل إلى آلاف العملاء الباحثين عن خدمات الفعاليات</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">111,113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="joinUsButton" datatype="html">
+        <source> Join Us Today </source>
+        <target>انضم إلينا اليوم</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">114,115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="footerBrandName" datatype="html">
+        <source>EventBook</source>
+        <target>إيفنت بوك</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">126,127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="footerTagline" datatype="html">
+        <source> Your trusted partner for finding the perfect event services and venues. </source>
+        <target>شريكك الموثوق في العثور على خدمات وأماكن الفعاليات المثالية.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">128,130</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="quickLinksTitle" datatype="html">
+        <source>Quick Links</source>
+        <target>روابط سريعة</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">133,134</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aboutUsLink" datatype="html">
+        <source>About Us</source>
+        <target>عنّا</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">135,136</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="servicesLink" datatype="html">
+        <source>Services</source>
+        <target>الخدمات</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">136,137</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="contactLink" datatype="html">
+        <source>Contact</source>
+        <target>اتصل بنا</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">137,138</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="termsLink" datatype="html">
+        <source>Terms</source>
+        <target>الشروط</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">138,140</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="contactInfoTitle" datatype="html">
+        <source>Contact Info</source>
+        <target>معلومات الاتصال</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">143,144</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="emailAddress" datatype="html">
+        <source>📧 info@.com</source>
+        <target>📧 info@.com</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">145,146</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="phoneNumber" datatype="html">
+        <source>📞 +962 6 123 4567</source>
+        <target>📞 +962 6 123 4567</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">146,147</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="locationAddress" datatype="html">
+        <source>📍 Amman, Jordan</source>
+        <target>📍 عمان، الأردن</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">147,149</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="copyrightText" datatype="html">
+        <source>© 2024 EventBook. All rights reserved.</source>
+        <target>© 2024 إيفنت بوك. جميع الحقوق محفوظة.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/home/home.component.html</context>
+          <context context-type="linenumber">154,156</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

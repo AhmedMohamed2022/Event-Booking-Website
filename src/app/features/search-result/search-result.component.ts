@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchService } from '../../core/services/search-result.service';
 import { EventItem } from '../../core/models/event-item.model';
+import { EVENT_CATEGORIES } from '../../core/models/constants/categories.const';
 
 @Component({
   selector: 'app-search-results',
@@ -27,6 +28,7 @@ export class SearchResultComponent implements OnInit {
     minPrice: 0,
     maxPrice: 10000,
     selectedCategories: [] as string[],
+    selectedSubcategories: [] as string[], // Add this
     priceRange: { min: 0, max: 10000 },
   };
 
@@ -53,6 +55,9 @@ export class SearchResultComponent implements OnInit {
   // Add this property to store ratings
   serviceRatings: { [key: string]: string } = {};
 
+  categories = EVENT_CATEGORIES;
+  subcategories: { value: string; label: string }[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -63,7 +68,12 @@ export class SearchResultComponent implements OnInit {
     this.loading = true;
     this.route.queryParams.subscribe((params) => {
       this.currentParams = params;
-      this.loadCategoryFilters(params['category']);
+      if (params['category']) {
+        const category = this.categories.find(
+          (c) => c.value === params['category']
+        );
+        this.subcategories = category?.subcategories || [];
+      }
       this.searchEvents();
       this.results.forEach((service) => {
         console.log('Image URLs:', service.images);
@@ -95,18 +105,10 @@ export class SearchResultComponent implements OnInit {
   }
 
   loadCategoryFilters(eventType: string) {
-    if (eventType && this.categoryMappings[eventType]) {
-      this.filters.categories = this.categoryMappings[eventType];
-    } else {
-      // Default categories if event type not found
-      this.filters.categories = [
-        'Decoration',
-        'Catering',
-        'Sound',
-        'Photography',
-        'Transportation',
-      ];
-    }
+    // All subcategories flattened for filtering
+    this.filters.categories = this.categories.flatMap((cat) =>
+      cat.subcategories.map((sub) => sub.label)
+    );
   }
 
   calculatePriceRange() {
@@ -135,6 +137,18 @@ export class SearchResultComponent implements OnInit {
     this.applyFilters();
   }
 
+  onSubcategoryFilterChange(subcategory: string, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+
+    if (checked) {
+      this.filters.selectedSubcategories.push(subcategory);
+    } else {
+      this.filters.selectedSubcategories =
+        this.filters.selectedSubcategories.filter((s) => s !== subcategory);
+    }
+    this.applyFilters();
+  }
+
   onPriceRangeChange() {
     this.applyFilters();
   }
@@ -149,17 +163,23 @@ export class SearchResultComponent implements OnInit {
         (item.subcategory &&
           this.filters.selectedCategories.includes(item.subcategory));
 
+      // Subcategory filter
+      const subcategoryMatch =
+        this.filters.selectedSubcategories.length === 0 ||
+        this.filters.selectedSubcategories.includes(item.subcategory || '');
+
       // Price filter
       const priceMatch =
         item.price >= this.filters.priceRange.min &&
         item.price <= this.filters.priceRange.max;
 
-      return categoryMatch && priceMatch;
+      return categoryMatch && subcategoryMatch && priceMatch;
     });
   }
 
   clearFilters() {
     this.filters.selectedCategories = [];
+    this.filters.selectedSubcategories = [];
     this.filters.priceRange = {
       min: this.filters.minPrice,
       max: this.filters.maxPrice,

@@ -1,0 +1,202 @@
+<!-- src/app/features/add-service/add-service.component.html -->
+<div class="container-fluid px-3 py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <!-- Header -->
+      <div class="d-flex align-items-center mb-4">
+        <button type="button" class="btn btn-link text-decoration-none p-0 me-3" (click)="goBack()">
+          <i class="fas fa-arrow-right text-primary fs-5"></i>
+        </button>
+        <h2 class="mb-0 text-dark fw-bold">إضافة خدمة جديدة</h2>
+      </div>
+
+      <!-- Form Card -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+
+            <!-- Service Basic Info -->
+            <div class="row g-3 mb-4">
+              <div class="col-12">
+                <label class="form-label fw-semibold text-dark">اسم الخدمة *</label>
+                <input type="text" class="form-control form-control-lg" [class.is-invalid]="isFieldInvalid('name')"
+                  formControlName="name" placeholder="أدخل اسم الخدمة">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
+                  {{ getFieldError('name') }}
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold text-dark">الوصف</label>
+                <textarea class="form-control" rows="3" formControlName="description"
+                  placeholder="وصف تفصيلي للخدمة..."></textarea>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold text-dark">الفئة *</label>
+                <select class="form-select form-select-lg" [class.is-invalid]="isFieldInvalid('category')"
+                  formControlName="category">
+                  <option value="">اختر الفئة</option>
+                  <option *ngFor="let cat of categories" [value]="cat.value">
+                    {{ cat.label }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
+                  {{ getFieldError('category') }}
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold text-dark">الفئة الفرعية</label>
+                <input type="text" class="form-control form-control-lg" formControlName="subcategory"
+                  placeholder="فئة فرعية (اختيارية)">
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">السعر (دينار) *</label>
+                <input type="number" class="form-control form-control-lg" [class.is-invalid]="isFieldInvalid('price')"
+                  formControlName="price" placeholder="0.00" min="1" step="0.01">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('price')">
+                  {{ getFieldError('price') }}
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">الحد الأدنى للعدد</label>
+                <input type="number" class="form-control form-control-lg" formControlName="minCapacity"
+                  placeholder="مثلاً: 10" min="1">
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">الحد الأقصى للعدد</label>
+                <input type="number" class="form-control form-control-lg" formControlName="maxCapacity"
+                  placeholder="مثلاً: 100" min="1">
+              </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="border-top pt-4 mb-4">
+              <h5 class="text-dark fw-bold mb-3">المكان</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-dark">المدينة</label>
+                  <input type="text" class="form-control form-control-lg" formControlName="city"
+                    placeholder="مثلاً: عمان">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-dark">المنطقة</label>
+                  <input type="text" class="form-control form-control-lg" formControlName="area"
+                    placeholder="مثلاً: الدوار السابع">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-dark">خط العرض (Latitude)</label>
+                  <input type="number" class="form-control form-control-lg" formControlName="lat" placeholder="31.9566"
+                    step="any">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-dark">خط الطول (Longitude)</label>
+                  <input type="number" class="form-control form-control-lg" formControlName="lng" placeholder="35.9457"
+                    step="any">
+                </div>
+              </div>
+            </div>
+
+            <!-- Available Dates Section -->
+            <div class="border-top pt-4 mb-4">
+              <h5 class="text-dark fw-bold mb-3">التواريخ المتاحة</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <input type="date" class="form-control form-control-lg" (change)="addAvailableDate($event)"
+                    placeholder="اختر تاريخ">
+                </div>
+              </div>
+
+              <div *ngIf="availableDates.length > 0" class="mt-3">
+                <div class="d-flex flex-wrap gap-2">
+                  <span *ngFor="let date of availableDates; let i = index"
+                    class="badge bg-light text-dark border px-3 py-2 d-flex align-items-center">
+                    {{ date }}
+                    <button type="button" class="btn-close btn-close-sm ms-2" (click)="removeAvailableDate(i)"></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Media Upload Section -->
+            <div class="border-top pt-4 mb-4">
+              <h5 class="text-dark fw-bold mb-3">الصور والفيديوهات</h5>
+
+              <!-- Images Upload -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold text-dark">الصور (حتى 5 صور)</label>
+                <input type="file" class="form-control form-control-lg" multiple accept="image/*"
+                  (change)="onImageSelect($event)">
+
+                <div *ngIf="selectedImages.length > 0" class="mt-3">
+                  <div class="row g-2">
+                    <div *ngFor="let image of selectedImages; let i = index" class="col-6 col-md-4 col-lg-3">
+                      <div class="position-relative">
+                        <div class="bg-light border rounded p-2 text-center">
+                          <i class="fas fa-image text-muted fs-4"></i>
+                          <div class="small text-muted mt-1">{{ image.name }}</div>
+                        </div>
+                        <button type="button"
+                          class="btn btn-danger btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
+                          (click)="removeImage(i)">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Videos Upload -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold text-dark">الفيديوهات (حتى 3 فيديوهات)</label>
+                <input type="file" class="form-control form-control-lg" multiple accept="video/*"
+                  (change)="onVideoSelect($event)">
+
+                <div *ngIf="selectedVideos.length > 0" class="mt-3">
+                  <div class="row g-2">
+                    <div *ngFor="let video of selectedVideos; let i = index" class="col-6 col-md-4 col-lg-3">
+                      <div class="position-relative">
+                        <div class="bg-light border rounded p-2 text-center">
+                          <i class="fas fa-video text-muted fs-4"></i>
+                          <div class="small text-muted mt-1">{{ video.name }}</div>
+                        </div>
+                        <button type="button"
+                          class="btn btn-danger btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
+                          (click)="removeVideo(i)">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-outline-secondary btn-lg px-4" (click)="goBack()"
+                [disabled]="isLoading || isUploading">
+                إلغاء
+              </button>
+              <button type="submit" class="btn btn-warning btn-lg px-4" [disabled]="isLoading || isUploading">
+                <span *ngIf="isLoading || isUploading" class="spinner-border spinner-border-sm me-2"></span>
+                <span *ngIf="isLoading">جاري الحفظ...</span>
+                <span *ngIf="isUploading">جاري رفع الملفات...</span>
+                <span *ngIf="!isLoading && !isUploading">إضافة الخدمة</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
