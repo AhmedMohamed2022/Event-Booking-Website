@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist/claude-steps/browser/en"
+  publish = "dist/claude-steps/browser"
 
 [[redirects]]
   from = "/*"
