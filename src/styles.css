@@ -1,15 +1,46 @@
 [dir="rtl"] {
   /* RTL specific styles */
+  text-align: right;
+
   .ms-auto {
-    margin-left: unset !important;
     margin-right: auto !important;
+    margin-left: 0 !important;
   }
 
-  .me-1 {
-    margin-right: unset !important;
-    margin-left: 0.25rem !important;
+  .me-auto {
+    margin-left: auto !important;
+    margin-right: 0 !important;
   }
 
+  /* Dropdowns */
+  .dropdown-menu {
+    text-align: right;
+  }
+
+  .dropdown-menu-end {
+    left: 0 !important;
+    right: auto !important;
+  }
+
+  /* Form controls */
+  .form-select {
+    padding-right: 0.75rem;
+    padding-left: 2rem;
+    background-position: left 0.75rem center;
+  }
+
+  /* Icons */
+  .me-2 {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+  }
+
+  .ms-2 {
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+  }
+
+  /* Text alignment */
   .text-start {
     text-align: right !important;
   }
@@ -17,6 +48,28 @@
   .text-end {
     text-align: left !important;
   }
+}
+
+/* Arabic font */
+[dir="rtl"] body {
+  font-family: "Cairo", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Language specific styles */
+.lang-ar {
+  font-family: "Arial", "Segoe UI", sans-serif;
+}
+
+/* Debug helper */
+.lang-indicator {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 12px;
+  z-index: 9999;
 }
 
 /* Floating Chat Window */

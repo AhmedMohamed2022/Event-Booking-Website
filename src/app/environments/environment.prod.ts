@@ -1,7 +1,8 @@
 // src/app/environments/environment.prod.ts
 export const environmentProd = {
   production: true,
-  apiUrl: 'https://your-api-domain.com/api',
+  apiUrl:
+    'https://https://event-booking-backend-production-0d69.up.railway.app/api',
   appName: 'Event Booking Platform',
   version: '1.0.0',
 

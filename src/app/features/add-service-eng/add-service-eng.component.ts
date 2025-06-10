@@ -6,13 +6,14 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormArray,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EventItemService } from '../../core/services/event-item.service';
 import { CreateEventItemRequest } from '../../core/models/event-item.model';
 import {
-  CategoryConfig,
   EVENT_CATEGORIES,
+  CategoryConfig,
 } from '../../core/models/constants/categories.const';
 
 @Component({
@@ -23,191 +24,324 @@ import {
   styleUrls: ['./add-service-eng.component.css'],
 })
 export class AddServiceComponent implements OnInit {
-  serviceForm: FormGroup;
+  serviceForm!: FormGroup; // Mark as definitely assigned
   isLoading = false;
   isUploading = false;
-  selectedImages: File[] = [];
-  selectedVideos: File[] = [];
-  availableDates: string[] = [];
-
+  isSubmitting = false; // Added for the submit button state
+  selectedImages: any[] = []; // Changed to any[] to include preview property
+  selectedVideos: any[] = []; // Added for video uploads
+  availableDatesArray!: FormArray; // For the available dates form array
   categories = EVENT_CATEGORIES;
   selectedCategory?: CategoryConfig;
   subcategories: { value: string; label: string }[] = [];
+
+  // Getter for availableDates to use in template
+
+  cities = [
+    'Amman',
+    'Irbid',
+    'Zarqa',
+    'Aqaba',
+    'Salt',
+    'Madaba',
+    'Karak',
+    'Tafilah',
+  ];
 
   constructor(
     private fb: FormBuilder,
     private eventItemService: EventItemService,
     private router: Router
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.initForm();
+    this.setupCategoryListener();
+  }
+
+  private initForm(): void {
+    this.availableDatesArray = this.fb.array([]);
+
     this.serviceForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
       category: ['', Validators.required],
-      subcategory: [''],
+      subcategory: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(1)]],
-      city: [''],
+      city: ['', Validators.required],
+      address: [''],
+      minCapacity: [''],
+      maxCapacity: [''],
       area: [''],
       lat: [''],
       lng: [''],
-      minCapacity: [''],
-      maxCapacity: [''],
+      availableDates: this.availableDatesArray,
     });
   }
 
-  ngOnInit(): void {}
+  private setupCategoryListener(): void {
+    const categoryControl = this.serviceForm.get('category');
+    if (categoryControl) {
+      categoryControl.valueChanges.subscribe((categoryValue: string) => {
+        if (categoryValue) {
+          this.selectedCategory = this.categories.find(
+            (c) => c.value === categoryValue
+          );
+          this.subcategories = this.selectedCategory?.subcategories || [];
+        } else {
+          this.subcategories = [];
+          this.selectedCategory = undefined;
+        }
 
-  onImageSelect(event: any): void {
-    const files = Array.from(event.target.files) as File[];
-    if (files.length + this.selectedImages.length > 5) {
-      alert('You can upload up to 5 images maximum');
+        // Update subcategory control
+        const subcategoryControl = this.serviceForm.get('subcategory');
+        if (subcategoryControl) {
+          subcategoryControl.patchValue('');
+        }
+      });
+    }
+  }
+
+  // Add method to handle category change from template
+  onCategoryChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    if (!selectElement) return;
+
+    const categoryValue = selectElement.value;
+
+    if (categoryValue) {
+      this.selectedCategory = this.categories.find(
+        (c) => c.value === categoryValue
+      );
+      this.subcategories = this.selectedCategory?.subcategories || [];
+    } else {
+      this.subcategories = [];
+      this.selectedCategory = undefined;
+    }
+
+    // Update subcategory control
+    const subcategoryControl = this.serviceForm.get('subcategory');
+    if (subcategoryControl) {
+      subcategoryControl.patchValue('');
+    }
+  }
+
+  // Method to add a new available date
+  addAvailableDate(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const selectedDate = input.value;
+
+    if (!selectedDate) return;
+
+    // Check if date already exists
+    const exists = this.availableDatesArray.controls.some(
+      (control) => control.value === selectedDate
+    );
+
+    if (exists) {
+      alert('This date is already added');
       return;
     }
-    this.selectedImages = [...this.selectedImages, ...files];
+
+    this.availableDatesArray.push(this.fb.control(selectedDate));
   }
 
-  onVideoSelect(event: any): void {
-    const files = Array.from(event.target.files) as File[];
-    if (files.length + this.selectedVideos.length > 3) {
-      alert('You can upload up to 3 videos maximum');
-      return;
+  // Method to remove an available date
+  removeAvailableDate(index: number): void {
+    this.availableDatesArray.removeAt(index);
+  }
+
+  // Getter for availableDates to use in template
+  get availableDates(): string[] {
+    return this.availableDatesArray
+      ? this.availableDatesArray.controls.map((control) => control.value)
+      : [];
+  }
+
+  // Method to handle image selection
+  onImageSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const files = Array.from(input.files);
+      const maxImages = 5;
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      // Limit to max 5 images
+      const validFiles = files.slice(
+        0,
+        Math.max(0, maxImages - this.selectedImages.length)
+      );
+
+      for (const file of validFiles) {
+        // Check file size
+        if (file.size > maxSize) {
+          alert(`File ${file.name} exceeds the 5MB size limit.`);
+          continue;
+        }
+
+        // Create preview URL
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.selectedImages.push({
+            file: file,
+            preview: e.target.result,
+            name: file.name,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
     }
-    this.selectedVideos = [...this.selectedVideos, ...files];
   }
 
-  removeImage(index: number): void {
-    this.selectedImages.splice(index, 1);
+  // Method to handle video selection
+  onVideoSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const files = Array.from(input.files);
+      const maxVideos = 3;
+      const maxSize = 50 * 1024 * 1024; // 50MB
+
+      // Limit to max 3 videos
+      const validFiles = files.slice(
+        0,
+        Math.max(0, maxVideos - this.selectedVideos.length)
+      );
+
+      for (const file of validFiles) {
+        // Check file size
+        if (file.size > maxSize) {
+          alert(`File ${file.name} exceeds the 50MB size limit.`);
+          continue;
+        }
+
+        this.selectedVideos.push({
+          file: file,
+          name: file.name,
+        });
+      }
+    }
   }
 
+  // Method to remove a video
   removeVideo(index: number): void {
     this.selectedVideos.splice(index, 1);
   }
 
-  addAvailableDate(event: any): void {
-    const date = event.target.value;
-    if (date && !this.availableDates.includes(date)) {
-      this.availableDates.push(date);
-    }
-    event.target.value = '';
+  // Method to remove an image
+  removeImage(index: number): void {
+    this.selectedImages.splice(index, 1);
   }
 
-  removeAvailableDate(index: number): void {
-    this.availableDates.splice(index, 1);
-  }
-
-  async onSubmit(): Promise<void> {
-    if (this.serviceForm.invalid) {
-      this.markFormGroupTouched();
-      return;
-    }
-
-    this.isLoading = true;
-
-    try {
-      const formValue = this.serviceForm.value;
-
-      const eventItemData: CreateEventItemRequest = {
-        name: formValue.name,
-        description: formValue.description,
-        category: formValue.category,
-        subcategory: formValue.subcategory,
-        price: Number(formValue.price),
-        location: {
-          city: formValue.city,
-          area: formValue.area,
-          coordinates: {
-            lat: formValue.lat ? Number(formValue.lat) : undefined,
-            lng: formValue.lng ? Number(formValue.lng) : undefined,
-          },
-        },
-        availableDates: this.availableDates,
-        minCapacity: formValue.minCapacity
-          ? Number(formValue.minCapacity)
-          : undefined,
-        maxCapacity: formValue.maxCapacity
-          ? Number(formValue.maxCapacity)
-          : undefined,
-      };
-
-      // Create the event item first
-      const createdItem = await this.eventItemService
-        .createEventItem(eventItemData)
-        .toPromise();
-
-      // Upload media if any files are selected
-      if (this.selectedImages.length > 0 || this.selectedVideos.length > 0) {
-        await this.uploadMedia(createdItem!._id!);
-      }
-
-      alert('Service added successfully!');
-      this.router.navigate(['/supplier-dashboard']);
-    } catch (error: any) {
-      console.error('Error creating service:', error);
-      alert('An error occurred while adding the service. Please try again.');
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  private async uploadMedia(eventItemId: string): Promise<void> {
-    if (this.selectedImages.length === 0 && this.selectedVideos.length === 0) {
-      return;
-    }
-
-    this.isUploading = true;
-
-    try {
-      const formData = new FormData();
-
-      this.selectedImages.forEach((image) => {
-        formData.append('images', image);
-      });
-
-      this.selectedVideos.forEach((video) => {
-        formData.append('videos', video);
-      });
-
-      await this.eventItemService
-        .uploadEventMedia(eventItemId, formData)
-        .toPromise();
-    } catch (error) {
-      console.error('Error uploading media:', error);
-      alert('Service created but there was an error uploading files');
-    } finally {
-      this.isUploading = false;
-    }
-  }
-
-  private markFormGroupTouched(): void {
-    Object.keys(this.serviceForm.controls).forEach((key) => {
-      const control = this.serviceForm.get(key);
-      control?.markAsTouched();
-    });
-  }
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.serviceForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
-
-  getFieldError(fieldName: string): string {
-    const field = this.serviceForm.get(fieldName);
-    if (field?.errors) {
-      if (field.errors['required']) return 'This field is required';
-      if (field.errors['minlength']) return 'Text must be longer';
-      if (field.errors['min']) return 'Value must be greater than zero';
-    }
-    return '';
-  }
-
+  // Method to navigate back
   goBack(): void {
     this.router.navigate(['/supplier-dashboard']);
   }
 
-  onCategoryChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const value = select.value;
-    const category = this.categories.find((c) => c.value === value);
-    this.subcategories = category?.subcategories || [];
-    this.serviceForm.patchValue({ subcategory: '' });
+  // Method to check if a field is invalid
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.serviceForm.get(fieldName);
+    return field ? field.invalid && (field.dirty || field.touched) : false;
+  }
+
+  // Method to get field error message
+  getFieldError(fieldName: string): string {
+    const field = this.serviceForm.get(fieldName);
+    if (!field) return '';
+
+    if (field.hasError('required')) {
+      return 'This field is required';
+    }
+    if (field.hasError('minlength')) {
+      const minLength = field.getError('minlength').requiredLength;
+      return `Minimum length is ${minLength} characters`;
+    }
+    if (field.hasError('min')) {
+      const min = field.getError('min').min;
+      return `Minimum value is ${min}`;
+    }
+    return 'Invalid value';
+  }
+
+  // Method to submit the form
+  onSubmit(): void {
+    if (this.serviceForm.invalid) {
+      // Mark all fields as touched to trigger validation messages
+      Object.keys(this.serviceForm.controls).forEach((key) => {
+        const control = this.serviceForm.get(key);
+        control?.markAsTouched();
+      });
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    // Create the request object from form values
+    const formValues = this.serviceForm.value;
+    const request: CreateEventItemRequest = {
+      name: formValues.name,
+      description: formValues.description,
+      category: formValues.category,
+      subcategory: formValues.subcategory,
+      price: formValues.price,
+      minCapacity: formValues.minCapacity,
+      maxCapacity: formValues.maxCapacity,
+      location: {
+        city: formValues.city,
+        area: formValues.area,
+        coordinates: {
+          lat: formValues.lat,
+          lng: formValues.lng,
+        },
+      },
+      availableDates: this.availableDatesArray.value,
+    };
+
+    // Call the service to create the event item
+    this.eventItemService.createEventItem(request).subscribe({
+      next: (response) => {
+        // If there are images or videos to upload
+        if (this.selectedImages.length > 0 || this.selectedVideos.length > 0) {
+          this.isSubmitting = false;
+          this.isUploading = true;
+          this.uploadMedia(response._id);
+        } else {
+          this.isSubmitting = false;
+          this.router.navigate(['/supplier-dashboard']);
+        }
+      },
+      error: (error) => {
+        console.error('Error creating event item:', error);
+        this.isSubmitting = false;
+        // Handle error (could add error message display here)
+      },
+    });
+  }
+
+  // Helper method to upload media files
+  private uploadMedia(eventId: string): void {
+    const formData = new FormData();
+
+    // Add images to form data
+    this.selectedImages.forEach((image, index) => {
+      formData.append(`images`, image.file);
+    });
+
+    // Add videos to form data
+    this.selectedVideos.forEach((video, index) => {
+      formData.append(`videos`, video.file);
+    });
+
+    // Upload the media files
+    this.eventItemService.uploadEventMedia(eventId, formData).subscribe({
+      next: (response) => {
+        this.isUploading = false;
+        this.router.navigate(['/supplier-dashboard']);
+      },
+      error: (error) => {
+        console.error('Error uploading media:', error);
+        this.isUploading = false;
+        // Handle error (could add error message display here)
+      },
+    });
   }
 }

@@ -32,29 +32,35 @@
                   placeholder="Detailed service description..."></textarea>
               </div>
 
-              <!-- Replace the category/subcategory section -->
-              <div class="col-md-6">
-                <label class="form-label fw-semibold text-dark">Event Type/Category *</label>
-                <select class="form-select form-select-lg" [class.is-invalid]="isFieldInvalid('category')"
-                  formControlName="category" (change)="onCategoryChange($event)">
-                  <option value="">Select Event Type</option>
-                  <option *ngFor="let cat of categories" [value]="cat.value">
-                    {{cat.label}}
-                  </option>
-                </select>
-                <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
-                  {{ getFieldError('category') }}
+              <!-- Category and Subcategory Section -->
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-dark">Event Type *</label>
+                  <select class="form-select form-select-lg" formControlName="category"
+                    [class.is-invalid]="isFieldInvalid('category')" (change)="onCategoryChange($event)">
+                    <option value="">Select Event Type</option>
+                    <option *ngFor="let cat of categories" [value]="cat.value">
+                      {{cat.label}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
+                    Please select an event type
+                  </div>
                 </div>
-              </div>
 
-              <div class="col-md-6" *ngIf="subcategories.length">
-                <label class="form-label fw-semibold text-dark">Service Type/Subcategory *</label>
-                <select class="form-select form-select-lg" formControlName="subcategory">
-                  <option value="">Select Service Type</option>
-                  <option *ngFor="let sub of subcategories" [value]="sub.value">
-                    {{sub.label}}
-                  </option>
-                </select>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-dark">Service Type *</label>
+                  <select class="form-select form-select-lg" formControlName="subcategory"
+                    [class.is-invalid]="isFieldInvalid('subcategory')">
+                    <option value="">Select Service Type</option>
+                    <option *ngFor="let sub of subcategories" [value]="sub.value">
+                      {{sub.label}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('subcategory')">
+                    Please select a service type
+                  </div>
+                </div>
               </div>
 
               <div class="col-md-4">
@@ -84,26 +90,42 @@
               <h5 class="text-dark fw-bold mb-3">Location</h5>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold text-dark">City</label>
-                  <input type="text" class="form-control form-control-lg" formControlName="city"
-                    placeholder="e.g. New York">
+                  <label class="form-label fw-semibold text-dark">City *</label>
+                  <select class="form-select form-select-lg" formControlName="city"
+                    [class.is-invalid]="isFieldInvalid('city')">
+                    <option value="">Select City</option>
+                    <option *ngFor="let city of cities" [value]="city">
+                      {{city}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('city')">
+                    Please select a city
+                  </div>
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label fw-semibold text-dark">Area</label>
                   <input type="text" class="form-control form-control-lg" formControlName="area"
-                    placeholder="e.g. Manhattan">
+                    placeholder="e.g. Downtown">
+                </div>
+
+                <!-- Add map coordinates hint -->
+                <div class="col-12 mb-2">
+                  <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Coordinates are optional but help customers find your location easily
+                  </small>
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label fw-semibold text-dark">Latitude</label>
-                  <input type="number" class="form-control form-control-lg" formControlName="lat" placeholder="40.7128"
+                  <input type="number" class="form-control form-control-lg" formControlName="lat" placeholder="31.9539"
                     step="any">
                 </div>
 
                 <div class="col-md-6">
                   <label class="form-label fw-semibold text-dark">Longitude</label>
-                  <input type="number" class="form-control form-control-lg" formControlName="lng" placeholder="-74.0060"
+                  <input type="number" class="form-control form-control-lg" formControlName="lng" placeholder="35.9106"
                     step="any">
                 </div>
               </div>

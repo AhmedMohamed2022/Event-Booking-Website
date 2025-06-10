@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { Message, ActiveChat } from '../models/chat.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   private socket!: Socket;
-  private baseUrl = 'http://localhost:5000/api';
+  private baseUrl = environment.apiUrl;
   private messageSubject = new BehaviorSubject<Message | null>(null);
 
   // Rename messages$ to newMessage$ to match usage
@@ -36,7 +37,7 @@ export class ChatService {
     }
 
     try {
-      this.socket = io('http://localhost:5000', {
+      this.socket = io(this.baseUrl, {
         auth: { token },
         transports: ['websocket'],
         reconnection: true,

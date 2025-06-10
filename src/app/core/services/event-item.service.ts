@@ -7,12 +7,13 @@ import {
   CreateEventItemRequest,
   UpdateEventItemRequest,
 } from '../models/event-item.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventItemService {
-  private apiUrl = 'http://localhost:5000/api/event-items';
+  private apiUrl = `${environment.apiUrl}/event-items`;
 
   constructor(private http: HttpClient) {}
 

@@ -10,10 +10,7 @@
       "sourceRoot": "src",
       "prefix": "app",
       "i18n": {
-        "sourceLocale": {
-          "code": "en",
-          "baseHref": "/"
-        },
+        "sourceLocale": "en-US",
         "locales": {
           "ar": {
             "translation": "src/locale/messages.ar.xlf",
@@ -71,12 +68,18 @@
             },
             "ar": {
               "localize": ["ar"],
-              "outputPath": "dist/claude-steps/ar",
+              "outputPath": "dist/claude-steps-ar",
               "i18nMissingTranslation": "error",
+              "baseHref": "/ar/",
+              "deployUrl": "/ar/",
+              "assets": ["src/favicon.ico", "src/assets"],
               "styles": [
                 "src/styles.css",
-                "node_modules/bootstrap/dist/css/bootstrap.rtl.min.css",
-                "./node_modules/@fortawesome/fontawesome-free/css/all.css"
+                {
+                  "input": "node_modules/bootstrap/dist/css/bootstrap.rtl.min.css",
+                  "bundleName": "bootstrap-rtl",
+                  "inject": true
+                }
               ]
             }
           },
@@ -100,10 +103,9 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ClaudeSteps:build",
             "outputPath": "src/locale",
-            "format": "xlf",
-            "outFile": "messages.xlf"
+            "outFile": "messages.xlf",
+            "format": "xlf"
           }
         }
       }

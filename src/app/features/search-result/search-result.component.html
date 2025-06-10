@@ -47,7 +47,7 @@
         <div class="filter-section">
           <h6 class="filter-title">Service Types</h6>
           <div class="category-filters">
-            <div class="form-check" *ngFor="let sub of subcategories">
+            <div class="form-check" *ngFor="let sub of selectedCategory?.subcategories">
               <input class="form-check-input" type="checkbox" [id]="'sub-' + sub.value"
                 [checked]="filters.selectedSubcategories.includes(sub.value)"
                 (change)="onSubcategoryFilterChange(sub.value, $event)">
@@ -158,7 +158,7 @@
               <div class="service-header">
                 <h5 class="service-name">{{service.name}}</h5>
                 <span class="service-category badge bg-light text-dark">
-                  {{service.category}}
+                  {{getSubcategoryLabel(service.subcategory || '')}}
                 </span>
               </div>
 

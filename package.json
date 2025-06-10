@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "extract-i18n": "ng extract-i18n --output-path src/locale",
+    "start:ar": "ng serve --configuration=ar",
+    "build:ar": "ng build --configuration=ar"
   },
   "private": true,
   "dependencies": {

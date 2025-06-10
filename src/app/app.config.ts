@@ -29,6 +29,7 @@ import { routes } from './app.routes';
 
 import { Observable } from 'rxjs';
 import { authInterceptorFn } from './core/interceptors/auth.interceptor';
+import { languageInterceptorFn } from './core/interceptors/language.interceptor';
 
 registerLocaleData(localeAr);
 
@@ -39,7 +40,9 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
 
     // HTTP Client with interceptors
-    provideHttpClient(withInterceptors([authInterceptorFn])),
+    provideHttpClient(
+      withInterceptors([authInterceptorFn, languageInterceptorFn])
+    ),
 
     // Animations
     provideAnimations(),

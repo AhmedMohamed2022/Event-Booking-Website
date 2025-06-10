@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { LanguageService } from '../../core/services/language.service';
 import {
-  EVENT_TYPES,
   EVENT_CATEGORIES,
+  CategoryConfig,
 } from '../../core/models/constants/categories.const';
 
 @Component({
@@ -20,7 +22,6 @@ export class HomeComponent implements OnInit {
   searchForm = {
     city: '',
     eventType: '',
-    subcategory: '', // Add this
     people: '',
     date: '',
   };
@@ -37,12 +38,8 @@ export class HomeComponent implements OnInit {
     'Tafilah',
   ];
 
-  // Replace existing eventTypes
-  eventTypes = EVENT_TYPES;
-
-  // Add categories
-  categories = EVENT_CATEGORIES;
-  subcategories: { value: string; label: string }[] = [];
+  // Update to use EVENT_CATEGORIES directly
+  eventCategories: CategoryConfig[] = [];
 
   peopleRanges = [
     { min: 50, max: 100, label: '50-100' },
@@ -53,35 +50,33 @@ export class HomeComponent implements OnInit {
     { min: 500, max: null, label: '500+' },
   ];
 
-  // Update services array to match categories
-  services = EVENT_CATEGORIES.map((cat) => ({
-    name: cat.label,
-    icon: this.getCategoryIcon(cat.value),
-  }));
-
-  private getCategoryIcon(category: string): string {
-    const icons: { [key: string]: string } = {
-      venues: '🏛️',
-      catering: '🍽️',
-      decoration: '🎨',
-      entertainment: '🎵',
-      photography: '📸',
-      equipment: '⚙️',
-    };
-    return icons[category] || '✨';
-  }
-
   isAuthenticated = false;
   currentUser: any = null;
-  currentLang = 'en';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private translationService: TranslationService,
+    private languageService: LanguageService
+  ) {
+    this.updateTranslations();
+  }
 
   ngOnInit() {
     this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
       this.isAuthenticated = !!user;
     });
+
+    // Subscribe to language changes
+    this.languageService.currentLanguage$.subscribe(() => {
+      this.updateTranslations();
+    });
+  }
+
+  private updateTranslations() {
+    // Get translated categories (main categories only)
+    this.eventCategories = this.translationService.getTranslatedCategories();
   }
 
   onSearchSubmit() {
@@ -100,7 +95,7 @@ export class HomeComponent implements OnInit {
 
     const queryParams = {
       city: this.searchForm.city,
-      category: this.searchForm.eventType,
+      category: this.searchForm.eventType, // This will be the main category value
       date: this.searchForm.date,
       minCapacity: selectedRange?.min,
       maxCapacity: selectedRange?.max,
@@ -116,6 +111,7 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/search-results'], { queryParams });
   }
 
+  // Keep existing helper methods
   navigateToVendorJoin() {
     this.router.navigate(['/join']);
   }
@@ -137,14 +133,5 @@ export class HomeComponent implements OnInit {
     if (confirm('Are you sure you want to logout?')) {
       this.authService.logout();
     }
-  }
-
-  // Update the onEventTypeChange method
-  onEventTypeChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const value = select.value;
-    const category = this.categories.find((c) => c.value === value);
-    this.subcategories = category?.subcategories || [];
-    this.searchForm.subcategory = '';
   }
 }
