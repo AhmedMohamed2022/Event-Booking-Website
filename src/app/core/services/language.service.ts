@@ -1,81 +1,60 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LanguageService {
-  private switching = false;
-  private currentLanguageSubject = new BehaviorSubject<string>(
-    this.getInitialLanguage()
-  );
-  currentLanguage$ = this.currentLanguageSubject.asObservable();
+  private currentLanguageSubject = new BehaviorSubject<string>('en');
+  public currentLanguage$ = this.currentLanguageSubject.asObservable();
 
-  constructor() {
-    this.initialize();
+  private readonly STORAGE_KEY = 'language'; // Changed to match app.config.ts
+
+  constructor(
+    private translate: TranslateService,
+    @Inject(DOCUMENT) private document: Document
+  ) {
+    this.initializeLanguage();
   }
 
-  private getInitialLanguage(): string {
-    const urlLang = window.location.pathname.includes('/ar/') ? 'ar' : 'en';
-    const savedLang = localStorage.getItem('language');
-    return savedLang || urlLang;
+  private initializeLanguage() {
+    const savedLanguage = localStorage.getItem(this.STORAGE_KEY) || 'en';
+    this.setLanguage(savedLanguage);
   }
 
-  private initialize(): void {
-    const lang = this.currentLanguageSubject.value;
-    this.applyLanguage(lang, false);
-  }
+  setLanguage(language: string) {
+    // Update translation service
+    this.translate.use(language);
 
-  private applyLanguage(lang: string, redirect: boolean): void {
-    if (this.switching) return;
+    // Update HTML attributes
+    this.document.documentElement.lang = language;
+    this.document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
 
-    try {
-      this.switching = true;
+    // Update document classes for styling
+    this.document.body.classList.remove('lang-en', 'lang-ar');
+    this.document.body.classList.add(`lang-${language}`);
 
-      // Update document attributes
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    // Save to localStorage
+    localStorage.setItem(this.STORAGE_KEY, language);
 
-      // Update storage
-      localStorage.setItem('language', lang);
-
-      // Update bootstrap CSS
-      const bootstrapLink = document.getElementById(
-        'bootstrap-css'
-      ) as HTMLLinkElement;
-      if (bootstrapLink) {
-        bootstrapLink.href =
-          lang === 'ar'
-            ? 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css'
-            : 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css';
-      }
-
-      // Redirect if needed
-      if (redirect) {
-        const baseUrl = window.location.origin;
-        const currentPath = window.location.pathname.replace(/^\/ar\//, '/');
-        const newPath = lang === 'ar' ? `/ar${currentPath}` : currentPath;
-        const newUrl = `${baseUrl}${newPath}${window.location.search}`;
-
-        // Use replace to avoid browser history stacking
-        window.location.replace(newUrl);
-      }
-    } finally {
-      this.switching = false;
-    }
+    // Update subject
+    this.currentLanguageSubject.next(language);
   }
 
   getCurrentLanguage(): string {
     return this.currentLanguageSubject.value;
   }
 
-  setLanguage(lang: 'en' | 'ar'): void {
-    if (this.switching || lang === this.getCurrentLanguage()) return;
-    this.currentLanguageSubject.next(lang);
-    this.applyLanguage(lang, true);
+  isRTL(): boolean {
+    return this.getCurrentLanguage() === 'ar';
   }
 
-  isSwitching(): boolean {
-    return this.switching;
+  toggleLanguage() {
+    const currentLang = this.getCurrentLanguage();
+    const newLang = currentLang === 'en' ? 'ar' : 'en';
+    this.setLanguage(newLang);
   }
 }

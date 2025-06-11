@@ -1,5 +1,3 @@
-// src/app/app.config.ts
-
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -10,11 +8,9 @@ import {
   withEnabledBlockingInitialNavigation,
 } from '@angular/router';
 import {
-  HttpEvent,
-  HttpHandlerFn,
-  HttpRequest,
   provideHttpClient,
   withInterceptors,
+  HttpClient,
 } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,36 +18,50 @@ import { registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
 import { LOCALE_ID } from '@angular/core';
 
-// Import your routes
+// NgX-Translate imports
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
 import { routes } from './app.routes';
-
-// Import interceptors
-
-import { Observable } from 'rxjs';
 import { authInterceptorFn } from './core/interceptors/auth.interceptor';
 import { languageInterceptorFn } from './core/interceptors/language.interceptor';
 
 registerLocaleData(localeAr);
 
+// Translation loader factory
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
 export const appConfig: ApplicationConfig = {
   providers: [
-    // Router configuration
     provideRouter(routes, withEnabledBlockingInitialNavigation()),
     provideZoneChangeDetection({ eventCoalescing: true }),
-
-    // HTTP Client with interceptors
     provideHttpClient(
       withInterceptors([authInterceptorFn, languageInterceptorFn])
     ),
-
-    // Animations
     provideAnimations(),
-
-    // Forms
     importProvidersFrom(FormsModule, ReactiveFormsModule),
+
+    // NgX-Translate providers
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient],
+        },
+        defaultLanguage: 'en',
+      })
+    ),
+
     {
       provide: LOCALE_ID,
-      useValue: localStorage.getItem('language') || 'en',
+      useFactory: () => localStorage.getItem('language') || 'en',
     },
   ],
 };

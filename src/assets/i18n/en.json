@@ -1,0 +1,92 @@
+{
+  "header": {
+    "brandName": "EventBook",
+    "signIn": "Sign In",
+    "userMenu": "User Menu",
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "home": {
+    "heroTitle": "Find Perfect Event Services",
+    "heroSubtitle": "Discover and book the best venues, decorations, and services for your special events",
+    "cityLabel": "City",
+    "selectCity": "Select City",
+    "eventTypeLabel": "Event Type",
+    "selectEventType": "Select Event Type",
+    "peopleLabel": "People",
+    "selectPeople": "Select number of people",
+    "dateLabel": "Date",
+    "searchButton": "Search Services",
+    "vendorCTATitle": "Are you a vendor?",
+    "vendorCTAText": "Join our platform and reach thousands of customers looking for event services",
+    "joinButton": "Join Us Today"
+  },
+  "footer": {
+    "brandName": "EventBook",
+    "description": "Your trusted partner for finding the perfect event services and venues.",
+    "quickLinksTitle": "Quick Links",
+    "aboutLink": "About Us",
+    "servicesLink": "Services",
+    "contactLink": "Contact",
+    "termsLink": "Terms",
+    "contactInfoTitle": "Contact Info",
+    "emailInfo": "📧 info@eventbook.com",
+    "phoneInfo": "📞 +962 6 123 4567",
+    "addressInfo": "📍 Amman, Jordan",
+    "copyright": "© 2024 EventBook. All rights reserved."
+  },
+  "search": {
+    "resultsFor": "Search Results for",
+    "filtersTitle": "Filters",
+    "clearFilters": "Clear Filters",
+    "subcategoriesLabel": "Subcategories",
+    "priceRangeLabel": "Price Range",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "sortBy": "Sort By",
+    "sortOptions": {
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "newest": "Newest First"
+    },
+    "noResults": "No results found",
+    "noResultsDesc": "Try adjusting your filters or search criteria",
+    "viewDetails": "View Details",
+    "loading": "Loading...",
+    "error": "Failed to load results"
+  },
+  "categories": {
+    "wedding": "Wedding",
+    "birthday": "Birthday",
+    "corporate": "Corporate",
+    "graduation": "Graduation",
+    "baby-shower": "Baby Shower",
+    "engagement": "Engagement"
+  },
+  "subcategories": {
+    "venue": "Venue",
+    "catering": "Catering",
+    "photography": "Photography",
+    "decoration": "Decoration",
+    "music": "Music & Entertainment",
+    "transport": "Transportation"
+  },
+  "cities": {
+    "amman": "Amman",
+    "irbid": "Irbid",
+    "zarqa": "Zarqa",
+    "aqaba": "Aqaba",
+    "salt": "Salt",
+    "madaba": "Madaba",
+    "karak": "Karak",
+    "tafilah": "Tafilah"
+  },
+  "peopleRanges": {
+    "50-100": "50-100",
+    "100-150": "100-150",
+    "150-200": "150-200",
+    "200-300": "200-300",
+    "300-500": "300-500",
+    "500+": "500+"
+  }
+}

@@ -1,0 +1,30 @@
+:root {
+  --primary-white: #ffffff;
+  --primary-dark: #2c2c2c;
+  --accent-gold: #ffc107;
+  --light-gray: #f8f9fa;
+  --text-muted: #6c757d;
+}
+.language-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.btn {
+  border-radius: 20px;
+  font-size: 14px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.btn.active {
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: #ffc107;
+}

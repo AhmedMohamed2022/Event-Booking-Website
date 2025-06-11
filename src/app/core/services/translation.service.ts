@@ -1,6 +1,7 @@
-// src/app/services/translation.service.ts
 import { Injectable } from '@angular/core';
-import { LanguageService } from './language.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   EVENT_CATEGORIES,
   CategoryConfig,
@@ -10,56 +11,54 @@ import {
   providedIn: 'root',
 })
 export class TranslationService {
-  // Arabic translations for categories
-  private readonly AR_CATEGORIES: CategoryConfig[] = [
-    {
-      value: 'venues',
-      label: 'القاعات والصالات',
-      subcategories: [
-        { value: 'wedding-halls', label: 'قاعات الأفراح' },
-        { value: 'conference-rooms', label: 'قاعات المؤتمرات' },
-        { value: 'outdoor-venues', label: 'أماكن خارجية' },
-        { value: 'hotels', label: 'فنادق' },
-      ],
-    },
-    {
-      value: 'catering',
-      label: 'خدمات الطعام',
-      subcategories: [
-        { value: 'buffet', label: 'بوفيه مفتوح' },
-        { value: 'food-stations', label: 'محطات الطعام' },
-        { value: 'beverages', label: 'المشروبات' },
-        { value: 'desserts', label: 'الحلويات والكيك' },
-      ],
-    },
-    // ...continue with other categories
-  ];
+  constructor(private translate: TranslateService) {}
 
-  // Arabic translations for event types
-  private readonly AR_EVENT_TYPES = [
-    { value: 'wedding', label: 'زفاف' },
-    { value: 'engagement', label: 'خطوبة' },
-    { value: 'birthday', label: 'عيد ميلاد' },
-    { value: 'conference', label: 'مؤتمر' },
-    { value: 'corporate', label: 'حدث شركات' },
-    { value: 'graduation', label: 'تخرج' },
-    { value: 'social', label: 'لقاء اجتماعي' },
-  ];
+  // Get translated text
+  get(key: string, params?: any): Observable<string> {
+    return this.translate.get(key, params);
+  }
 
-  constructor(private languageService: LanguageService) {}
+  // Get instant translation (use only when sure translation is loaded)
+  instant(key: string, params?: any): string {
+    return this.translate.instant(key, params);
+  }
 
+  // Get translated categories
   getTranslatedCategories(): CategoryConfig[] {
-    return this.languageService.getCurrentLanguage() === 'ar'
-      ? this.AR_CATEGORIES
-      : EVENT_CATEGORIES;
+    return EVENT_CATEGORIES.map((category) => ({
+      ...category,
+      label: this.instant(`categories.${category.value}`),
+      subcategories: category.subcategories.map((sub) => ({
+        ...sub,
+        label: this.instant(`subcategories.${sub.value}`),
+      })),
+    }));
   }
 
-  // Helper method to get category label by value
-  getCategoryLabel(value: string): string {
-    const categories = this.getTranslatedCategories();
-    const category = categories.find((cat) => cat.value === value);
-    return category?.label || value;
+  // Get translated cities
+  getTranslatedCities(): string[] {
+    const cities = [
+      'Amman',
+      'Irbid',
+      'Zarqa',
+      'Aqaba',
+      'Salt',
+      'Madaba',
+      'Karak',
+      'Tafilah',
+    ];
+    return cities.map((city) => this.instant(`cities.${city.toLowerCase()}`));
   }
 
-  // Helper method to get event type label by value
+  // Get translated people ranges
+  getTranslatedPeopleRanges(): any[] {
+    return [
+      { min: 50, max: 100, label: this.instant('peopleRanges.50-100') },
+      { min: 100, max: 150, label: this.instant('peopleRanges.100-150') },
+      { min: 150, max: 200, label: this.instant('peopleRanges.150-200') },
+      { min: 200, max: 300, label: this.instant('peopleRanges.200-300') },
+      { min: 300, max: 500, label: this.instant('peopleRanges.300-500') },
+      { min: 500, max: null, label: this.instant('peopleRanges.500+') },
+    ];
+  }
 }

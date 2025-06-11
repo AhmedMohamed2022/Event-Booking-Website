@@ -1,36 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../core/services/language.service';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterOutlet, TranslateModule],
   template: `
-    <div class="app-container" [dir]="currentDirection">
-      <app-header></app-header>
-      <main class="main-content">
-        <router-outlet></router-outlet>
-      </main>
-      <app-footer></app-footer>
+    <div class="app-layout" [class.rtl]="isRTL">
+      <router-outlet></router-outlet>
     </div>
   `,
   styles: [
     `
-      .app-container {
+      .app-layout {
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
+        transition: all 0.3s ease;
       }
-      .main-content {
-        flex: 1;
-        padding: 20px;
+
+      .rtl {
+        direction: rtl;
+      }
+
+      .rtl * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
     `,
   ],
 })
-export class LayoutComponent {
-  currentDirection = document.documentElement.dir;
+export class LayoutComponent implements OnInit {
+  isRTL = false;
+
+  constructor(private languageService: LanguageService) {}
+
+  ngOnInit() {
+    this.languageService.currentLanguage$.subscribe(() => {
+      this.isRTL = this.languageService.isRTL();
+    });
+  }
 }

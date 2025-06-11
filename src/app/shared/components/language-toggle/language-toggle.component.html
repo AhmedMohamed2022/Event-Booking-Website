@@ -1,0 +1,6 @@
+<div class="language-toggle">
+  <button class="btn btn-outline-secondary btn-sm" (click)="toggleLanguage()" [class.active]="isRTL()">
+    <i class="fas fa-globe me-2"></i>
+    {{ currentLanguage === 'ar' ? 'العربية' : 'English' }}
+  </button>
+</div>
