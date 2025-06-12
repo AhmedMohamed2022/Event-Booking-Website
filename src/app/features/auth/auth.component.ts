@@ -2,12 +2,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
+import { LanguageService } from '../../core/services/language.service';
 import { AuthResponse, User } from '../../core/models/auth.model';
 
 @Component({
   selector: 'app-auth',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css'],
 })
@@ -15,6 +17,8 @@ export class AuthComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private translate = inject(TranslateService);
+  private languageService = inject(LanguageService);
 
   // Form data
   phone: string = '';
@@ -29,7 +33,18 @@ export class AuthComponent implements OnInit {
   isNewUser: boolean = false;
   returnUrl: string = '';
 
+  // Translation properties
+  currentLanguage: string = 'en';
+
   ngOnInit() {
+    // Initialize language
+    this.currentLanguage = this.languageService.getCurrentLanguage();
+
+    // Subscribe to language changes
+    this.languageService.currentLanguage$.subscribe((lang) => {
+      this.currentLanguage = lang;
+    });
+
     // Get return URL from route params
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 
@@ -45,21 +60,21 @@ export class AuthComponent implements OnInit {
   }
 
   async sendOTP() {
-    // Name validation remains the same
+    // Name validation with translation
     if (!this.name.trim() || this.name.trim().length < 2) {
-      this.error = 'Please enter your full name (minimum 2 characters)';
+      this.error = this.translate.instant('auth.validation.nameMinLength');
       return;
     }
 
     if (!this.phone.trim()) {
-      this.error = 'Please enter your phone number';
+      this.error = this.translate.instant('auth.validation.phoneRequired');
       return;
     }
 
     // Updated Jordan phone number validation
     const jordanPhoneRegex = /^(\+962|962|0)?7[789]\d{7}$/;
     if (!jordanPhoneRegex.test(this.phone.replace(/[\s\-\(\)]/g, ''))) {
-      this.error = 'Please enter a valid Jordanian phone number';
+      this.error = this.translate.instant('auth.validation.phoneInvalid');
       return;
     }
 
@@ -71,28 +86,28 @@ export class AuthComponent implements OnInit {
       // Clean phone number before sending to API
       const cleanPhone = this.phone.replace(/[\s\-\(\)]/g, '');
       await this.authService.sendOTP(cleanPhone, this.name.trim());
-      this.success = 'OTP sent successfully via WhatsApp!';
+      this.success = this.translate.instant('auth.messages.otpSent');
       this.currentStep = 'otp';
 
       setTimeout(() => {
         this.success = '';
       }, 3000);
     } catch (error: any) {
-      this.error = error.message || 'Failed to send OTP. Please try again.';
+      this.error =
+        error.message || this.translate.instant('auth.messages.otpSendFailed');
     } finally {
       this.isLoading = false;
     }
   }
 
   async verifyOTP() {
-    // Remove the isNewUser check since name is already collected
     if (!this.otp.trim()) {
-      this.error = 'Please enter the OTP';
+      this.error = this.translate.instant('auth.validation.otpRequired');
       return;
     }
 
     if (this.otp.trim().length !== 6) {
-      this.error = 'OTP must be 6 digits';
+      this.error = this.translate.instant('auth.validation.otpLength');
       return;
     }
 
@@ -110,14 +125,15 @@ export class AuthComponent implements OnInit {
       this.authService.setToken(response.token);
       this.authService.setUser(response.user);
 
-      this.success = 'Login successful! Redirecting...';
+      this.success = this.translate.instant('auth.messages.loginSuccess');
 
       // Redirect after short delay
       setTimeout(() => {
         this.redirectUser(response.user);
       }, 1000);
     } catch (error: any) {
-      this.error = error.message || 'Invalid OTP. Please try again.';
+      this.error =
+        error.message || this.translate.instant('auth.messages.otpInvalid');
     } finally {
       this.isLoading = false;
     }

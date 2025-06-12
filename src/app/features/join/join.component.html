@@ -5,14 +5,14 @@
 
         <!-- Header -->
         <div class="text-center mb-4">
-          <h1 class="join-title">Join as Supplier</h1>
-          <p class="join-subtitle">Partner with us to grow your event business</p>
+          <h1 class="join-title">{{ 'join.header.title' | translate }}</h1>
+          <p class="join-subtitle">{{ 'join.header.subtitle' | translate }}</p>
         </div>
 
         <!-- Success Alert -->
         <div *ngIf="showSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
           <i class="bi bi-check-circle-fill me-2"></i>
-          Your request has been submitted successfully! We'll contact you soon.
+          {{ 'join.alerts.success.message' | translate }}
           <button type="button" class="btn-close" (click)="hideAlerts()"></button>
         </div>
 
@@ -29,74 +29,96 @@
 
             <!-- Name Field -->
             <div class="mb-3">
-              <label for="name" class="form-label">Full Name *</label>
+              <label for="name" class="form-label">{{ 'join.form.labels.fullName' | translate }} *</label>
               <input type="text" id="name" class="form-control"
                 [class.is-invalid]="joinForm.get('name')?.invalid && joinForm.get('name')?.touched"
-                formControlName="name" placeholder="Enter your full name">
+                formControlName="name" [placeholder]="'join.form.placeholders.name' | translate">
               <div class="invalid-feedback">
-                {{ getFieldError('name') }}
+                {{ getFieldError('name') | translate }}
               </div>
             </div>
 
             <!-- Phone Field -->
             <div class="mb-3">
-              <label for="phone" class="form-label">Phone Number *</label>
+              <label for="phone" class="form-label">{{ 'join.form.labels.phone' | translate }} *</label>
               <div class="input-group">
                 <span class="input-group-text">🇯🇴 +962</span>
                 <input type="tel" id="phone" class="form-control"
                   [class.is-invalid]="joinForm.get('phone')?.invalid && joinForm.get('phone')?.touched"
-                  formControlName="phone" placeholder="7X XXX XXXX">
+                  formControlName="phone" [placeholder]="'join.form.placeholders.phone' | translate">
               </div>
-              <small class="form-text text-muted">{{ getPhoneHint() }}</small>
+              <small class="form-text text-muted">{{ 'join.form.hints.phone' | translate }}</small>
               <div class="invalid-feedback">
-                {{ getFieldError('phone') }}
+                {{ getFieldError('phone') | translate }}
               </div>
             </div>
 
             <!-- City Field -->
             <div class="mb-3">
-              <label for="city" class="form-label">City *</label>
+              <label for="city" class="form-label">{{ 'join.form.labels.city' | translate }} *</label>
               <select id="city" class="form-select"
                 [class.is-invalid]="joinForm.get('city')?.invalid && joinForm.get('city')?.touched"
                 formControlName="city">
-                <option value="">Select your city</option>
+                <option value="">{{ 'join.form.placeholders.city' | translate }}</option>
                 <option *ngFor="let city of cities" [value]="city.value">
-                  {{ city.label }}
+                  {{ 'cities.' + city.value.toLowerCase() | translate }}
                 </option>
               </select>
               <div class="invalid-feedback">
-                {{ getFieldError('city') }}
+                {{ getFieldError('city') | translate }}
               </div>
             </div>
 
             <!-- Service Type Field -->
             <div class="mb-3">
-              <label for="serviceType" class="form-label">Service Type *</label>
+              <label for="serviceType" class="form-label">{{ 'join.form.labels.serviceType' | translate }} *</label>
               <select id="serviceType" class="form-select"
                 [class.is-invalid]="joinForm.get('serviceType')?.invalid && joinForm.get('serviceType')?.touched"
                 formControlName="serviceType">
-                <option value="">Select service type</option>
-                <option *ngFor="let service of serviceTypes" [value]="service.value">
-                  {{ service.label }}
-                </option>
+                <option value="">{{ 'join.form.placeholders.serviceType' | translate }}</option>
+
+                <!-- Main Categories -->
+                <optgroup *ngFor="let category of categories" [label]="'categories.' + category.value | translate">
+                  <option [value]="category.value">{{ 'categories.' + category.value | translate }}</option>
+                  <!-- Subcategories -->
+                  <option *ngFor="let sub of category.subcategories" [value]="sub.value">
+                    — {{ 'subcategories.' + sub.value | translate }}
+                  </option>
+                </optgroup>
+
+                <!-- Other Option -->
+                <option value="other">{{ 'categories.other' | translate }}</option>
               </select>
               <div class="invalid-feedback">
-                {{ getFieldError('serviceType') }}
+                {{ getFieldError('serviceType') | translate }}
+              </div>
+            </div>
+
+            <!-- Other Service Type Input -->
+            <div class="mb-3" *ngIf="showOtherServiceInput">
+              <label for="otherServiceType" class="form-label">{{ 'join.form.labels.otherServiceType' | translate }}
+                *</label>
+              <input type="text" id="otherServiceType" class="form-control"
+                [class.is-invalid]="joinForm.get('otherServiceType')?.invalid && joinForm.get('otherServiceType')?.touched"
+                formControlName="otherServiceType"
+                [placeholder]="'join.form.placeholders.otherServiceType' | translate">
+              <div class="invalid-feedback">
+                {{ getFieldError('otherServiceType') | translate }}
               </div>
             </div>
 
             <!-- Notes Field -->
             <div class="mb-4">
-              <label for="notes" class="form-label">Additional Notes</label>
+              <label for="notes" class="form-label">{{ 'join.form.labels.notes' | translate }}</label>
               <textarea id="notes" class="form-control" formControlName="notes" rows="3"
-                placeholder="Tell us more about your services (optional)"></textarea>
+                [placeholder]="'join.form.placeholders.notes' | translate"></textarea>
             </div>
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary w-100 join-submit-btn"
               [disabled]="joinForm.invalid || isSubmitting">
               <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
-              {{ isSubmitting ? 'Sending Request...' : 'Send Request' }}
+              {{ isSubmitting ? ('join.buttons.submitting' | translate) : ('join.buttons.submit' | translate) }}
             </button>
 
           </form>
@@ -106,9 +128,10 @@
         <div class="join-footer">
           <p class="text-center text-muted mt-4">
             <i class="bi bi-info-circle me-1"></i>
-            We'll review your application and contact you within 24-48 hours
+            {{ 'join.footer.reviewInfo' | translate }}
           </p>
         </div>
+
       </div>
     </div>
   </div>

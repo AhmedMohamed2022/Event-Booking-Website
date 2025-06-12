@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthComponent } from './features/auth/auth.component';
 import { AdminGuard } from './core/guards/admin.guard';
-import { AdminDashboardComponent } from './features/admin-dashboard/admin-dashboard.component';
-import { SupplierDashboardComponent } from './features/supplier-dashboard/supplier-dashboard.component';
 import { RoleGuard } from './core/guards/role.guard';
 import { ViewServiceComponent } from './features/view-service/view-service.component';
 import { LayoutComponent } from './layout/layout.component';

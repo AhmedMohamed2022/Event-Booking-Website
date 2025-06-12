@@ -2,9 +2,9 @@
 <div *ngIf="loading" class="loading-container">
   <div class="d-flex justify-content-center align-items-center min-vh-100">
     <div class="spinner-border text-warning" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{ 'serviceDetails.loading.text' | translate }}</span>
     </div>
-    <span class="ms-2 text-muted">Loading service details...</span>
+    <span class="ms-2 text-muted">{{ 'serviceDetails.loading.message' | translate }}</span>
   </div>
 </div>
 
@@ -18,17 +18,19 @@
             <div class="success-icon mb-4">
               <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
             </div>
-            <h2 class="text-success mb-3">Booking Confirmed!</h2>
+            <h2 class="text-success mb-3">{{ 'booking.success.title' | translate }}</h2>
             <p class="text-muted mb-4">
-              Your booking request has been submitted successfully.
-              You will be redirected to your dashboard shortly.
+              {{ 'booking.success.description' | translate }}
             </p>
             <div class="booking-summary">
-              <h6 class="text-dark mb-2">Booking Summary:</h6>
-              <p class="mb-1"><strong>Service:</strong> {{eventItem?.name}}</p>
-              <p class="mb-1"><strong>Date:</strong> {{bookingForm.eventDate | date:'fullDate'}}</p>
-              <p class="mb-1"><strong>People:</strong> {{bookingForm.numberOfPeople}}</p>
-              <p class="mb-0"><strong>Deposit Paid:</strong> {{calculateDepositAmount() |
+              <h6 class="text-dark mb-2">{{ 'booking.success.summary' | translate }}:</h6>
+              <p class="mb-1"><strong>{{ 'booking.form.service' | translate }}:</strong> {{eventItem?.name}}</p>
+              <p class="mb-1"><strong>{{ 'booking.form.date' | translate }}:</strong> {{bookingForm.eventDate |
+                date:'fullDate'}}</p>
+              <p class="mb-1"><strong>{{ 'booking.form.people' | translate }}:</strong> {{bookingForm.numberOfPeople}}
+              </p>
+              <p class="mb-0"><strong>{{ 'booking.payment.depositPaid' | translate }}:</strong>
+                {{calculateDepositAmount() |
                 currency:'JOD':'symbol':'1.2-2'}}</p>
             </div>
           </div>
@@ -46,9 +48,10 @@
       <div class="row align-items-center">
         <div class="col">
           <button type="button" class="btn btn-link text-dark p-0 me-3" (click)="goBack()">
-            <i class="fas fa-arrow-left me-2"></i>Back to Service
+            <i class="fas fa-arrow-left me-2" [class.fa-arrow-right]="isRTL()"></i>{{ 'booking.navigation.backToService'
+            | translate }}
           </button>
-          <h4 class="mb-0 d-inline-block">Complete Your Booking</h4>
+          <h4 class="mb-0 d-inline-block">{{ 'booking.title' | translate }}</h4>
         </div>
       </div>
     </div>
@@ -60,7 +63,7 @@
       <div class="col-lg-4 mb-4">
         <div class="card border-0 shadow-sm service-summary-card">
           <div class="card-header bg-white border-bottom">
-            <h5 class="mb-0 text-dark">Service Summary</h5>
+            <h5 class="mb-0 text-dark">{{ 'booking.summary.title' | translate }}</h5>
           </div>
           <div class="card-body" *ngIf="eventItem">
             <div class="service-image mb-3">
@@ -75,35 +78,38 @@
 
             <div class="service-details">
               <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted">Category:</span>
-                <span class="fw-medium">{{eventItem.category}}</span>
+                <span class="text-muted">{{ 'booking.summary.category' | translate }}:</span>
+                <span class="fw-medium">{{ getTranslatedCategory(eventItem.category) }}</span>
               </div>
 
               <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted">Location:</span>
-                <span class="fw-medium">{{eventItem.location.city}}, {{eventItem.location.area}}</span>
+                <span class="text-muted">{{ 'serviceDetails.location.title' | translate }}:</span>
+                <span class="fw-medium">{{ getTranslatedCity(eventItem.location.city) }},
+                  {{eventItem.location.area}}</span>
               </div>
 
               <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted">Capacity:</span>
-                <span class="fw-medium">{{eventItem.minCapacity}} - {{eventItem.maxCapacity}} people</span>
+                <span class="text-muted">{{ 'serviceDetails.capacity.title' | translate }}:</span>
+                <span class="fw-medium">{{eventItem.minCapacity}} - {{eventItem.maxCapacity}} {{
+                  'serviceDetails.capacity.people' | translate }}</span>
               </div>
 
               <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted">Full Price:</span>
+                <span class="text-muted">{{ 'booking.payment.fullPrice' | translate }}:</span>
                 <span class="fw-bold text-dark">{{eventItem.price | currency:'JOD':'symbol':'1.2-2'}}</span>
               </div>
 
               <hr class="my-3">
 
               <div class="d-flex justify-content-between">
-                <span class="text-muted">Deposit (10%):</span>
-                <span class="fw-bold text-warning">{{calculateDepositAmount() | currency:'JOD':'symbol':'1.2-2'}}</span>
+                <span class="text-muted">{{ 'booking.payment.deposit' | translate }} (10%):</span>
+                <span class="fw-bold text-warning">{{calculateDepositAmount() |
+                  currency:'JOD':'symbol':'1.2-2'}}</span>
               </div>
             </div>
 
             <div class="supplier-info mt-3 p-3 bg-light rounded">
-              <h6 class="mb-2">Service Provider</h6>
+              <h6 class="mb-2">{{ 'serviceDetails.supplier.title' | translate }}</h6>
               <p class="mb-1 fw-medium">{{eventItem.supplier.name}}</p>
               <p class="mb-0 text-muted small">
                 <i class="fas fa-phone me-1"></i>{{eventItem.supplier.phone}}
@@ -117,7 +123,7 @@
       <div class="col-lg-8">
         <div class="card border-0 shadow-sm">
           <div class="card-header bg-white border-bottom">
-            <h5 class="mb-0 text-dark">Booking Details</h5>
+            <h5 class="mb-0 text-dark">{{ 'booking.form.title' | translate }}</h5>
           </div>
 
           <div class="card-body">
@@ -125,8 +131,9 @@
             <div *ngIf="!isLoggedIn" class="alert alert-warning d-flex align-items-center mb-4">
               <i class="fas fa-exclamation-triangle me-2"></i>
               <div>
-                <strong>Login Required:</strong> You need to be logged in to complete this booking.
-                <a routerLink="/login" class="alert-link ms-1">Click here to login</a>
+                <strong>{{ 'booking.auth.loginRequired' | translate }}:</strong> {{ 'booking.auth.loginMessage' |
+                translate }}
+                <a routerLink="/login" class="alert-link ms-1">{{ 'booking.auth.clickToLogin' | translate }}</a>
               </div>
             </div>
 
@@ -142,13 +149,13 @@
               <div class="row mb-4">
                 <div class="col-12">
                   <label for="eventDate" class="form-label fw-medium">
-                    Event Date <span class="text-danger">*</span>
+                    {{ 'booking.form.eventDate' | translate }} <span class="text-danger">*</span>
                   </label>
                   <input type="date" class="form-control form-control-lg" id="eventDate" name="eventDate"
                     [(ngModel)]="bookingForm.eventDate" [min]="getMinDate()" required>
                   <div class="form-text">
                     <i class="fas fa-info-circle me-1"></i>
-                    Please select from available dates only
+                    {{ 'booking.form.selectAvailableDates' | translate }}
                   </div>
                 </div>
               </div>
@@ -156,14 +163,14 @@
               <!-- Available Dates Display -->
               <!-- Fix availableDates access -->
               <div class="mb-4" *ngIf="eventItem && eventItem.availableDates && eventItem.availableDates.length > 0">
-                <label class="form-label fw-medium">Available Dates:</label>
+                <label class="form-label fw-medium">{{ 'serviceDetails.dates.title' | translate }}:</label>
                 <div class="available-dates">
                   <span *ngFor="let date of eventItem.availableDates | slice:0:5"
                     class="badge bg-light text-dark me-2 mb-2">
                     {{date | date:'MMM dd, yyyy'}}
                   </span>
                   <span *ngIf="eventItem.availableDates.length > 5" class="text-muted small">
-                    +{{eventItem.availableDates.length - 5}} more dates
+                    {{ 'serviceDetails.dates.moreDates' | translate:{ count: eventItem.availableDates.length - 5 } }}
                   </span>
                 </div>
               </div>
@@ -172,14 +179,15 @@
               <div class="row mb-4">
                 <div class="col-12">
                   <label for="numberOfPeople" class="form-label fw-medium">
-                    Number of People <span class="text-danger">*</span>
+                    {{ 'booking.form.numberOfPeople' | translate }} <span class="text-danger">*</span>
                   </label>
                   <input type="number" class="form-control form-control-lg" id="numberOfPeople" name="numberOfPeople"
                     [(ngModel)]="bookingForm.numberOfPeople" [min]="eventItem?.minCapacity || 1"
                     [max]="eventItem?.maxCapacity || 1000" required>
                   <div class="form-text">
                     <i class="fas fa-users me-1"></i>
-                    Capacity range: {{eventItem?.minCapacity}} - {{eventItem?.maxCapacity}} people
+                    {{ 'booking.form.capacityRange' | translate }}: {{eventItem?.minCapacity}} -
+                    {{eventItem?.maxCapacity}} {{ 'serviceDetails.capacity.people' | translate }}
                   </div>
                 </div>
               </div>
@@ -188,15 +196,15 @@
               <div class="row mb-4">
                 <div class="col-md-6 mb-3">
                   <label for="name" class="form-label fw-medium">
-                    Full Name <span class="text-danger">*</span>
+                    {{ 'booking.form.fullName' | translate }} <span class="text-danger">*</span>
                   </label>
                   <input type="text" class="form-control form-control-lg" id="name" name="name"
-                    [(ngModel)]="bookingForm.name" placeholder="Enter your full name" required>
+                    [(ngModel)]="bookingForm.name" [placeholder]="'booking.form.enterFullName' | translate" required>
                 </div>
 
                 <div class="col-md-6 mb-3">
                   <label for="phone" class="form-label fw-medium">
-                    Phone Number <span class="text-danger">*</span>
+                    {{ 'booking.form.phoneNumber' | translate }} <span class="text-danger">*</span>
                   </label>
                   <input type="tel" class="form-control form-control-lg" id="phone" name="phone"
                     [(ngModel)]="bookingForm.phone" placeholder="07xxxxxxxx" required>
@@ -206,22 +214,22 @@
               <!-- Payment Information -->
               <div class="payment-info mb-4 p-4 bg-light rounded">
                 <h6 class="mb-3">
-                  <i class="fas fa-credit-card me-2"></i>Payment Information
+                  <i class="fas fa-credit-card me-2"></i>{{ 'booking.payment.title' | translate }}
                 </h6>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="d-flex justify-content-between mb-2">
-                      <span>Service Price:</span>
+                      <span>{{ 'booking.payment.servicePrice' | translate }}:</span>
                       <span class="fw-medium">{{eventItem?.price | currency:'JOD':'symbol':'1.2-2'}}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                      <span>Deposit (10%):</span>
+                      <span>{{ 'booking.payment.deposit' | translate }} (10%):</span>
                       <span class="fw-bold text-warning">{{calculateDepositAmount() |
                         currency:'JOD':'symbol':'1.2-2'}}</span>
                     </div>
                     <hr class="my-2">
                     <div class="d-flex justify-content-between">
-                      <span class="fw-medium">Amount to Pay Now:</span>
+                      <span class="fw-medium">{{ 'booking.payment.amountToPayNow' | translate }}:</span>
                       <span class="fw-bold text-success">{{calculateDepositAmount() |
                         currency:'JOD':'symbol':'1.2-2'}}</span>
                     </div>
@@ -230,11 +238,11 @@
                     <div class="text-muted small">
                       <p class="mb-1">
                         <i class="fas fa-info-circle me-1"></i>
-                        You only pay 10% deposit now
+                        {{ 'booking.payment.depositInfo' | translate }}
                       </p>
                       <p class="mb-0">
                         <i class="fas fa-handshake me-1"></i>
-                        Remaining 90% paid to service provider directly
+                        {{ 'booking.payment.remainingInfo' | translate }}
                       </p>
                     </div>
                   </div>
@@ -246,8 +254,9 @@
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="terms" required>
                   <label class="form-check-label" for="terms">
-                    I agree to the <a href="#" class="text-warning">Terms & Conditions</a> and
-                    <a href="#" class="text-warning">Privacy Policy</a>
+                    {{ 'booking.terms.agree' | translate }} <a href="#" class="text-warning">{{
+                      'booking.terms.termsConditions' | translate }}</a> {{ 'booking.terms.and' | translate }}
+                    <a href="#" class="text-warning">{{ 'booking.terms.privacyPolicy' | translate }}</a>
                   </label>
                 </div>
               </div>
@@ -257,8 +266,9 @@
                 <button type="submit" class="btn btn-warning btn-lg fw-medium" [disabled]="submitting || !isLoggedIn">
                   <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
                   <i *ngIf="!submitting" class="fas fa-lock me-2"></i>
-                  {{submitting ? 'Processing...' : 'Confirm & Pay ' + (calculateDepositAmount() |
-                  currency:'JOD':'symbol':'1.2-2')}}
+                  {{submitting ? ('booking.form.processing' | translate) : (('booking.form.confirmPay' | translate) + '
+                  ' + (calculateDepositAmount() |
+                  currency:'JOD':'symbol':'1.2-2'))}}
                 </button>
               </div>
             </form>

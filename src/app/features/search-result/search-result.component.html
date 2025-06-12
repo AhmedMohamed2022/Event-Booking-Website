@@ -1,13 +1,29 @@
-<!-- !-- Header with search info -->
+<!-- Header -->
+<header class="navbar navbar-expand-lg bg-white shadow-sm">
+  <div class="container">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold text-dark" [routerLink]="['/']">
+      <span class="text-warning">✨</span> {{ 'header.brandName' | translate }}
+    </a>
+
+    <div class="navbar-nav ms-auto d-flex align-items-center gap-3">
+      <!-- Language Toggle -->
+      <app-language-toggle></app-language-toggle>
+    </div>
+  </div>
+</header>
+
+<!-- Header with search info -->
 <div class="search-header">
   <div class="container">
-    <h2 class="mb-3">Search Results</h2>
+    <h2 class="mb-3">{{ 'search.title' | translate }}</h2>
     <div class="search-info" *ngIf="!loading">
       <p class="text-muted">
-        Found {{filteredResults.length}} services
-        <span *ngIf="currentParams.city"> in {{currentParams.city}}</span>
-        <span *ngIf="currentParams.category"> for {{currentParams.category}}</span>
-        <span *ngIf="currentParams.date"> on {{currentParams.date}}</span>
+        {{ 'search.foundServices' | translate: {count: filteredResults.length} }}
+        <span *ngIf="currentParams.city"> {{ 'search.in' | translate }} {{ getCityLabel(currentParams.city) }}</span>
+        <span *ngIf="currentParams.category"> {{ 'search.for' | translate }} {{ getCategoryLabel(currentParams.category)
+          }}</span>
+        <span *ngIf="currentParams.date"> {{ 'search.on' | translate }} {{ currentParams.date }}</span>
       </p>
     </div>
   </div>
@@ -18,13 +34,13 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item">
-          <a [routerLink]="['/']" class="text-muted">Home</a>
+          <a [routerLink]="['/']" class="text-muted">{{ 'search.breadcrumb.home' | translate }}</a>
         </li>
         <li class="breadcrumb-item text-muted" *ngIf="currentParams?.category">
-          {{currentParams.category}}
+          {{ getCategoryLabel(currentParams.category) }}
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-          Search Results
+          {{ 'search.breadcrumb.searchResults' | translate }}
         </li>
       </ol>
     </nav>
@@ -37,22 +53,22 @@
     <div class="col-lg-3 col-md-4">
       <div class="filters-sidebar">
         <div class="filters-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Filters</h5>
+          <h5 class="mb-0">{{ 'search.filters.title' | translate }}</h5>
           <button class="btn btn-sm btn-outline-secondary" (click)="clearFilters()">
-            Clear All
+            {{ 'search.filters.clearAll' | translate }}
           </button>
         </div>
 
         <!-- Service Types Filter -->
         <div class="filter-section">
-          <h6 class="filter-title">Service Types</h6>
+          <h6 class="filter-title">{{ 'search.filters.serviceTypes' | translate }}</h6>
           <div class="category-filters">
             <div class="form-check" *ngFor="let sub of selectedCategory?.subcategories">
               <input class="form-check-input" type="checkbox" [id]="'sub-' + sub.value"
                 [checked]="filters.selectedSubcategories.includes(sub.value)"
                 (change)="onSubcategoryFilterChange(sub.value, $event)">
               <label class="form-check-label" [for]="'sub-' + sub.value">
-                {{sub.label}}
+                {{ getSubcategoryLabel(sub.value) }}
               </label>
             </div>
           </div>
@@ -60,23 +76,23 @@
 
         <!-- Price Range Filter -->
         <div class="filter-section">
-          <h6 class="filter-title">Price Range</h6>
+          <h6 class="filter-title">{{ 'search.filters.priceRange' | translate }}</h6>
           <div class="price-range">
             <div class="price-inputs">
               <div class="price-input-group">
-                <label>Min Price</label>
+                <label>{{ 'search.filters.minPrice' | translate }}</label>
                 <input type="number" class="form-control form-control-sm" [(ngModel)]="filters.priceRange.min"
                   [min]="filters.minPrice" [max]="filters.maxPrice" (input)="onPriceRangeChange()">
               </div>
               <div class="price-input-group">
-                <label>Max Price</label>
+                <label>{{ 'search.filters.maxPrice' | translate }}</label>
                 <input type="number" class="form-control form-control-sm" [(ngModel)]="filters.priceRange.max"
                   [min]="filters.minPrice" [max]="filters.maxPrice" (input)="onPriceRangeChange()">
               </div>
             </div>
             <div class="price-display">
               <small class="text-muted">
-                JOD {{filters.priceRange.min}} - JOD {{filters.priceRange.max}}
+                JOD {{ filters.priceRange.min }} - JOD {{ filters.priceRange.max }}
               </small>
             </div>
           </div>
@@ -84,21 +100,21 @@
 
         <!-- Additional Filters -->
         <div class="filter-section">
-          <h6 class="filter-title">Location</h6>
+          <h6 class="filter-title">{{ 'search.filters.location' | translate }}</h6>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="nearby">
             <label class="form-check-label" for="nearby">
-              Show nearby only
+              {{ 'search.filters.showNearby' | translate }}
             </label>
           </div>
         </div>
 
         <div class="filter-section">
-          <h6 class="filter-title">Availability</h6>
+          <h6 class="filter-title">{{ 'search.filters.availability' | translate }}</h6>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="available">
             <label class="form-check-label" for="available">
-              Available on selected date
+              {{ 'search.filters.availableOnDate' | translate }}
             </label>
           </div>
         </div>
@@ -111,17 +127,17 @@
       <div *ngIf="loading" class="loading-state">
         <div class="text-center py-5">
           <div class="spinner-border text-warning" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{{ 'search.loading' | translate }}</span>
           </div>
-          <p class="mt-3 text-muted">Searching for services...</p>
+          <p class="mt-3 text-muted">{{ 'search.loading' | translate }}</p>
         </div>
       </div>
 
       <!-- Error State -->
       <div *ngIf="error" class="error-state">
         <div class="alert alert-danger" role="alert">
-          <h6>Oops! Something went wrong</h6>
-          <p class="mb-0">{{error}}</p>
+          <h6>{{ 'search.error.title' | translate }}</h6>
+          <p class="mb-0">{{ error }}</p>
         </div>
       </div>
 
@@ -129,14 +145,15 @@
       <div class="results-section" *ngIf="!loading && !error">
         <div class="results-header d-flex justify-content-between align-items-center mb-4">
           <p class="mb-0 text-muted">
-            Showing {{filteredResults.length}} of {{results.length}} results
+            {{ 'search.results.showing' | translate: {filtered: filteredResults.length, total: results.length} }}
           </p>
           <div class="sort-options">
             <select class="form-select form-select-sm">
-              <option>Sort by: Relevance</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Rating</option>
+              <option>{{ 'search.results.sortBy' | translate }} {{ 'search.results.sortOptions.relevance' | translate }}
+              </option>
+              <option>{{ 'search.results.sortOptions.priceLowHigh' | translate }}</option>
+              <option>{{ 'search.results.sortOptions.priceHighLow' | translate }}</option>
+              <option>{{ 'search.results.sortOptions.rating' | translate }}</option>
             </select>
           </div>
         </div>
@@ -156,44 +173,45 @@
 
             <div class="service-details">
               <div class="service-header">
-                <h5 class="service-name">{{service.name}}</h5>
+                <h5 class="service-name">{{ service.name }}</h5>
                 <span class="service-category badge bg-light text-dark">
-                  {{getSubcategoryLabel(service.subcategory || '')}}
+                  {{ getSubcategoryLabel(service.subcategory || '') }}
                 </span>
               </div>
 
               <div class="service-location">
                 <small class="text-muted">
-                  📍 {{service.location.city}}<span *ngIf="service.location.area">, {{service.location.area}}</span>
+                  📍 {{ getCityLabel(service.location.city) }}<span *ngIf="service.location.area">, {{
+                    service.location.area }}</span>
                 </small>
                 <div class="rating">
-                  <small>{{generateStarRating(service._id)}}</small>
+                  <small>{{ generateStarRating(service._id) }}</small>
                 </div>
               </div>
 
               <div class="service-capacity" *ngIf="service.minCapacity && service.maxCapacity">
                 <small class="text-muted">
-                  👥 {{service.minCapacity}} - {{service.maxCapacity}} people
+                  👥 {{ service.minCapacity }} - {{ service.maxCapacity }} people
                 </small>
               </div>
 
               <div class="service-description" *ngIf="service.description">
-                <p class="text-muted">{{service.description | slice:0:100}}...</p>
+                <p class="text-muted">{{ service.description | slice:0:100 }}...</p>
               </div>
 
               <div class="service-footer">
                 <div class="price">
-                  <span class="price-amount">JOD {{service.price}}</span>
-                  <small class="text-muted">per booking</small>
+                  <span class="price-amount">JOD {{ service.price }}</span>
+                  <small class="text-muted">{{ 'search.results.perBooking' | translate }}</small>
                 </div>
                 <button class="btn btn-warning btn-sm" (click)="viewServiceDetails(service._id)">
-                  View Details
+                  {{ 'search.results.viewDetails' | translate }}
                 </button>
               </div>
 
               <div class="supplier-info">
                 <small class="text-muted">
-                  By {{service.supplier.name}} • {{service.supplier.phone}}
+                  {{ 'search.results.by' | translate }} {{ service.supplier.name }} • {{ service.supplier.phone }}
                 </small>
               </div>
             </div>
@@ -205,12 +223,12 @@
           <div class="no-results">
             <div class="text-center py-5">
               <div class="no-results-icon">🔍</div>
-              <h4>No services found</h4>
+              <h4>{{ 'search.noResults.title' | translate }}</h4>
               <p class="text-muted">
-                Try adjusting your filters or search criteria to find more results.
+                {{ 'search.noResults.description' | translate }}
               </p>
               <button class="btn btn-warning" (click)="clearFilters()">
-                Clear Filters
+                {{ 'search.noResults.clearFilters' | translate }}
               </button>
             </div>
           </div>

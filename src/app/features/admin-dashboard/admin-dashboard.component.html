@@ -3,13 +3,19 @@
 <div class="container-fluid p-4">
   <!-- Header -->
   <div class="row mb-4">
-    <div class="col-md-8">
-      <h1 class="text-primary-dark mb-0">Admin Dashboard</h1>
-      <p class="text-muted">Manage your platform and monitor performance</p>
+    <div class="col-md-8 d-flex align-items-center gap-3">
+      <!-- Add Home button -->
+      <button class="btn btn-outline-primary" routerLink="/">
+        <i class="bi bi-house-door me-2"></i>{{ 'adminDashboard.header.home' | translate }}
+      </button>
+      <div>
+        <h1 class="text-primary-dark mb-0">{{ 'adminDashboard.header.title' | translate }}</h1>
+        <p class="text-muted">{{ 'adminDashboard.header.subtitle' | translate }}</p>
+      </div>
     </div>
     <div class="col-md-4 text-end">
       <button class="btn btn-outline-danger" (click)="logout()">
-        <i class="fas fa-sign-out-alt me-2"></i>Logout
+        <i class="bi bi-box-arrow-right me-2"></i>{{ 'adminDashboard.header.logout' | translate }}
       </button>
     </div>
   </div>
@@ -17,9 +23,9 @@
   <!-- Loading State -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-accent-gold" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{ 'adminDashboard.loading.text' | translate }}</span>
     </div>
-    <p class="mt-3 text-muted">Loading dashboard...</p>
+    <p class="mt-3 text-muted">{{ 'adminDashboard.loading.message' | translate }}</p>
   </div>
 
   <!-- Error State -->
@@ -39,7 +45,7 @@
           </div>
           <div class="stats-content">
             <h3>{{ stats.totalUsers }}</h3>
-            <p>Total Users</p>
+            <p>{{ 'adminDashboard.stats.cards.users.title' | translate }}</p>
           </div>
         </div>
       </div>
@@ -51,7 +57,7 @@
           </div>
           <div class="stats-content">
             <h3>{{ stats.totalSuppliers }}</h3>
-            <p>Suppliers</p>
+            <p>{{ 'adminDashboard.stats.cards.suppliers.title' | translate }}</p>
           </div>
         </div>
       </div>
@@ -63,7 +69,7 @@
           </div>
           <div class="stats-content">
             <h3>{{ stats.totalBookings }}</h3>
-            <p>Total Bookings</p>
+            <p>{{ 'adminDashboard.stats.cards.bookings.title' | translate }}</p>
           </div>
         </div>
       </div>
@@ -75,7 +81,7 @@
           </div>
           <div class="stats-content">
             <h3>${{ stats.totalRevenue }}</h3>
-            <p>Total Revenue</p>
+            <p>{{ 'adminDashboard.stats.cards.revenue.title' | translate }}</p>
           </div>
         </div>
       </div>
@@ -85,13 +91,13 @@
     <div class="row mb-4">
       <div class="col-lg-4 col-md-6 mb-3">
         <div class="detail-card">
-          <h5 class="text-primary-dark">Booking Status</h5>
+          <h5 class="text-primary-dark">{{ 'adminDashboard.stats.details.bookingStatus.title' | translate }}</h5>
           <div class="stat-item">
-            <span class="text-success">Confirmed:</span>
+            <span class="text-success">{{ 'adminDashboard.stats.details.bookingStatus.confirmed' | translate }}:</span>
             <strong>{{ stats.confirmedBookings }}</strong>
           </div>
           <div class="stat-item">
-            <span class="text-danger">Cancelled:</span>
+            <span class="text-danger">{{ 'adminDashboard.stats.details.bookingStatus.cancelled' | translate }}:</span>
             <strong>{{ stats.cancelledBookings }}</strong>
           </div>
         </div>
@@ -99,9 +105,9 @@
 
       <div class="col-lg-4 col-md-6 mb-3">
         <div class="detail-card">
-          <h5 class="text-primary-dark">Services</h5>
+          <h5 class="text-primary-dark">{{ 'adminDashboard.stats.details.services.title' | translate }}</h5>
           <div class="stat-item">
-            <span class="text-info">Total Services:</span>
+            <span class="text-info">{{ 'adminDashboard.stats.details.services.total' | translate }}:</span>
             <strong>{{ stats.totalServices }}</strong>
           </div>
         </div>
@@ -109,9 +115,9 @@
 
       <div class="col-lg-4 col-md-12 mb-3" *ngIf="stats.topCategories.length > 0">
         <div class="detail-card">
-          <h5 class="text-primary-dark">Top Categories</h5>
+          <h5 class="text-primary-dark">{{ 'adminDashboard.stats.details.topCategories.title' | translate }}</h5>
           <div *ngFor="let category of stats.topCategories" class="stat-item">
-            <span class="text-muted">{{ category._id }}:</span>
+            <span class="text-muted">{{ 'categories.' + category._id.toLowerCase() | translate }}:</span>
             <strong>{{ category.count }}</strong>
           </div>
         </div>
@@ -124,13 +130,13 @@
         <ul class="nav nav-tabs card-header-tabs">
           <li class="nav-item">
             <button class="nav-link" [class.active]="selectedTab === 'overview'" (click)="selectTab('overview')">
-              Overview
+              {{ 'adminDashboard.tabs.overview' | translate }}
             </button>
           </li>
           <li class="nav-item">
             <button class="nav-link position-relative" [class.active]="selectedTab === 'requests'"
               (click)="selectTab('requests')">
-              Join Requests
+              {{ 'adminDashboard.tabs.joinRequests' | translate }}
               <span *ngIf="getPendingRequests().length > 0"
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{ getPendingRequests().length }}
@@ -143,22 +149,27 @@
       <div class="card-body">
         <!-- Overview Tab -->
         <div *ngIf="selectedTab === 'overview'">
-          <h5 class="text-primary-dark mb-3">Platform Overview</h5>
+          <h5 class="text-primary-dark mb-3">{{ 'adminDashboard.overview.title' | translate }}</h5>
           <div class="row">
             <div class="col-md-6">
               <div class="overview-item">
-                <h6>User Management</h6>
+                <h6>{{ 'adminDashboard.overview.userManagement.title' | translate }}</h6>
                 <p class="text-muted">
-                  You have {{ stats.totalUsers }} registered users, including {{ stats.totalSuppliers }} suppliers.
+                  {{ 'adminDashboard.overview.userManagement.description' | translate: {
+                  totalUsers: stats.totalUsers,
+                  totalSuppliers: stats.totalSuppliers
+                  } }}
                 </p>
               </div>
             </div>
             <div class="col-md-6">
               <div class="overview-item">
-                <h6>Business Performance</h6>
+                <h6>{{ 'adminDashboard.overview.performance.title' | translate }}</h6>
                 <p class="text-muted">
-                  Platform has generated ${{ stats.totalRevenue }} in total revenue from {{ stats.confirmedBookings }}
-                  confirmed bookings.
+                  {{ 'adminDashboard.overview.performance.description' | translate: {
+                  revenue: stats.totalRevenue,
+                  bookings: stats.confirmedBookings
+                  } }}
                 </p>
               </div>
             </div>
@@ -167,33 +178,50 @@
 
         <!-- Join Requests Tab -->
         <div *ngIf="selectedTab === 'requests'">
-          <h5 class="text-primary-dark mb-3">Supplier Join Requests</h5>
+          <h5 class="text-primary-dark mb-3">{{ 'adminDashboard.requests.title' | translate }}</h5>
 
           <!-- Pending Requests -->
           <div *ngIf="getPendingRequests().length > 0" class="mb-4">
             <h6 class="text-warning mb-3">
-              <i class="bi bi-clock me-2"></i>Pending Requests ({{ getPendingRequests().length }})
+              <i class="bi bi-clock me-2"></i>
+              {{ 'adminDashboard.requests.pending.title' | translate }}
+              ({{ 'adminDashboard.requests.pending.count' | translate: { count: getPendingRequests().length } }})
             </h6>
             <div class="row">
               <div *ngFor="let request of getPendingRequests()" class="col-lg-6 mb-3">
                 <div class="request-card border-warning">
                   <div class="d-flex justify-content-between align-items-start mb-2">
                     <h6 class="mb-0">{{ request.name }}</h6>
-                    <span [class]="getStatusBadgeClass(request.status)">{{ request.status }}</span>
+                    <span [class]="getStatusBadgeClass(request.status)">
+                      {{ 'adminDashboard.requests.status.' + request.status | translate }}
+                    </span>
                   </div>
-                  <p class="mb-1"><strong>Phone:</strong> {{ request.phone }}</p>
-                  <p class="mb-1" *ngIf="request.serviceType"><strong>Service:</strong> {{ request.serviceType }}</p>
-                  <p class="mb-1" *ngIf="request.city"><strong>City:</strong> {{ request.city }}</p>
-                  <p class="mb-3 text-muted" *ngIf="request.notes">{{ request.notes }}</p>
+                  <p class="mb-1">
+                    <strong>{{ 'adminDashboard.requests.details.phone' | translate }}:</strong>
+                    {{ request.phone }}
+                  </p>
+                  <p class="mb-1" *ngIf="request.serviceType">
+                    <strong>{{ 'adminDashboard.requests.details.service' | translate }}:</strong>
+                    {{ 'categories.' + request.serviceType | translate }}
+                  </p>
+                  <p class="mb-1" *ngIf="request.city">
+                    <strong>{{ 'adminDashboard.requests.details.city' | translate }}:</strong>
+                    {{ 'cities.' + request.city.toLowerCase() | translate }}
+                  </p>
+
+                  <!-- Action Buttons -->
                   <div class="d-flex gap-2">
                     <button class="btn btn-success btn-sm" (click)="approveRequest(request)">
-                      <i class="bi bi-check-lg me-1"></i>Approve
+                      <i class="bi bi-check-lg me-1"></i>
+                      {{ 'adminDashboard.requests.actions.approve' | translate }}
                     </button>
                     <button class="btn btn-danger btn-sm" (click)="rejectRequest(request)">
-                      <i class="bi bi-x-lg me-1"></i>Reject
+                      <i class="bi bi-x-lg me-1"></i>
+                      {{ 'adminDashboard.requests.actions.reject' | translate }}
                     </button>
                     <button class="btn btn-info btn-sm" (click)="markAsReviewed(request)">
-                      <i class="bi bi-eye me-1"></i>Mark Reviewed
+                      <i class="bi bi-eye me-1"></i>
+                      {{ 'adminDashboard.requests.actions.review' | translate }}
                     </button>
                   </div>
                 </div>
@@ -203,28 +231,29 @@
 
           <!-- All Other Requests -->
           <div *ngIf="joinRequests.length > getPendingRequests().length">
-            <h6 class="text-muted mb-3">All Requests History</h6>
+            <h6 class="text-muted mb-3">{{ 'adminDashboard.requests.history.title' | translate }}</h6>
             <div class="table-responsive">
               <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Service Type</th>
-                    <th>City</th>
-                    <th>Status</th>
-                    <th>Date</th>
+                    <th>{{ 'adminDashboard.requests.table.name' | translate }}</th>
+                    <th>{{ 'adminDashboard.requests.table.phone' | translate }}</th>
+                    <th>{{ 'adminDashboard.requests.table.serviceType' | translate }}</th>
+                    <th>{{ 'adminDashboard.requests.table.city' | translate }}</th>
+                    <th>{{ 'adminDashboard.requests.table.status' | translate }}</th>
+                    <th>{{ 'adminDashboard.requests.table.date' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let request of joinRequests">
                     <td>{{ request.name }}</td>
                     <td>{{ request.phone }}</td>
-                    <td>{{ request.serviceType || 'N/A' }}</td>
+                    <td>{{ request.serviceType ? ('categories.' + request.serviceType.toLowerCase() | translate) : 'N/A'
+                      }}</td>
                     <td>{{ request.city || 'N/A' }}</td>
                     <td>
                       <span [class]="getStatusBadgeClass(request.status)">
-                        {{ request.status }}
+                        {{ 'adminDashboard.requests.status.' + request.status | translate }}
                       </span>
                     </td>
                     <td>{{ request.createdAt | date:'short' }}</td>
@@ -237,8 +266,8 @@
           <!-- No Requests State -->
           <div *ngIf="joinRequests.length === 0" class="text-center py-5">
             <i class="bi bi-inbox display-1 text-muted"></i>
-            <h5 class="text-muted mt-3">No join requests yet</h5>
-            <p class="text-muted">Supplier join requests will appear here</p>
+            <h5 class="text-muted mt-3">{{ 'adminDashboard.requests.history.empty.title' | translate }}</h5>
+            <p class="text-muted">{{ 'adminDashboard.requests.history.empty.message' | translate }}</p>
           </div>
         </div>
       </div>

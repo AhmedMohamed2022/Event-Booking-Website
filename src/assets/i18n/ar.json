@@ -36,24 +36,50 @@
     "copyright": "© 2024 إيفنت بوك. جميع الحقوق محفوظة."
   },
   "search": {
-    "resultsFor": "نتائج البحث لـ",
-    "filtersTitle": "المرشحات",
-    "clearFilters": "مسح المرشحات",
-    "subcategoriesLabel": "الفئات الفرعية",
-    "priceRangeLabel": "نطاق السعر",
-    "minPrice": "أقل سعر",
-    "maxPrice": "أعلى سعر",
-    "sortBy": "ترتيب حسب",
-    "sortOptions": {
-      "priceAsc": "السعر: من الأقل إلى الأعلى",
-      "priceDesc": "السعر: من الأعلى إلى الأقل",
-      "newest": "الأحدث أولاً"
+    "title": "نتائج البحث",
+    "foundServices": "تم العثور على {{count}} خدمة",
+    "in": "في",
+    "for": "لـ",
+    "on": "في تاريخ",
+    "breadcrumb": {
+      "home": "الرئيسية",
+      "searchResults": "نتائج البحث"
     },
-    "noResults": "لم يتم العثور على نتائج",
-    "noResultsDesc": "جرب تعديل المرشحات أو معايير البحث",
-    "viewDetails": "عرض التفاصيل",
-    "loading": "جاري التحميل...",
-    "error": "فشل في تحميل النتائج"
+    "filters": {
+      "title": "المرشحات",
+      "clearAll": "مسح الكل",
+      "serviceTypes": "أنواع الخدمات",
+      "priceRange": "نطاق السعر",
+      "minPrice": "أقل سعر",
+      "maxPrice": "أعلى سعر",
+      "location": "الموقع",
+      "showNearby": "عرض القريب فقط",
+      "availability": "التوفر",
+      "availableOnDate": "متاح في التاريخ المحدد"
+    },
+    "results": {
+      "showing": "عرض {{filtered}} من {{total}} نتيجة",
+      "sortBy": "ترتيب حسب:",
+      "sortOptions": {
+        "relevance": "الأكثر صلة",
+        "priceLowHigh": "السعر: من الأقل إلى الأعلى",
+        "priceHighLow": "السعر: من الأعلى إلى الأقل",
+        "rating": "التقييم"
+      },
+      "viewDetails": "عرض التفاصيل",
+      "perBooking": "لكل حجز",
+      "by": "بواسطة"
+    },
+    "loading": "جاري البحث عن الخدمات...",
+    "error": {
+      "title": "عذراً! حدث خطأ ما",
+      "retry": "يرجى المحاولة مرة أخرى"
+    },
+    "noResults": {
+      "title": "لم يتم العثور على خدمات",
+      "description": "جرب تعديل المرشحات أو معايير البحث للعثور على المزيد من النتائج.",
+      "clearFilters": "مسح المرشحات"
+    }
   },
   "categories": {
     "wedding": "زفاف",
@@ -61,15 +87,35 @@
     "corporate": "مؤسسي",
     "graduation": "تخرج",
     "baby-shower": "استقبال مولود",
-    "engagement": "خطوبة"
+    "engagement": "خطوبة",
+    "conference": "مؤتمر",
+    "funeral": "جنازة",
+    "venues": "القاعات",
+    "photography": "التصوير",
+    "dj": "خدمات الدي جي",
+    "decoration": "الديكور",
+    "catering": "خدمات الطعام",
+    "hall": "قاعات",
+    "sound": "المعدات الصوتية",
+    "farm": "المزارع",
+    "other": "خدمة أخرى"
   },
   "subcategories": {
-    "venue": "القاعة",
-    "catering": "التموين",
-    "photography": "التصوير",
+    "wedding-halls": "قاعات الأفراح",
+    "catering": "خدمات الطعام",
     "decoration": "الديكور",
-    "music": "الموسيقى والترفيه",
-    "transport": "النقل"
+    "photography": "التصوير والفيديو",
+    "entertainment": "الترفيه",
+    "equipment": "تأجير المعدات",
+    "chairs": "الكراسي والمقاعد",
+    "flowers": "الزهور والباقات",
+    "tables": "الطاولات والترتيبات",
+    "venues": "القاعات والأماكن",
+    "conference-halls": "قاعات المؤتمرات",
+    "audio-equipment": "المعدات الصوتية",
+    "funeral-halls": "قاعات العزاء",
+    "tents": "خيام التعزية",
+    "transport": "خدمات النقل"
   },
   "cities": {
     "amman": "عمان",
@@ -88,5 +134,332 @@
     "200-300": "200-300",
     "300-500": "300-500",
     "500+": "500+"
+  },
+  "serviceDetails": {
+    "loading": {
+      "text": "جارٍ التحميل...",
+      "message": "جارٍ تحميل تفاصيل الخدمة..."
+    },
+    "error": {
+      "title": "عذراً! حدث خطأ ما",
+      "goBack": "العودة"
+    },
+    "breadcrumb": {
+      "home": "الرئيسية",
+      "searchResults": "نتائج البحث"
+    },
+    "gallery": {
+      "viewGallery": "عرض المعرض"
+    },
+    "videos": {
+      "title": "الفيديوهات"
+    },
+    "price": {
+      "currency": "دينار",
+      "perBooking": "للحجز"
+    },
+    "location": {
+      "title": "الموقع",
+      "details": "تفاصيل الموقع",
+      "coordinates": "الإحداثيات",
+      "viewOnMap": "عرض على الخريطة",
+      "getDirections": "الحصول على الاتجاهات"
+    },
+    "description": {
+      "title": "الوصف"
+    },
+    "capacity": {
+      "title": "السعة",
+      "people": "شخص"
+    },
+    "dates": {
+      "title": "التواريخ المتاحة",
+      "moreDates": "+{{count}} تواريخ أخرى"
+    },
+    "supplier": {
+      "title": "معلومات المزود",
+      "call": "اتصال",
+      "chatWithSupplier": "الدردشة مع المزود",
+      "loginToChat": "تسجيل الدخول للدردشة"
+    },
+    "booking": {
+      "title": "جاهز للحجز؟",
+      "bookNow": "احجز الآن",
+      "contactSupplier": "تواصل مع المزود",
+      "hallFarmNote": "حجوزات القاعات والمزارع تتطلب الاتصال المباشر بالمزود"
+    },
+    "related": {
+      "title": "خدمات مشابهة"
+    }
+  },
+  "booking": {
+    "title": "إكمال حجزك",
+    "navigation": {
+      "backToService": "العودة إلى الخدمة"
+    },
+    "summary": {
+      "title": "ملخص الخدمة",
+      "category": "الفئة"
+    },
+    "form": {
+      "title": "تفاصيل الحجز",
+      "service": "الخدمة",
+      "date": "التاريخ",
+      "people": "الأشخاص",
+      "eventDate": "تاريخ المناسبة",
+      "numberOfPeople": "عدد الأشخاص",
+      "fullName": "الاسم الكامل",
+      "enterFullName": "أدخل اسمك الكامل",
+      "phoneNumber": "رقم الهاتف",
+      "selectAvailableDates": "يرجى الاختيار من التواريخ المتاحة فقط",
+      "capacityRange": "نطاق السعة",
+      "processing": "جارٍ المعالجة...",
+      "confirmPay": "تأكيد ودفع"
+    },
+    "payment": {
+      "title": "معلومات الدفع",
+      "fullPrice": "السعر الكامل",
+      "deposit": "العربون",
+      "depositPaid": "العربون المدفوع",
+      "servicePrice": "سعر الخدمة",
+      "amountToPayNow": "المبلغ المطلوب دفعه الآن",
+      "depositInfo": "تدفع فقط 10% عربون الآن",
+      "remainingInfo": "الـ 90% المتبقية تُدفع لمقدم الخدمة مباشرة"
+    },
+    "auth": {
+      "loginRequired": "تسجيل الدخول مطلوب",
+      "loginMessage": "تحتاج إلى تسجيل الدخول لإكمال هذا الحجز.",
+      "clickToLogin": "انقر هنا لتسجيل الدخول"
+    },
+    "terms": {
+      "agree": "أوافق على",
+      "termsConditions": "الشروط والأحكام",
+      "and": "و",
+      "privacyPolicy": "سياسة الخصوصية"
+    },
+    "success": {
+      "title": "تم تأكيد الحجز!",
+      "description": "تم إرسال طلب الحجز الخاص بك بنجاح. سيتم توجيهك إلى لوحة التحكم قريباً.",
+      "summary": "ملخص الحجز",
+      "message": "تم إنشاء الحجز بنجاح!"
+    },
+    "validation": {
+      "dateRequired": "يرجى اختيار تاريخ المناسبة",
+      "peopleRequired": "يرجى إدخال عدد صحيح للأشخاص",
+      "minCapacity": "الحد الأدنى للسعة هو {{count}} شخص",
+      "maxCapacity": "الحد الأقصى للسعة هو {{count}} شخص",
+      "dateNotAvailable": "التاريخ المحدد غير متاح",
+      "phoneRequired": "يرجى إدخال رقم هاتف صحيح",
+      "nameRequired": "يرجى إدخال اسمك الكامل"
+    },
+    "error": {
+      "limitReached": "لقد وصل مقدم الخدمة إلى الحد الأقصى للحجوزات. يرجى تجربة خدمة أخرى.",
+      "loginRequired": "يرجى تسجيل الدخول للمتابعة مع حجزك.",
+      "general": "فشل في إنشاء الحجز. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "auth": {
+    "titles": {
+      "welcome": "مرحباً بك",
+      "verifyOtp": "التحقق من رمز OTP"
+    },
+    "subtitles": {
+      "enterPhone": "أدخل رقم هاتفك للبدء",
+      "enterOtp": "أدخل رمز OTP المرسل إلى واتساب"
+    },
+    "form": {
+      "fullName": "الاسم الكامل",
+      "phoneNumber": "رقم الهاتف",
+      "otpPlaceholder": "أدخل رمز OTP المكون من 6 أرقام"
+    },
+    "buttons": {
+      "sendOtp": "إرسال رمز OTP عبر واتساب",
+      "confirm": "تأكيد",
+      "changePhone": "تغيير رقم الهاتف",
+      "resendOtp": "لم يصلك الرمز؟ إعادة الإرسال"
+    },
+    "labels": {
+      "otpSentTo": "تم إرسال الرمز إلى:"
+    },
+    "loading": {
+      "sending": "جارٍ الإرسال...",
+      "verifying": "جارٍ التحقق..."
+    },
+    "validation": {
+      "nameMinLength": "يرجى إدخال اسمك الكامل (حرفين على الأقل)",
+      "phoneRequired": "يرجى إدخال رقم هاتفك",
+      "phoneInvalid": "يرجى إدخال رقم هاتف أردني صحيح",
+      "otpRequired": "يرجى إدخال رمز OTP",
+      "otpLength": "يجب أن يتكون رمز OTP من 6 أرقام"
+    },
+    "messages": {
+      "otpSent": "تم إرسال رمز OTP بنجاح عبر واتساب!",
+      "otpSendFailed": "فشل إرسال رمز OTP. يرجى المحاولة مرة أخرى.",
+      "loginSuccess": "تم تسجيل الدخول بنجاح! جارٍ التوجيه...",
+      "otpInvalid": "رمز OTP غير صحيح. يرجى المحاولة مرة أخرى.",
+      "newUserName": "يبدو أنك مستخدم جديد! يرجى إدخال اسمك."
+    },
+    "footer": {
+      "termsNotice": "بالمتابعة، أنت توافق على شروط الخدمة"
+    }
+  },
+  "adminDashboard": {
+    "header": {
+      "title": "لوحة تحكم المدير",
+      "subtitle": "إدارة المنصة ومراقبة الأداء",
+      "logout": "تسجيل الخروج",
+      "home": "الرئيسية"
+    },
+    "loading": {
+      "text": "جارٍ التحميل...",
+      "message": "جارٍ تحميل لوحة التحكم..."
+    },
+    "stats": {
+      "cards": {
+        "users": {
+          "title": "إجمالي المستخدمين",
+          "label": "المستخدمين"
+        },
+        "suppliers": {
+          "title": "المزودين",
+          "label": "المزودين النشطين"
+        },
+        "bookings": {
+          "title": "إجمالي الحجوزات",
+          "label": "الحجوزات"
+        },
+        "revenue": {
+          "title": "إجمالي الإيرادات",
+          "label": "الإيرادات"
+        }
+      },
+      "details": {
+        "bookingStatus": {
+          "title": "حالة الحجوزات",
+          "confirmed": "مؤكدة",
+          "cancelled": "ملغاة"
+        },
+        "services": {
+          "title": "الخدمات",
+          "total": "إجمالي الخدمات"
+        },
+        "topCategories": {
+          "title": "أعلى الفئات"
+        }
+      }
+    },
+    "tabs": {
+      "overview": "نظرة عامة",
+      "joinRequests": "طلبات الانضمام",
+      "allRequestsHistory": "سجل جميع الطلبات"
+    },
+    "overview": {
+      "title": "نظرة عامة على المنصة",
+      "userManagement": {
+        "title": "إدارة المستخدمين",
+        "description": "لديك {{totalUsers}} مستخدم مسجل، منهم {{totalSuppliers}} مزود."
+      },
+      "performance": {
+        "title": "أداء الأعمال",
+        "description": "حققت المنصة إيرادات بقيمة ${{revenue}} من {{bookings}} حجز مؤكد."
+      }
+    },
+    "requests": {
+      "title": "طلبات انضمام المزودين",
+      "pending": {
+        "title": "الطلبات المعلقة",
+        "count": "{{count}} طلب معلق"
+      },
+      "history": {
+        "title": "سجل جميع الطلبات",
+        "empty": {
+          "title": "لا توجد طلبات انضمام حتى الآن",
+          "message": "ستظهر طلبات انضمام المزودين هنا"
+        }
+      },
+      "table": {
+        "name": "الاسم",
+        "phone": "الهاتف",
+        "serviceType": "نوع الخدمة",
+        "city": "المدينة",
+        "status": "الحالة",
+        "date": "التاريخ"
+      },
+      "actions": {
+        "approve": "موافقة",
+        "reject": "رفض",
+        "review": "تمت المراجعة"
+      },
+      "details": {
+        "phone": "الهاتف",
+        "service": "الخدمة",
+        "city": "المدينة"
+      },
+      "confirmation": {
+        "approve": "هل أنت متأكد من الموافقة على هذا المزود؟",
+        "reject": "هل أنت متأكد من رفض هذا الطلب؟",
+        "success": {
+          "approved": "تمت الموافقة على المزود {{name}} بنجاح. يمكنه الآن تسجيل الدخول باستخدام رقم هاتفه.",
+          "rejected": "تم رفض الطلب بنجاح",
+          "reviewed": "تم تحديث حالة الطلب إلى تمت المراجعة"
+        },
+        "error": {
+          "approve": "فشل في الموافقة على طلب المزود",
+          "reject": "فشل في رفض الطلب",
+          "review": "فشل في تحديث الطلب"
+        }
+      }
+    }
+  },
+  "join": {
+    "header": {
+      "title": "انضم كمزود خدمة",
+      "subtitle": "شاركنا لتنمية أعمالك في مجال المناسبات"
+    },
+    "alerts": {
+      "success": {
+        "message": "تم إرسال طلبك بنجاح! سنتواصل معك قريباً."
+      },
+      "error": {
+        "default": "فشل في إرسال الطلب. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "form": {
+      "labels": {
+        "fullName": "الاسم الكامل",
+        "phone": "رقم الهاتف",
+        "city": "المدينة",
+        "serviceType": "نوع الخدمة",
+        "notes": "ملاحظات إضافية",
+        "otherServiceType": "حدد خدمتك"
+      },
+      "placeholders": {
+        "name": "أدخل اسمك الكامل",
+        "phone": "7X XXX XXXX",
+        "city": "اختر مدينتك",
+        "serviceType": "اختر نوع الخدمة",
+        "notes": "أخبرنا المزيد عن خدماتك (اختياري)",
+        "otherServiceType": "يرجى وصف خدمتك"
+      },
+      "validation": {
+        "required": "{{field}} مطلوب",
+        "minLength": "يجب أن يحتوي {{field}} على {{count}} حروف على الأقل",
+        "phoneInvalid": "يرجى إدخال رقم هاتف أردني صحيح"
+      },
+      "hints": {
+        "phone": "أدخل رقمك بأي تنسيق: 07X XXX XXXX أو 7X XXX XXXX أو 962+ 7X XXX XXXX"
+      }
+    },
+    "buttons": {
+      "submit": "إرسال الطلب",
+      "submitting": "جارٍ الإرسال..."
+    },
+    "footer": {
+      "reviewInfo": "سنراجع طلبك ونتواصل معك خلال 24-48 ساعة"
+    },
+    "status": {
+      "pending": "طلبك قيد المراجعة.",
+      "approved": "تمت الموافقة على طلبك."
+    }
   }
 }

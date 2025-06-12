@@ -3,9 +3,9 @@
   <div class="container">
     <div class="text-center py-5">
       <div class="spinner-border text-warning" role="status">
-        <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">{{ 'serviceDetails.loading.text' | translate }}</span>
       </div>
-      <p class="mt-3 text-muted">Loading service details...</p>
+      <p class="mt-3 text-muted">{{ 'serviceDetails.loading.message' | translate }}</p>
     </div>
   </div>
 </div>
@@ -14,10 +14,10 @@
 <div *ngIf="error" class="error-container">
   <div class="container">
     <div class="alert alert-danger" role="alert">
-      <h6>Oops! Something went wrong</h6>
+      <h6>{{ 'serviceDetails.error.title' | translate }}</h6>
       <p class="mb-0">{{error}}</p>
       <button class="btn btn-outline-danger mt-3" (click)="goBack()">
-        Go Back
+        {{ 'serviceDetails.error.goBack' | translate }}
       </button>
     </div>
   </div>
@@ -31,10 +31,11 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a routerLink="/" class="text-decoration-none">Home</a>
+            <a routerLink="/" class="text-decoration-none">{{ 'serviceDetails.breadcrumb.home' | translate }}</a>
           </li>
           <li class="breadcrumb-item">
-            <a (click)="goBack()" class="text-decoration-none cursor-pointer">Search Results</a>
+            <a (click)="goBack()" class="text-decoration-none cursor-pointer">{{
+              'serviceDetails.breadcrumb.searchResults' | translate }}</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">{{service.name}}</li>
         </ol>
@@ -53,7 +54,7 @@
               class="main-image-img">
             <div class="image-overlay">
               <button class="btn btn-light btn-sm">
-                🔍 View Gallery
+                🔍 {{ 'serviceDetails.gallery.viewGallery' | translate }}
               </button>
             </div>
           </div>
@@ -69,7 +70,7 @@
 
         <!-- Video Gallery -->
         <div class="video-gallery-section" *ngIf="service?.videos?.length">
-          <h3 class="section-title">📹 Videos</h3>
+          <h3 class="section-title">📹 {{ 'serviceDetails.videos.title' | translate }}</h3>
           <div class="video-grid">
             <div class="video-item" *ngFor="let video of service.videos; let i = index">
               <video [src]="video" controls preload="metadata" class="video-preview" (click)="selectVideo(i)">
@@ -84,9 +85,9 @@
             <div class="service-title-area">
               <h1 class="service-title">{{service.name}}</h1>
               <div class="service-meta">
-                <span class="category-badge">{{service.category}}</span>
+                <span class="category-badge">{{ getTranslatedCategory() }}</span>
                 <span class="subcategory-badge" *ngIf="service.subcategory">
-                  {{service.subcategory}}
+                  {{ getTranslatedSubcategory() }}
                 </span>
                 <div class="rating">
                   {{serviceRating}}
@@ -94,17 +95,17 @@
               </div>
             </div>
             <div class="service-price">
-              <span class="price-amount">JOD {{service.price}}</span>
-              <small class="price-label">per booking</small>
+              <span class="price-amount">{{ 'serviceDetails.price.currency' | translate }} {{service.price}}</span>
+              <small class="price-label">{{ 'serviceDetails.price.perBooking' | translate }}</small>
             </div>
           </div>
 
           <!-- Location -->
           <div class="location-section">
-            <h3 class="section-title">📍 Location</h3>
+            <h3 class="section-title">📍 {{ 'serviceDetails.location.title' | translate }}</h3>
             <div class="location-info">
               <p class="location-text">
-                <strong>{{service.location.city}}</strong>
+                <strong>{{ getTranslatedCity() }}</strong>
                 <span *ngIf="service.location.area">, {{service.location.area}}</span>
               </p>
 
@@ -112,16 +113,17 @@
               <div class="map-container" *ngIf="service.location.coordinates">
                 <div class="map-placeholder">
                   <div class="text-center py-4">
-                    <h5>🗺️ Location Details</h5>
+                    <h5>🗺️ {{ 'serviceDetails.location.details' | translate }}</h5>
                     <p class="text-muted mb-3">
-                      Coordinates: {{service.location.coordinates.lat}}, {{service.location.coordinates.lng}}
+                      {{ 'serviceDetails.location.coordinates' | translate }}: {{service.location.coordinates.lat}},
+                      {{service.location.coordinates.lng}}
                     </p>
                     <div class="map-actions">
                       <button class="btn btn-warning me-2" (click)="openGoogleMaps()" *ngIf="googleMapUrl">
-                        🗺️ View on Map
+                        🗺️ {{ 'serviceDetails.location.viewOnMap' | translate }}
                       </button>
                       <button class="btn btn-outline-warning" (click)="openDirections()" *ngIf="directionUrl">
-                        🧭 Get Directions
+                        🧭 {{ 'serviceDetails.location.getDirections' | translate }}
                       </button>
                     </div>
                   </div>
@@ -132,39 +134,39 @@
 
           <!-- Description -->
           <div class="description-section" *ngIf="service.description">
-            <h3 class="section-title">📝 Description</h3>
+            <h3 class="section-title">📝 {{ 'serviceDetails.description.title' | translate }}</h3>
             <p class="description-text">{{service.description}}</p>
           </div>
 
           <!-- Capacity -->
           <div class="capacity-section" *ngIf="service.minCapacity && service.maxCapacity">
-            <h3 class="section-title">👥 Capacity</h3>
+            <h3 class="section-title">👥 {{ 'serviceDetails.capacity.title' | translate }}</h3>
             <div class="capacity-info">
               <div class="capacity-range">
                 <span class="capacity-number">{{service.minCapacity}}</span>
                 <span class="capacity-separator">-</span>
                 <span class="capacity-number">{{service.maxCapacity}}</span>
-                <span class="capacity-label">people</span>
+                <span class="capacity-label">{{ 'serviceDetails.capacity.people' | translate }}</span>
               </div>
             </div>
           </div>
 
           <!-- Available Dates -->
           <div class="dates-section" *ngIf="service.availableDates?.length">
-            <h3 class="section-title">📅 Available Dates</h3>
+            <h3 class="section-title">📅 {{ 'serviceDetails.dates.title' | translate }}</h3>
             <div class="dates-grid">
               <div class="date-item" *ngFor="let date of service.availableDates.slice(0, 6)">
                 {{formatDate(date)}}
               </div>
               <div class="date-item more-dates" *ngIf="service.availableDates.length > 6">
-                +{{service.availableDates.length - 6}} more dates
+                {{ 'serviceDetails.dates.moreDates' | translate: {count: service.availableDates.length - 6} }}
               </div>
             </div>
           </div>
 
           <!-- Supplier Information -->
           <div class="supplier-section">
-            <h3 class="section-title">🏢 Supplier Information</h3>
+            <h3 class="section-title">🏢 {{ 'serviceDetails.supplier.title' | translate }}</h3>
             <div class="supplier-card">
               <div class="supplier-info">
                 <h4 class="supplier-name">{{service.supplier.name}}</h4>
@@ -172,12 +174,13 @@
               </div>
               <div class="supplier-actions">
                 <button class="btn btn-outline-warning me-2" (click)="contactSupplier()">
-                  <i class="fas fa-phone me-2"></i>Call
+                  <i class="fas fa-phone me-2"></i>{{ 'serviceDetails.supplier.call' | translate }}
                 </button>
 
                 <button class="btn btn-warning" (click)="openChat()" [disabled]="!canChat()">
                   <i class="fas fa-comments me-2"></i>
-                  {{ canChat() ? 'Chat with Supplier' : 'Login to Chat' }}
+                  {{ canChat() ? ('serviceDetails.supplier.chatWithSupplier' | translate) :
+                  ('serviceDetails.supplier.loginToChat' | translate) }}
                 </button>
               </div>
             </div>
@@ -191,34 +194,34 @@
           <!-- Booking Card -->
           <div class="booking-card">
             <div class="booking-header">
-              <h4 class="booking-title">Ready to book?</h4>
+              <h4 class="booking-title">{{ 'serviceDetails.booking.title' | translate }}</h4>
               <div class="booking-price">
-                <span class="price">JOD {{service.price}}</span>
-                <small>per booking</small>
+                <span class="price">{{ 'serviceDetails.price.currency' | translate }} {{service.price}}</span>
+                <small>{{ 'serviceDetails.price.perBooking' | translate }}</small>
               </div>
             </div>
 
             <div class="booking-actions">
               <button *ngIf="shouldShowBookingButton()" class="btn btn-warning btn-lg w-100 mb-3" (click)="bookNow()">
-                📅 Book Now
+                📅 {{ 'serviceDetails.booking.bookNow' | translate }}
               </button>
 
               <button class="btn btn-outline-warning w-100" [class.btn-lg]="!shouldShowBookingButton()"
                 (click)="contactSupplier()">
-                📞 Contact Supplier
+                📞 {{ 'serviceDetails.booking.contactSupplier' | translate }}
               </button>
             </div>
 
             <div class="booking-note" *ngIf="!shouldShowBookingButton()">
               <small class="text-muted">
-                <em>Hall and Farm bookings require direct contact with supplier</em>
+                <em>{{ 'serviceDetails.booking.hallFarmNote' | translate }}</em>
               </small>
             </div>
           </div>
 
           <!-- Related Services -->
           <div class="related-services" *ngIf="relatedServices?.length">
-            <h4 class="related-title">Related Services</h4>
+            <h4 class="related-title">{{ 'serviceDetails.related.title' | translate }}</h4>
             <div class="related-list">
               <div class="related-item" *ngFor="let related of relatedServices"
                 (click)="viewRelatedService(related._id)">
@@ -228,7 +231,7 @@
                 <div class="related-info">
                   <h6 class="related-name">{{related.name}}</h6>
                   <p class="related-location">{{related.location.city}}</p>
-                  <div class="related-price">JOD {{related.price}}</div>
+                  <div class="related-price">{{ 'serviceDetails.price.currency' | translate }} {{related.price}}</div>
                 </div>
               </div>
             </div>

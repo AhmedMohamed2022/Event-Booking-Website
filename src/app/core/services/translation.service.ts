@@ -50,6 +50,23 @@ export class TranslationService {
     return cities.map((city) => this.instant(`cities.${city.toLowerCase()}`));
   }
 
+  // Get translated city by value
+  getTranslatedCity(cityValue: string): string {
+    return this.instant(`cities.${cityValue.toLowerCase()}`) || cityValue;
+  }
+
+  // Get translated category by value
+  getTranslatedCategory(categoryValue: string): string {
+    return this.instant(`categories.${categoryValue}`) || categoryValue;
+  }
+
+  // Get translated subcategory by value
+  getTranslatedSubcategory(subcategoryValue: string): string {
+    return (
+      this.instant(`subcategories.${subcategoryValue}`) || subcategoryValue
+    );
+  }
+
   // Get translated people ranges
   getTranslatedPeopleRanges(): any[] {
     return [
@@ -60,5 +77,21 @@ export class TranslationService {
       { min: 300, max: 500, label: this.instant('peopleRanges.300-500') },
       { min: 500, max: null, label: this.instant('peopleRanges.500+') },
     ];
+  }
+
+  // Helper method to check if translation key exists
+  hasTranslation(key: string): boolean {
+    const translation = this.translate.instant(key);
+    return translation !== key;
+  }
+
+  // Get translation with fallback
+  getTranslationWithFallback(
+    key: string,
+    fallback: string,
+    params?: any
+  ): string {
+    const translation = this.instant(key, params);
+    return translation !== key ? translation : fallback;
   }
 }

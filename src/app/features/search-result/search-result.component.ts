@@ -2,8 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SearchService } from '../../core/services/search-result.service';
 import { EventItem } from '../../core/models/event-item.model';
+import { LanguageService } from '../../core/services/language.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 import {
   EVENT_CATEGORIES,
   CategoryConfig,
@@ -12,7 +16,13 @@ import {
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    TranslateModule,
+    LanguageToggleComponent,
+  ],
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.css'],
 })
@@ -38,7 +48,10 @@ export class SearchResultComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private translate: TranslateService,
+    private languageService: LanguageService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit() {
@@ -53,6 +66,20 @@ export class SearchResultComponent implements OnInit {
       }
       this.searchEvents();
     });
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe(() => {
+      this.updateTranslations();
+    });
+  }
+
+  private updateTranslations() {
+    // Update selected category with translations if needed
+    if (this.currentParams['category']) {
+      this.selectedCategory = this.translationService
+        .getTranslatedCategories()
+        .find((c) => c.value === this.currentParams['category']);
+    }
   }
 
   searchEvents() {
@@ -71,7 +98,12 @@ export class SearchResultComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.error = 'Failed to fetch results. Please try again.';
+        // Use translated error message
+        this.translate
+          .get('search.error.retry')
+          .subscribe((translatedMessage) => {
+            this.error = translatedMessage;
+          });
         this.loading = false;
         console.error('Search failed:', error);
       },
@@ -153,14 +185,21 @@ export class SearchResultComponent implements OnInit {
   }
 
   getCategoryLabel(value: string): string {
-    const category = EVENT_CATEGORIES.find((c) => c.value === value);
-    return category?.label || value;
+    return this.translationService.instant(`categories.${value}`) || value;
   }
 
   getSubcategoryLabel(value: string): string {
-    const subcategory = this.selectedCategory?.subcategories.find(
-      (s) => s.value === value
+    return this.translationService.instant(`subcategories.${value}`) || value;
+  }
+
+  getCityLabel(value: string): string {
+    return (
+      this.translationService.instant(`cities.${value.toLowerCase()}`) || value
     );
-    return subcategory?.label || value;
+  }
+
+  // Helper method to check if current language is RTL
+  isRTL(): boolean {
+    return this.languageService.isRTL();
   }
 }

@@ -4,14 +4,18 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventItem } from '../../core/models/event-item.model';
 import { ServiceDetailService } from '../../core/services/ServiceDetails.service';
 import { ChatDialogService } from '../../core/services/chat-dialog.service';
-import { ChatService } from '../../core/services/chat.service'; // Import ChatService
-import { ChatComponent } from '../chat/chat.component'; // Add this import
+import { ChatService } from '../../core/services/chat.service';
+import { ChatComponent } from '../chat/chat.component';
 import { AuthService } from '../../core/services/auth.service';
+// Add translation imports
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../core/services/language.service';
+import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
   selector: 'app-service-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule], // Add TranslateModule
   templateUrl: './service-details.component.html',
   styleUrls: ['./service-details.component.css'],
 })
@@ -21,7 +25,7 @@ export class ServiceDetailComponent implements OnInit {
   loading = false;
   error: string | null = null;
   serviceId: string = '';
-  serviceRating: string = ''; // Add this property
+  serviceRating: string = '';
 
   // Image gallery
   currentImageIndex = 0;
@@ -41,8 +45,12 @@ export class ServiceDetailComponent implements OnInit {
     private router: Router,
     private serviceDetailService: ServiceDetailService,
     private chatDialog: ChatDialogService,
-    private chatService: ChatService, // Inject ChatService
-    private authService: AuthService // Add this
+    private chatService: ChatService,
+    private authService: AuthService,
+    // Add translation services
+    private translate: TranslateService,
+    private languageService: LanguageService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit() {
@@ -50,6 +58,23 @@ export class ServiceDetailComponent implements OnInit {
       this.serviceId = params['id'];
       this.loadServiceDetails();
     });
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe(() => {
+      this.updateTranslations();
+    });
+  }
+
+  private updateTranslations() {
+    // Update any dynamic translations if needed
+    // This method will be called when language changes
+    if (this.service) {
+      // Update translated category and location if needed
+      this.service.translatedCategory =
+        this.translationService.getTranslatedCategory(this.service.category);
+      this.service.translatedLocation =
+        this.translationService.getTranslatedCity(this.service.location?.city);
+    }
   }
 
   loadServiceDetails() {
@@ -65,6 +90,10 @@ export class ServiceDetailComponent implements OnInit {
         // Backend returns googleMapUrl and directionUrl from the controller
         this.googleMapUrl = data.googleMapUrl || '';
         this.directionUrl = data.directionUrl || '';
+
+        // Update translations for the loaded service
+        this.updateTranslations();
+
         this.loadRelatedServices();
         this.loading = false;
       },
@@ -256,16 +285,50 @@ export class ServiceDetailComponent implements OnInit {
   }
 
   formatDate(date: Date | string): string {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    const dateObj = new Date(date);
+    const currentLang = this.languageService.getCurrentLanguage();
+
+    if (currentLang === 'ar') {
+      return dateObj.toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } else {
+      return dateObj.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    }
   }
 
   // Update the generateStarRating method to be private
   private generateStarRating(): string {
     const rating = Math.floor(Math.random() * 2) + 4;
     return '⭐'.repeat(rating);
+  }
+
+  // Helper method to get translated category
+  getTranslatedCategory(): string {
+    return this.service?.category
+      ? this.translationService.getTranslatedCategory(this.service.category)
+      : '';
+  }
+
+  // Helper method to get translated subcategory
+  getTranslatedSubcategory(): string {
+    return this.service?.subcategory
+      ? this.translationService.getTranslatedSubcategory(
+          this.service.subcategory
+        )
+      : '';
+  }
+
+  // Helper method to get translated city
+  getTranslatedCity(): string {
+    return this.service?.location?.city
+      ? this.translationService.getTranslatedCity(this.service.location.city)
+      : '';
   }
 }

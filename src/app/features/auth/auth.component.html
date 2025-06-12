@@ -10,12 +10,13 @@
             <!-- Header -->
             <div class="text-center mb-4">
               <h3 class="auth-title mb-2">
-                {{ currentStep === 'phone' ? 'Welcome' : 'Verify OTP' }}
+                {{ currentStep === 'phone' ? ('auth.titles.welcome' | translate) : ('auth.titles.verifyOtp' | translate)
+                }}
               </h3>
               <p class="text-muted small">
                 {{ currentStep === 'phone'
-                ? 'Enter your phone number to get started'
-                : 'Enter the OTP sent to your WhatsApp' }}
+                ? ('auth.subtitles.enterPhone' | translate)
+                : ('auth.subtitles.enterOtp' | translate) }}
               </p>
             </div>
 
@@ -23,19 +24,20 @@
             <div *ngIf="currentStep === 'phone'" class="phone-step">
               <form (submit)="sendOTP()" class="needs-validation" novalidate>
 
-                <!-- Name Input - Add this before phone input -->
+                <!-- Name Input -->
                 <div class="form-floating mb-3">
                   <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name"
-                    placeholder="Full Name" (input)="clearError()" [disabled]="isLoading" required minlength="2">
-                  <label for="name">Full Name</label>
+                    [placeholder]="'auth.form.fullName' | translate" (input)="clearError()" [disabled]="isLoading"
+                    required minlength="2">
+                  <label for="name">{{ 'auth.form.fullName' | translate }}</label>
                 </div>
 
-                <!-- Existing Phone Input -->
+                <!-- Phone Input -->
                 <div class="form-floating mb-3">
                   <input type="tel" class="form-control phone-input" id="phone" [(ngModel)]="phone" name="phone"
-                    placeholder="Phone Number" (input)="clearError()" (blur)="formatPhoneNumber()"
-                    [disabled]="isLoading" required>
-                  <label for="phone">Phone Number</label>
+                    [placeholder]="'auth.form.phoneNumber' | translate" (input)="clearError()"
+                    (blur)="formatPhoneNumber()" [disabled]="isLoading" required>
+                  <label for="phone">{{ 'auth.form.phoneNumber' | translate }}</label>
                 </div>
 
                 <!-- Error Message -->
@@ -54,28 +56,28 @@
                 <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="isLoading || !phone.trim()">
 
                   <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden">{{ 'auth.loading.sending' | translate }}</span>
                   </span>
 
                   <i *ngIf="!isLoading" class="bi bi-whatsapp me-2"></i>
-                  {{ isLoading ? 'Sending...' : 'Send OTP via WhatsApp' }}
+                  {{ isLoading ? ('auth.loading.sending' | translate) : ('auth.buttons.sendOtp' | translate) }}
                 </button>
 
               </form>
             </div>
 
-            <!-- Step 2: OTP + Name Entry -->
+            <!-- Step 2: OTP Entry -->
             <div *ngIf="currentStep === 'otp'" class="otp-step">
 
               <!-- Back Button -->
               <button type="button" class="btn btn-link btn-sm p-0 mb-3 back-btn" (click)="goBack()">
                 <i class="bi bi-arrow-left me-1"></i>
-                Change Phone Number
+                {{ 'auth.buttons.changePhone' | translate }}
               </button>
 
               <!-- Phone Display -->
               <div class="phone-display mb-3">
-                <small class="text-muted">OTP sent to:</small>
+                <small class="text-muted">{{ 'auth.labels.otpSentTo' | translate }}</small>
                 <div class="fw-semibold">{{ phone }}</div>
               </div>
 
@@ -86,16 +88,17 @@
                   <input type="text" class="form-control otp-input text-center" id="otp" [(ngModel)]="otp" name="otp"
                     placeholder="000000" maxlength="6" pattern="[0-9]{6}" (input)="clearError()" [disabled]="isLoading"
                     required>
-                  <label for="otp">Enter 6-digit OTP</label>
+                  <label for="otp">{{ 'auth.form.otpPlaceholder' | translate }}</label>
                 </div>
 
                 <!-- Name Input (for new users) -->
                 <div *ngIf="isNewUser" class="form-floating mb-3 name-field">
                   <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name"
-                    placeholder="Full Name" (input)="clearError()" [disabled]="isLoading" required>
-                  <label for="name">Full Name</label>
+                    [placeholder]="'auth.form.fullName' | translate" (input)="clearError()" [disabled]="isLoading"
+                    required>
+                  <label for="name">{{ 'auth.form.fullName' | translate }}</label>
                   <small class="form-text text-muted">
-                    It looks like you're new! Please enter your name.
+                    {{ 'auth.messages.newUserName' | translate }}
                   </small>
                 </div>
 
@@ -116,17 +119,17 @@
                   [disabled]="isLoading || !otp.trim() || (isNewUser && !name.trim())">
 
                   <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden">{{ 'auth.loading.verifying' | translate }}</span>
                   </span>
 
-                  {{ isLoading ? 'Verifying...' : 'Confirm' }}
+                  {{ isLoading ? ('auth.loading.verifying' | translate) : ('auth.buttons.confirm' | translate) }}
                 </button>
 
                 <!-- Resend OTP -->
                 <div class="text-center">
                   <button type="button" class="btn btn-link btn-sm text-decoration-none" (click)="sendOTP()"
                     [disabled]="isLoading">
-                    Didn't receive OTP? Resend
+                    {{ 'auth.buttons.resendOtp' | translate }}
                   </button>
                 </div>
 
@@ -139,7 +142,7 @@
         <!-- Footer -->
         <div class="text-center mt-3">
           <small class="text-muted">
-            By continuing, you agree to our Terms of Service
+            {{ 'auth.footer.termsNotice' | translate }}
           </small>
         </div>
 

@@ -4,12 +4,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../core/services/admin.service';
 import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AdminStats, JoinRequest } from '../../core/models/admin.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../core/services/language.service';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, TranslateModule, RouterLink],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
 })
@@ -23,7 +26,9 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -63,21 +68,31 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   approveRequest(request: JoinRequest): void {
-    if (confirm('Are you sure you want to approve this supplier?')) {
-      this.adminService.approveJoinRequest(request._id).subscribe({
-        next: (response) => {
-          request.status = 'approved';
-          // Show success message to admin
-          this.showSuccessMessage(
-            `Supplier ${request.name} has been approved successfully. They can now login with their phone number.`
-          );
-        },
-        error: (err) => {
-          this.showErrorMessage('Failed to approve supplier request');
-          console.error('Approve error:', err);
-        },
+    this.translate
+      .get('adminDashboard.requests.confirmation.approve')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.adminService.approveJoinRequest(request._id).subscribe({
+            next: (response) => {
+              request.status = 'approved';
+              this.translate
+                .get('adminDashboard.requests.confirmation.success.approved', {
+                  name: request.name,
+                })
+                .subscribe((successMsg: string) => {
+                  this.showSuccessMessage(successMsg);
+                });
+            },
+            error: (err) => {
+              this.translate
+                .get('adminDashboard.requests.confirmation.error.approve')
+                .subscribe((errorMsg: string) => {
+                  this.showErrorMessage(errorMsg);
+                });
+            },
+          });
+        }
       });
-    }
   }
 
   rejectRequest(request: JoinRequest): void {
@@ -129,20 +144,30 @@ export class AdminDashboardComponent implements OnInit {
     return this.joinRequests.filter((req) => req.status === 'reviewed');
   }
 
+  logout() {
+    this.translate
+      .get('adminDashboard.header.logoutConfirm')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.authService.logout();
+          this.router.navigate(['/']);
+        }
+      });
+  }
+
   private showSuccessMessage(message: string): void {
-    // Implement your success message logic here
-    alert(message);
+    // Replace plain alerts with proper UI notifications
+    const notification = document.createElement('div');
+    notification.className = 'alert alert-success';
+    notification.textContent = message;
+    // Add to DOM and remove after timeout
   }
 
   private showErrorMessage(message: string): void {
-    // Implement your error message logic here
-    alert(message);
-  }
-
-  logout() {
-    if (confirm('Are you sure you want to logout?')) {
-      this.authService.logout();
-      this.router.navigate(['/']);
-    }
+    // Replace plain alerts with proper UI notifications
+    const notification = document.createElement('div');
+    notification.className = 'alert alert-danger';
+    notification.textContent = message;
+    // Add to DOM and remove after timeout
   }
 }

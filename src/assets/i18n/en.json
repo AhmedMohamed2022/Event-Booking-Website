@@ -36,24 +36,50 @@
     "copyright": "© 2024 EventBook. All rights reserved."
   },
   "search": {
-    "resultsFor": "Search Results for",
-    "filtersTitle": "Filters",
-    "clearFilters": "Clear Filters",
-    "subcategoriesLabel": "Subcategories",
-    "priceRangeLabel": "Price Range",
-    "minPrice": "Min Price",
-    "maxPrice": "Max Price",
-    "sortBy": "Sort By",
-    "sortOptions": {
-      "priceAsc": "Price: Low to High",
-      "priceDesc": "Price: High to Low",
-      "newest": "Newest First"
+    "title": "Search Results",
+    "foundServices": "Found {{count}} services",
+    "in": "in",
+    "for": "for",
+    "on": "on",
+    "breadcrumb": {
+      "home": "Home",
+      "searchResults": "Search Results"
     },
-    "noResults": "No results found",
-    "noResultsDesc": "Try adjusting your filters or search criteria",
-    "viewDetails": "View Details",
-    "loading": "Loading...",
-    "error": "Failed to load results"
+    "filters": {
+      "title": "Filters",
+      "clearAll": "Clear All",
+      "serviceTypes": "Service Types",
+      "priceRange": "Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "location": "Location",
+      "showNearby": "Show nearby only",
+      "availability": "Availability",
+      "availableOnDate": "Available on selected date"
+    },
+    "results": {
+      "showing": "Showing {{filtered}} of {{total}} results",
+      "sortBy": "Sort by:",
+      "sortOptions": {
+        "relevance": "Relevance",
+        "priceLowHigh": "Price: Low to High",
+        "priceHighLow": "Price: High to Low",
+        "rating": "Rating"
+      },
+      "viewDetails": "View Details",
+      "perBooking": "per booking",
+      "by": "By"
+    },
+    "loading": "Searching for services...",
+    "error": {
+      "title": "Oops! Something went wrong",
+      "retry": "Please try again"
+    },
+    "noResults": {
+      "title": "No services found",
+      "description": "Try adjusting your filters or search criteria to find more results.",
+      "clearFilters": "Clear Filters"
+    }
   },
   "categories": {
     "wedding": "Wedding",
@@ -61,15 +87,92 @@
     "corporate": "Corporate",
     "graduation": "Graduation",
     "baby-shower": "Baby Shower",
-    "engagement": "Engagement"
+    "engagement": "Engagement",
+    "conference": "Conference",
+    "funeral": "Funeral",
+    "venues": "Venues",
+    "photography": "Photography",
+    "dj": "DJ Services",
+    "decoration": "Decoration",
+    "hall": " Halls & Venues",
+    "catering": "Catering",
+    "sound": "Sound & Lighting",
+    "farm": "Farm & Outdoor",
+    "other": "Other Service"
   },
   "subcategories": {
-    "venue": "Venue",
-    "catering": "Catering",
-    "photography": "Photography",
+    "wedding-halls": "Wedding Halls",
+    "catering": "Catering Services",
     "decoration": "Decoration",
-    "music": "Music & Entertainment",
-    "transport": "Transportation"
+    "photography": "Photography & Video",
+    "entertainment": "Entertainment",
+    "equipment": "Equipment Rental",
+    "chairs": "Chairs & Seating",
+    "flowers": "Flowers & Bouquets",
+    "tables": "Tables & Settings",
+    "venues": "Venues & Halls",
+    "conference-halls": "Conference Halls",
+    "audio-equipment": "Audio Equipment",
+    "funeral-halls": "Funeral Halls",
+    "tents": "Memorial Tents",
+    "transport": "Transportation Services"
+  },
+  "serviceDetails": {
+    "loading": {
+      "text": "Loading...",
+      "message": "Loading service details..."
+    },
+    "error": {
+      "title": "Oops! Something went wrong",
+      "goBack": "Go Back"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "searchResults": "Search Results"
+    },
+    "gallery": {
+      "viewGallery": "View Gallery"
+    },
+    "videos": {
+      "title": "Videos"
+    },
+    "price": {
+      "currency": "JOD",
+      "perBooking": "per booking"
+    },
+    "location": {
+      "title": "Location",
+      "details": "Location Details",
+      "coordinates": "Coordinates",
+      "viewOnMap": "View on Map",
+      "getDirections": "Get Directions"
+    },
+    "description": {
+      "title": "Description"
+    },
+    "capacity": {
+      "title": "Capacity",
+      "people": "people"
+    },
+    "dates": {
+      "title": "Available Dates",
+      "moreDates": "+{{count}} more dates"
+    },
+    "supplier": {
+      "title": "Supplier Information",
+      "call": "Call",
+      "chatWithSupplier": "Chat with Supplier",
+      "loginToChat": "Login to Chat"
+    },
+    "booking": {
+      "title": "Ready to book?",
+      "bookNow": "Book Now",
+      "contactSupplier": "Contact Supplier",
+      "hallFarmNote": "Hall and Farm bookings require direct contact with supplier"
+    },
+    "related": {
+      "title": "Related Services"
+    }
   },
   "cities": {
     "amman": "Amman",
@@ -88,5 +191,281 @@
     "200-300": "200-300",
     "300-500": "300-500",
     "500+": "500+"
+  },
+  "booking": {
+    "title": "Complete Your Booking",
+    "navigation": {
+      "backToService": "Back to Service"
+    },
+    "summary": {
+      "title": "Service Summary",
+      "category": "Category"
+    },
+    "form": {
+      "title": "Booking Details",
+      "service": "Service",
+      "date": "Date",
+      "people": "People",
+      "eventDate": "Event Date",
+      "numberOfPeople": "Number of People",
+      "fullName": "Full Name",
+      "enterFullName": "Enter your full name",
+      "phoneNumber": "Phone Number",
+      "selectAvailableDates": "Please select from available dates only",
+      "capacityRange": "Capacity range",
+      "processing": "Processing...",
+      "confirmPay": "Confirm & Pay"
+    },
+    "payment": {
+      "title": "Payment Information",
+      "fullPrice": "Full Price",
+      "deposit": "Deposit",
+      "depositPaid": "Deposit Paid",
+      "servicePrice": "Service Price",
+      "amountToPayNow": "Amount to Pay Now",
+      "depositInfo": "You only pay 10% deposit now",
+      "remainingInfo": "Remaining 90% paid to service provider directly"
+    },
+    "auth": {
+      "loginRequired": "Login Required",
+      "loginMessage": "You need to be logged in to complete this booking.",
+      "clickToLogin": "Click here to login"
+    },
+    "terms": {
+      "agree": "I agree to the",
+      "termsConditions": "Terms & Conditions",
+      "and": "and",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "success": {
+      "title": "Booking Confirmed!",
+      "description": "Your booking request has been submitted successfully. You will be redirected to your dashboard shortly.",
+      "summary": "Booking Summary",
+      "message": "Booking created successfully!"
+    },
+    "validation": {
+      "dateRequired": "Please select an event date",
+      "peopleRequired": "Please enter a valid number of people",
+      "minCapacity": "Minimum capacity is {{count}} people",
+      "maxCapacity": "Maximum capacity is {{count}} people",
+      "dateNotAvailable": "Selected date is not available",
+      "phoneRequired": "Please enter a valid phone number",
+      "nameRequired": "Please enter your full name"
+    },
+    "error": {
+      "limitReached": "This service provider has reached their booking limit. Please try another service.",
+      "loginRequired": "Please log in to continue with your booking.",
+      "general": "Failed to create booking. Please try again."
+    }
+  },
+  "auth": {
+    "titles": {
+      "welcome": "Welcome",
+      "verifyOtp": "Verify OTP"
+    },
+    "subtitles": {
+      "enterPhone": "Enter your phone number to get started",
+      "enterOtp": "Enter the OTP sent to your WhatsApp"
+    },
+    "form": {
+      "fullName": "Full Name",
+      "phoneNumber": "Phone Number",
+      "otpPlaceholder": "Enter 6-digit OTP"
+    },
+    "buttons": {
+      "sendOtp": "Send OTP via WhatsApp",
+      "confirm": "Confirm",
+      "changePhone": "Change Phone Number",
+      "resendOtp": "Didn't receive OTP? Resend"
+    },
+    "labels": {
+      "otpSentTo": "OTP sent to:"
+    },
+    "loading": {
+      "sending": "Sending...",
+      "verifying": "Verifying..."
+    },
+    "validation": {
+      "nameMinLength": "Please enter your full name (minimum 2 characters)",
+      "phoneRequired": "Please enter your phone number",
+      "phoneInvalid": "Please enter a valid Jordanian phone number",
+      "otpRequired": "Please enter the OTP",
+      "otpLength": "OTP must be 6 digits"
+    },
+    "messages": {
+      "otpSent": "OTP sent successfully via WhatsApp!",
+      "otpSendFailed": "Failed to send OTP. Please try again.",
+      "loginSuccess": "Login successful! Redirecting...",
+      "otpInvalid": "Invalid OTP. Please try again.",
+      "newUserName": "It looks like you're new! Please enter your name."
+    },
+    "footer": {
+      "termsNotice": "By continuing, you agree to our Terms of Service"
+    }
+  },
+  "adminDashboard": {
+    "header": {
+      "title": "Admin Dashboard",
+      "subtitle": "Manage your platform and monitor performance",
+      "logout": "Logout",
+      "home": "Home"
+    },
+    "loading": {
+      "text": "Loading...",
+      "message": "Loading dashboard..."
+    },
+    "stats": {
+      "cards": {
+        "users": {
+          "title": "Total Users",
+          "label": "Users"
+        },
+        "suppliers": {
+          "title": "Suppliers",
+          "label": "Active Suppliers"
+        },
+        "bookings": {
+          "title": "Total Bookings",
+          "label": "Bookings"
+        },
+        "revenue": {
+          "title": "Total Revenue",
+          "label": "Revenue"
+        }
+      },
+      "details": {
+        "bookingStatus": {
+          "title": "Booking Status",
+          "confirmed": "Confirmed",
+          "cancelled": "Cancelled"
+        },
+        "services": {
+          "title": "Services",
+          "total": "Total Services"
+        },
+        "topCategories": {
+          "title": "Top Categories"
+        }
+      }
+    },
+    "tabs": {
+      "overview": "Overview",
+      "joinRequests": "Join Requests",
+      "allRequestsHistory": "All Requests History"
+    },
+    "overview": {
+      "title": "Platform Overview",
+      "userManagement": {
+        "title": "User Management",
+        "description": "You have {{totalUsers}} registered users, including {{totalSuppliers}} suppliers."
+      },
+      "performance": {
+        "title": "Business Performance",
+        "description": "Platform has generated ${{revenue}} in total revenue from {{bookings}} confirmed bookings."
+      }
+    },
+    "requests": {
+      "title": "Supplier Join Requests",
+      "pending": {
+        "title": "Pending Requests",
+        "count": "{{count}} pending"
+      },
+      "history": {
+        "title": "All Requests History",
+        "empty": {
+          "title": "No join requests yet",
+          "message": "Supplier join requests will appear here"
+        }
+      },
+      "table": {
+        "name": "Name",
+        "phone": "Phone",
+        "serviceType": "Service Type",
+        "city": "City",
+        "status": "Status",
+        "date": "Date"
+      },
+      "actions": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "review": "Mark Reviewed"
+      },
+      "details": {
+        "phone": "Phone",
+        "service": "Service",
+        "city": "City"
+      },
+      "confirmation": {
+        "approve": "Are you sure you want to approve this supplier?",
+        "reject": "Are you sure you want to reject this request?",
+        "success": {
+          "approved": "Supplier {{name}} has been approved successfully. They can now login with their phone number.",
+          "rejected": "Request rejected successfully",
+          "reviewed": "Request marked as reviewed"
+        },
+        "error": {
+          "approve": "Failed to approve supplier request",
+          "reject": "Failed to reject request",
+          "review": "Failed to update request"
+        }
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "reviewed": "Reviewed"
+      }
+    }
+  },
+  "join": {
+    "header": {
+      "title": "Join as Supplier",
+      "subtitle": "Partner with us to grow your event business"
+    },
+    "alerts": {
+      "success": {
+        "message": "Your request has been submitted successfully! We'll contact you soon."
+      },
+      "error": {
+        "default": "Failed to submit request. Please try again."
+      }
+    },
+    "form": {
+      "labels": {
+        "fullName": "Full Name",
+        "phone": "Phone Number",
+        "city": "City",
+        "serviceType": "Service Type",
+        "notes": "Additional Notes",
+        "otherServiceType": "Specify Your Service"
+      },
+      "placeholders": {
+        "name": "Enter your full name",
+        "phone": "7X XXX XXXX",
+        "city": "Select your city",
+        "serviceType": "Select service type",
+        "notes": "Tell us more about your services (optional)",
+        "otherServiceType": "Please describe your service"
+      },
+      "validation": {
+        "required": "{{field}} is required",
+        "minLength": "{{field}} must be at least {{count}} characters",
+        "phoneInvalid": "Please enter a valid Jordanian phone number"
+      },
+      "hints": {
+        "phone": "Enter your number in any format: 07X XXX XXXX, 7X XXX XXXX, or +962 7X XXX XXXX"
+      }
+    },
+    "buttons": {
+      "submit": "Send Request",
+      "submitting": "Sending Request..."
+    },
+    "footer": {
+      "reviewInfo": "We'll review your application and contact you within 24-48 hours"
+    },
+    "status": {
+      "pending": "Your request is pending approval.",
+      "approved": "Your request has been approved."
+    }
   }
 }

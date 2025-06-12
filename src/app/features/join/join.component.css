@@ -198,3 +198,39 @@
     transform: translateY(0);
   }
 }
+
+/* RTL Phone Input Styling */
+:host-context([dir="rtl"]) {
+  .input-group-text {
+    border-radius: 0 8px 8px 0;
+    border-left: 2px solid #e9ecef;
+    border-right: none;
+  }
+
+  .input-group .form-control {
+    border-radius: 8px 0 0 8px;
+    border-right: 2px solid #e9ecef;
+    border-left: none;
+    text-align: right;
+  }
+
+  .input-group .form-control:focus {
+    border-right: 2px solid #ffc107;
+    border-left: none;
+  }
+}
+
+/* Other Service Type Animation */
+.mb-3 {
+  transition: all 0.3s ease;
+}
+
+.mb-3.ng-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.mb-3.ng-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}

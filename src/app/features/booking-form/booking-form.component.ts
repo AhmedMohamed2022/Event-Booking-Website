@@ -5,6 +5,9 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { EventItem } from '../../core/models/event-item.model';
 import { AuthService } from '../../core/services/auth.service';
 import { BookingFormService } from '../../core/services/booking-form.service';
+import { LanguageService } from '../../core/services/language.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface BookingRequest {
   eventItemId: string;
@@ -17,7 +20,7 @@ interface BookingRequest {
 @Component({
   selector: 'app-booking-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './booking-form.component.html',
   styleUrl: './booking-form.component.css',
 })
@@ -26,6 +29,9 @@ export class BookingFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private bookingService = inject(BookingFormService);
   private authService = inject(AuthService);
+  private languageService = inject(LanguageService);
+  private translationService = inject(TranslationService);
+  private translate = inject(TranslateService);
 
   eventItem: EventItem | null = null;
   loading = false;
@@ -47,6 +53,16 @@ export class BookingFormComponent implements OnInit {
   ngOnInit() {
     this.checkAuthStatus();
     this.loadEventItem();
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe(() => {
+      this.updateTranslations();
+    });
+  }
+
+  private updateTranslations() {
+    // Any dynamic translations that need to be updated when language changes
+    // This can be expanded if needed
   }
 
   private checkAuthStatus() {
@@ -82,7 +98,10 @@ export class BookingFormComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading event item:', err);
-        this.error = 'Failed to load service details';
+        // Use translated error message
+        this.error = this.translationService.instant(
+          'serviceDetails.error.title'
+        );
         this.loading = false;
         setTimeout(() => this.router.navigate(['/']), 3000);
       },
@@ -118,7 +137,11 @@ export class BookingFormComponent implements OnInit {
         // Show success message and redirect after 2 seconds
         setTimeout(() => {
           this.router.navigate(['/client-dashboard']);
-          alert('Booking created successfully!');
+          // Use translated success message
+          const successMessage = this.translationService.instant(
+            'booking.success.message'
+          );
+          alert(successMessage);
         }, 2000);
       },
       error: (err) => {
@@ -126,17 +149,21 @@ export class BookingFormComponent implements OnInit {
         this.submitting = false;
 
         if (err.status === 403) {
-          this.error =
-            'This service provider has reached their booking limit. Please try another service.';
+          this.error = this.translationService.instant(
+            'booking.error.limitReached'
+          );
         } else if (err.status === 401) {
-          this.error = 'Please log in to continue with your booking.';
+          this.error = this.translationService.instant(
+            'booking.error.loginRequired'
+          );
           setTimeout(() => {
             const returnUrl = `/booking/${this.bookingForm.eventItemId}`;
             this.router.navigate(['/login'], { queryParams: { returnUrl } });
           }, 2000);
         } else {
           this.error =
-            err.error?.message || 'Failed to create booking. Please try again.';
+            err.error?.message ||
+            this.translationService.instant('booking.error.general');
         }
       },
     });
@@ -145,7 +172,9 @@ export class BookingFormComponent implements OnInit {
   private validateForm(): boolean {
     // Check required fields
     if (!this.bookingForm.eventDate) {
-      this.error = 'Please select an event date';
+      this.error = this.translationService.instant(
+        'booking.validation.dateRequired'
+      );
       return false;
     }
 
@@ -153,36 +182,54 @@ export class BookingFormComponent implements OnInit {
       !this.bookingForm.numberOfPeople ||
       this.bookingForm.numberOfPeople < 1
     ) {
-      this.error = 'Please enter a valid number of people';
+      this.error = this.translationService.instant(
+        'booking.validation.peopleRequired'
+      );
       return false;
     }
 
     // Check capacity limits
     if (this.eventItem) {
       if (this.bookingForm.numberOfPeople < this.eventItem.minCapacity) {
-        this.error = `Minimum capacity is ${this.eventItem.minCapacity} people`;
+        this.error = this.translationService.instant(
+          'booking.validation.minCapacity',
+          {
+            count: this.eventItem.minCapacity,
+          }
+        );
         return false;
       }
 
       if (this.bookingForm.numberOfPeople > this.eventItem.maxCapacity) {
-        this.error = `Maximum capacity is ${this.eventItem.maxCapacity} people`;
+        this.error = this.translationService.instant(
+          'booking.validation.maxCapacity',
+          {
+            count: this.eventItem.maxCapacity,
+          }
+        );
         return false;
       }
     }
 
     // Check if selected date is available
     if (this.eventItem && !this.isDateAvailable(this.bookingForm.eventDate)) {
-      this.error = 'Selected date is not available';
+      this.error = this.translationService.instant(
+        'booking.validation.dateNotAvailable'
+      );
       return false;
     }
 
     if (!this.bookingForm.phone || this.bookingForm.phone.trim().length < 10) {
-      this.error = 'Please enter a valid phone number';
+      this.error = this.translationService.instant(
+        'booking.validation.phoneRequired'
+      );
       return false;
     }
 
     if (!this.bookingForm.name || this.bookingForm.name.trim().length < 2) {
-      this.error = 'Please enter your full name';
+      this.error = this.translationService.instant(
+        'booking.validation.nameRequired'
+      );
       return false;
     }
 
@@ -218,5 +265,20 @@ export class BookingFormComponent implements OnInit {
     } else {
       this.router.navigate(['/']);
     }
+  }
+
+  // Helper method to get translated category
+  getTranslatedCategory(category: string): string {
+    return this.translationService.getTranslatedCategory(category);
+  }
+
+  // Helper method to get translated city
+  getTranslatedCity(city: string): string {
+    return this.translationService.getTranslatedCity(city);
+  }
+
+  // Helper method to check if current language is RTL
+  isRTL(): boolean {
+    return this.languageService.isRTL();
   }
 }
