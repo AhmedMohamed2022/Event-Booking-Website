@@ -2,8 +2,8 @@
 
 export const environment = {
   production: true,
-  // apiUrl: 'https://event-booking-backend-production-0d69.up.railway.app/api',
-  apiUrl: 'http://localhost:5000/api', // Local development API URL
+  apiUrl: 'https://event-booking-backend-production-0d69.up.railway.app/api',
+  // apiUrl: 'http://localhost:5000/api', // Local development API URL
   appName: 'Event Booking Platform',
   version: '1.0.0',
 
