@@ -50,6 +50,10 @@ export class AuthService {
   );
   public token$ = this.tokenSubject.asObservable();
 
+  // Add authChange BehaviorSubject
+  private authChangeSubject = new BehaviorSubject<boolean>(false);
+  public authChange = this.authChangeSubject.asObservable();
+
   constructor() {
     // Initialize user state on service creation
     this.initializeUserState();
@@ -133,10 +137,8 @@ export class AuthService {
   setToken(token: string): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem(this.TOKEN_KEY, token);
-      // Ensure token emission happens after storage
-      setTimeout(() => {
-        this.tokenSubject.next(token);
-      }, 0);
+      this.tokenSubject.next(token);
+      this.authChangeSubject.next(true); // Emit authentication change
     }
   }
 
@@ -223,6 +225,7 @@ export class AuthService {
     localStorage.removeItem(this.USER_KEY);
     this.currentUserSubject.next(null);
     this.tokenSubject.next(null);
+    this.authChangeSubject.next(false); // Emit authentication change
 
     // Clear any stored redirect URLs
     this.clearRedirectUrl();

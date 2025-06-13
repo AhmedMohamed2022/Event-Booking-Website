@@ -15,7 +15,7 @@ import {
   EVENT_CATEGORIES,
   CategoryConfig,
 } from '../../core/models/constants/categories.const';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-service',
@@ -52,8 +52,7 @@ export class AddServiceComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private eventItemService: EventItemService,
-    private router: Router,
-    private translate: TranslateService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -251,21 +250,17 @@ export class AddServiceComponent implements OnInit {
     if (!field) return '';
 
     if (field.hasError('required')) {
-      return this.translate.instant('addService.form.validation.required');
+      return 'This field is required';
     }
     if (field.hasError('minlength')) {
       const minLength = field.getError('minlength').requiredLength;
-      return this.translate.instant('addService.form.validation.minLength', {
-        length: minLength,
-      });
+      return `Minimum length is ${minLength} characters`;
     }
     if (field.hasError('min')) {
       const min = field.getError('min').min;
-      return this.translate.instant('addService.form.validation.minValue', {
-        value: min,
-      });
+      return `Minimum value is ${min}`;
     }
-    return this.translate.instant('addService.form.validation.invalidValue');
+    return 'Invalid value';
   }
 
   // Method to submit the form

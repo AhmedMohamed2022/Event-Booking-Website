@@ -1,45 +1,47 @@
-<!-- Chat Container -->
 <div class="chat-container">
-  <!-- Chat Header -->
   <div class="chat-header">
-    <h3>Chat with {{ otherUserName }}</h3>
-    <button class="close-btn" (click)="closeChat()">×</button>
+    <h3>{{ otherUserName }}</h3>
+    <button class="close-btn" (click)="closeChat()">&times;</button>
   </div>
 
-  <!-- Messages Area -->
-  <div class="messages-area" #messagesContainer>
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="loading-state">
-      <div class="spinner-border text-primary"></div>
-      <p>Loading messages...</p>
+  <div class="messages-wrapper">
+    <!-- Loading state -->
+    <div *ngIf="loading" class="loading-indicator">
+      <span>Loading messages...</span>
     </div>
 
-    <!-- Error State -->
+    <!-- Error state -->
     <div *ngIf="error" class="error-message">
-      {{ error }}
+      <span>{{ error }}</span>
     </div>
 
-    <!-- Messages -->
-    <div class="messages-list" *ngIf="!isLoading && !error">
-      <div *ngFor="let message of messages" class="message" [class.sent]="message.from === getCurrentUserId()"
-        [class.received]="message.from !== getCurrentUserId()">
-        <div class="message-content">
-          {{ message.text }}
-        </div>
-        <div class="message-time">
-          {{ message.createdAt | date:'shortTime' }}
-        </div>
-      </div>
+    <!-- Messages list -->
+    <div #messagesContainer class="messages-container" *ngIf="!loading && !error">
+      <ul class="messages-list">
+        <li *ngFor="let message of messages" [ngClass]="{
+              'message': true,
+              'sent': message.from !== otherUserId,
+              'received': message.from === otherUserId
+            }">
+          <div class="message-content">
+            <p>{{ message.text }}</p>
+            <span class="message-time">{{ message.createdAt | date:'short' }}</span>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 
   <div class="chat-input">
-    <div class="input-group">
-      <input type="text" class="form-control" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()"
-        placeholder="Type a message..." [disabled]="isLoading">
-      <button class="btn btn-primary" (click)="sendMessage()" [disabled]="!newMessage.trim() || isLoading">
-        Send
-      </button>
-    </div>
+    <input 
+      #messageInput
+      type="text" 
+      [(ngModel)]="newMessage" 
+      placeholder="Type a message..." 
+      [disabled]="loading"
+    >
+    <button (click)="sendMessage()" [disabled]="!newMessage.trim() || loading">
+      Send
+    </button>
   </div>
 </div>

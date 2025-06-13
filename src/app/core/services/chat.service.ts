@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { io, Socket } from 'socket.io-client'; // Changed this line
+import { Observable, Subject } from 'rxjs';
+import { io } from 'socket.io-client';
 import { Message, ActiveChat } from '../models/chat.model';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
@@ -10,200 +10,240 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class ChatService {
-  private socket!: Socket;
+  private socket: any; // Socket.io client instance
   private baseUrl = environment.apiUrl;
-  private messageSubject = new BehaviorSubject<Message | null>(null);
-  private isInitialized = false;
+  private socketUrl = this.baseUrl.replace('/api', '');
+  private messageSubject = new Subject<any>();
+  private initialized = false;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
 
-  // Add namespace
-  private readonly SOCKET_NAMESPACE = '/chat';
+  // Use root namespace
+  private readonly SOCKET_NAMESPACE = '';
 
-  // Rename messages$ to newMessage$ to match usage
-  newMessage$ = this.messageSubject.asObservable();
+  // Public observable for new messages
+  public newMessage$ = this.messageSubject.asObservable();
 
   constructor(private http: HttpClient, private authService: AuthService) {
-    // Subscribe to both user and token changes
-    this.authService.token$.subscribe((token) => {
-      if (token && !this.isInitialized) {
+    if (this.authService.isAuthenticated()) {
+      this.initializeSocket();
+    }
+
+    this.authService.authChange.subscribe((isAuthenticated: boolean) => {
+      if (isAuthenticated) {
         this.initializeSocket();
-      } else if (!token) {
+      } else {
         this.disconnect();
       }
     });
   }
 
-  public initializeSocket() {
-    const token = this.authService.getToken();
-
-    if (!token) {
-      console.warn('No authentication token available, waiting for token...');
-      return;
-    }
-
-    // Add additional logging
-    console.log(
-      'Initializing socket with token:',
-      token ? 'Present' : 'Missing'
-    );
-
-    try {
-      if (this.socket?.connected) {
-        console.log('Socket already connected, disconnecting first...');
-        this.socket.disconnect();
-      }
-
-      // Ensure baseUrl ends with /chat namespace
-      const socketUrl = `${this.baseUrl}${this.SOCKET_NAMESPACE}`;
-      console.log('Connecting to socket URL:', socketUrl);
-
-      this.socket = io(socketUrl, {
-        auth: { token },
-        transports: ['websocket'],
-        reconnection: true,
-        reconnectionAttempts: this.maxReconnectAttempts,
-        reconnectionDelay: 1000,
-        timeout: 5000,
-        path: '/socket.io', // Add explicit path
-        autoConnect: true,
-        forceNew: true, // Force new connection
-      });
-
-      this.setupSocketListeners();
-      this.isInitialized = true;
-    } catch (error) {
-      console.error('Socket initialization error:', error);
-      this.handleSocketError(error);
-    }
-  }
-
-  public reinitializeSocket() {
+  // Method to reinitialize socket connection
+  reinitializeSocket() {
     if (this.socket?.connected) {
       this.socket.disconnect();
     }
-    this.isInitialized = false;
+    this.initialized = false;
     this.reconnectAttempts = 0;
     this.initializeSocket();
   }
 
-  public connectSocket() {
-    const token = this.authService.getToken();
-    if (!token) {
-      console.warn('No token available for socket connection');
-      return;
-    }
+  // Method to check if socket is connected
+  isSocketConnected(): boolean {
+    const isConnected = this.socket?.connected || false;
+    console.log('Socket connection status:', isConnected);
+    return isConnected;
+  }
 
-    try {
-      // Ensure baseUrl ends with /chat namespace
-      const socketUrl = `${this.baseUrl}${this.SOCKET_NAMESPACE}`;
-      console.log('Attempting socket connection to:', socketUrl);
-
-      if (this.socket?.connected) {
-        console.log('Socket already connected, disconnecting first...');
-        this.socket.disconnect();
-      }
-
-      this.socket = io(socketUrl, {
-        auth: { token },
-        transports: ['websocket'],
-        reconnection: true,
-        reconnectionAttempts: this.maxReconnectAttempts,
-        reconnectionDelay: 1000,
-        timeout: 5000,
-        path: '/socket.io', // Add explicit path
-        autoConnect: true,
-        forceNew: true, // Force new connection
-      });
-
-      this.setupSocketListeners();
-      this.isInitialized = true;
-    } catch (error) {
-      console.error('Socket connection error:', error);
-      this.handleSocketError(error);
+  // Method to disconnect socket
+  disconnect() {
+    if (this.socket) {
+      console.log('Disconnecting socket...');
+      this.socket.disconnect();
+      console.log(
+        'Socket disconnected:',
+        this.socket.disconnected ? 'successfully' : 'failed'
+      );
+      this.initialized = false;
+      this.reconnectAttempts = 0;
     }
   }
 
-  private handleSocketError(error: any) {
-    console.error('Detailed socket error:', {
-      error,
-      socketState: {
-        isConnected: this.socket?.connected,
-        namespace: this.SOCKET_NAMESPACE,
-        url: this.baseUrl,
-        attempts: this.reconnectAttempts,
-      },
+  // Method to connect socket (called from components)
+  connectSocket(): boolean {
+    console.log('Attempting socket connection to:', this.socketUrl);
+
+    if (!this.authService.isAuthenticated()) {
+      console.error('Cannot connect socket: User not authenticated');
+      return false;
+    }
+
+    if (this.socket?.connected) {
+      console.log('Socket already connected, disconnecting first...');
+      this.disconnect();
+    }
+
+    this.initializeSocket();
+
+    // Return connection status after a brief delay to allow connection to establish
+    return this.isSocketConnected();
+  }
+
+  initializeSocket() {
+    try {
+      // Get token
+      const token = this.authService.getToken();
+      console.log(
+        'Initializing socket with token:',
+        token ? 'Present' : 'Missing'
+      );
+
+      if (!token) {
+        console.error('Cannot initialize socket: No authentication token');
+        return;
+      }
+
+      // Disconnect existing socket if any
+      this.disconnect();
+
+      // Set socket URL
+      const socketUrl = this.socketUrl;
+      console.log('Socket URL:', socketUrl);
+
+      // Create new socket connection with auth token
+      this.socket = io(socketUrl, {
+        auth: {
+          token: token,
+        },
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000,
+        path: '/socket.io',
+      });
+
+      // Setup socket event listeners
+      this.setupSocketListeners();
+
+      // Set initialization flag
+      this.initialized = true;
+      this.reconnectAttempts = 0;
+    } catch (error) {
+      this.handleSocketError('Socket initialization error', error);
+    }
+  }
+
+  private handleSocketError(context: string, error: any) {
+    console.error(`Socket Error (${context}):`, error);
+
+    // Log additional details for debugging
+    console.log('Socket state:', {
+      initialized: this.initialized,
+      connected: this.socket?.connected,
+      reconnectAttempts: this.reconnectAttempts,
+      url: this.socketUrl,
     });
+
+    // Check if token is still valid
+    const token = this.authService.getToken();
+    if (!token) {
+      console.error('Socket error may be due to missing authentication token');
+    }
   }
 
   private setupSocketListeners() {
     if (!this.socket) {
-      console.warn('Socket not initialized in setupSocketListeners');
+      console.error('Cannot setup listeners: Socket not initialized');
       return;
     }
 
+    // Connection events
     this.socket.on('connect', () => {
       console.log('Socket connected successfully. Socket ID:', this.socket.id);
-      console.log('Connection details:', {
-        namespace: this.SOCKET_NAMESPACE,
-        transport: this.socket.io.engine.transport.name,
-      });
+      console.log('Connection details:', this.socket.io.engine);
       this.reconnectAttempts = 0;
-      this.isInitialized = true;
     });
 
-    this.socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
-      console.log('Connection attempt details:', {
-        attempts: this.reconnectAttempts,
-        maxAttempts: this.maxReconnectAttempts,
-        url: this.baseUrl + this.SOCKET_NAMESPACE,
-      });
-
+    this.socket.on('connect_error', (error: any) => {
+      this.handleSocketError('Connection error', error);
       this.reconnectAttempts++;
 
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-        console.error('Max reconnection attempts reached');
-        this.disconnect();
+        console.error(
+          `Failed to connect after ${this.maxReconnectAttempts} attempts`
+        );
+        this.socket.disconnect();
       }
     });
 
-    this.socket.on('disconnect', (reason) => {
+    this.socket.on('disconnect', (reason: string) => {
       console.log('Socket disconnected:', reason);
-      this.isInitialized = false;
-
-      if (reason === 'io server disconnect') {
-        // Server forced disconnect, try reconnecting
-        this.reconnectAttempts = 0;
-        this.initializeSocket();
-      }
     });
 
-    this.socket.on('error', (error) => {
-      console.error('Socket error:', error);
+    this.socket.on('error', (error: any) => {
+      this.handleSocketError('Socket error', error);
     });
 
-    this.socket.on('receiveMessage', (message: Message) => {
-      console.log('Received message:', message);
+    // Message events
+    this.socket.on('receiveMessage', (message: any) => {
+      console.log('Message received via receiveMessage event:', message);
       this.messageSubject.next(message);
     });
 
-    this.socket.on('messageSent', (message: Message) => {
-      console.log('Message sent confirmation:', message);
+    this.socket.on('message', (message: any) => {
+      console.log('Message received via message event:', message);
+      this.messageSubject.next(message);
+    });
+
+    this.socket.on('messageSent', (message: any) => {
+      console.log('Message sent confirmation received:', message);
+      this.messageSubject.next(message);
+    });
+
+    this.socket.on('newMessage', (message: any) => {
+      console.log('New message received via newMessage event:', message);
       this.messageSubject.next(message);
     });
   }
 
   joinRoom(userId: string) {
-    if (this.socket) {
+    if (this.socket && this.socket.connected) {
+      console.log('Joining room for user:', userId);
       this.socket.emit('join', userId);
+    } else {
+      console.warn('Cannot join room: Socket not connected');
+      // Try to reconnect
+      this.reinitializeSocket();
+
+      // Try joining again after a longer delay to ensure connection is established
+      setTimeout(() => {
+        if (this.socket && this.socket.connected) {
+          console.log('Retrying join room for user:', userId);
+          this.socket.emit('join', userId);
+        } else {
+          console.warn(
+            'Still cannot join room after retry: Socket not connected'
+          );
+          // One final attempt with even longer delay
+          setTimeout(() => {
+            if (this.socket && this.socket.connected) {
+              console.log('Final attempt to join room for user:', userId);
+              this.socket.emit('join', userId);
+            } else {
+              console.error('Failed to join room after multiple attempts');
+            }
+          }, 3000);
+        }
+      }, 2000);
     }
   }
 
   // Get conversation history
   getConversation(userId: string): Observable<Message[]> {
     return this.http.get<Message[]>(`${this.baseUrl}/chat/${userId}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: { Authorization: `Bearer ${this.authService.getToken()}` },
     });
   }
 
@@ -212,47 +252,58 @@ export class ChatService {
     return this.http.post<Message>(
       `${this.baseUrl}/chat`,
       { to, text },
-      { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      { headers: { Authorization: `Bearer ${this.authService.getToken()}` } }
     );
   }
 
   // Send message through socket
-  sendSocketMessage(to: string, text: string) {
+  sendSocketMessage(message: any) {
+    if (!this.socket || !this.socket.connected) {
+      console.warn('Cannot send message: Socket not connected');
+      this.reinitializeSocket();
+      setTimeout(() => this.retrySendMessage(message), 2000);
+      return;
+    }
+
+    console.log('Sending message via socket:', message);
+    this.socket.emit('sendMessage', message);
+    this.socket.emit('message', message);
+  }
+
+  private retrySendMessage(message: any, attempts = 0) {
+    if (attempts >= 3) {
+      console.error('Failed to send message after multiple attempts');
+      return;
+    }
+
     if (this.socket && this.socket.connected) {
-      this.socket.emit('sendMessage', { to, text });
+      console.log(`Retry attempt ${attempts + 1}: Sending message via socket`);
+      this.socket.emit('sendMessage', message);
+      this.socket.emit('message', message);
+    } else if (attempts < 2) {
+      console.log(
+        `Socket still not connected. Scheduling retry attempt ${
+          attempts + 2
+        }...`
+      );
+      setTimeout(() => this.retrySendMessage(message, attempts + 1), 2000);
     }
   }
 
-  public isSocketConnected(): boolean {
-    const isConnected = this.socket?.connected || false;
-    console.log('Socket connection status:', isConnected);
-    return isConnected;
-  }
-
-  // Update disconnect method
-  public disconnect() {
-    if (this.socket) {
-      console.log('Disconnecting socket...');
-      this.socket.disconnect();
-      this.isInitialized = false;
-      this.reconnectAttempts = 0;
-    }
-  }
-
-  // Add method to check socket state
-  public getSocketState() {
+  // Method to get socket state for debugging
+  getSocketState() {
     return {
-      isConnected: this.socket?.connected || false,
-      isInitialized: this.isInitialized,
+      initialized: this.initialized,
+      connected: this.socket?.connected || false,
       reconnectAttempts: this.reconnectAttempts,
-      namespace: this.SOCKET_NAMESPACE,
+      url: this.socketUrl,
     };
   }
 
-  // Add getActiveChats method
+  // Get active chats
   getActiveChats(): Observable<ActiveChat[]> {
     return this.http.get<ActiveChat[]>(`${this.baseUrl}/chat/active`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: { Authorization: `Bearer ${this.authService.getToken()}` },
     });
   }
 }
