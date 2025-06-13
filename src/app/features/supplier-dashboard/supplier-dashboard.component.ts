@@ -5,7 +5,7 @@ import { SupplierDashboardData } from '../../core/models/supplier-dashboard.mode
 import { SupplierDashboardService } from '../../core/services/supplier-dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
 import { BookingService } from '../../core/services/booking.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-supplier-dashboard',
@@ -22,9 +22,10 @@ export class SupplierDashboardComponent implements OnInit {
 
   constructor(
     private supplierService: SupplierDashboardService,
-    private bookingService: BookingService, // Add this
+    private bookingService: BookingService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -37,13 +38,36 @@ export class SupplierDashboardComponent implements OnInit {
 
     this.supplierService.getSupplierDashboard().subscribe({
       next: (data) => {
-        this.dashboardData = data;
+        if (data && data.supplier) {
+          console.log('Raw dashboard data:', data); // Debug raw data
+          console.log('Revenue before:', data.supplier.totalRevenue); // Debug revenue before processing
+
+          this.dashboardData = data;
+
+          // Calculate total revenue from confirmed bookings if not provided
+          if (!this.dashboardData.supplier.totalRevenue) {
+            this.dashboardData.supplier.totalRevenue =
+              this.dashboardData.bookings
+                .filter((booking) => booking.status === 'confirmed')
+                .reduce(
+                  (total, booking) => total + (booking.totalPrice || 0),
+                  0
+                );
+          }
+
+          console.log(
+            'Revenue after:',
+            this.dashboardData.supplier.totalRevenue
+          ); // Debug final revenue
+        }
         this.isLoading = false;
       },
       error: (error) => {
-        this.error = 'Failed to load dashboard data';
+        console.error('Dashboard loading error:', error);
+        this.error = this.translate.instant(
+          'supplierDashboard.errors.loadDashboard'
+        );
         this.isLoading = false;
-        console.error('Dashboard error:', error);
       },
     });
   }
@@ -69,78 +93,136 @@ export class SupplierDashboardComponent implements OnInit {
     });
   }
 
-  formatCurrency(amount: number): string {
-    return `${amount} JD`;
+  formatCurrency(amount: number | undefined): string {
+    if (amount === undefined || amount === null || isNaN(amount)) {
+      console.log('Invalid amount:', amount);
+      return this.translate.instant('supplierDashboard.stats.defaults.amount', {
+        amount: '0.00',
+      });
+    }
+
+    try {
+      const currentLang = this.translate.currentLang;
+      const formatter = new Intl.NumberFormat(
+        currentLang === 'ar' ? 'ar-JO' : 'en-US',
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      );
+
+      const formattedAmount = formatter.format(amount);
+
+      // Use translation for currency symbol placement based on language
+      return this.translate.instant('supplierDashboard.stats.currency.format', {
+        amount: formattedAmount,
+        currency: 'JD',
+      });
+    } catch (error) {
+      console.error('Currency formatting error:', error);
+      return this.translate.instant('supplierDashboard.stats.defaults.amount', {
+        amount: '0.00',
+      });
+    }
   }
 
   logout() {
-    if (confirm('Are you sure you want to logout?')) {
-      this.authService.logout();
-      this.router.navigate(['/']);
-    }
+    this.translate
+      .get('supplierDashboard.confirmations.logout')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.authService.logout();
+          this.router.navigate(['/']);
+        }
+      });
   }
 
   confirmBooking(bookingId: string) {
-    if (!confirm('Are you sure you want to accept this booking?')) {
-      return;
-    }
+    this.translate
+      .get('supplierDashboard.bookings.actions.confirmAccept')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.processingBooking = bookingId;
 
-    this.processingBooking = bookingId;
-
-    this.bookingService.updateBookingStatus(bookingId, 'confirmed').subscribe({
-      next: (response) => {
-        // Update local state after successful API call
-        if (this.dashboardData) {
-          const booking = this.dashboardData.bookings.find(
-            (b) => b._id === bookingId
-          );
-          if (booking) {
-            booking.status = 'confirmed';
-            this.dashboardData.supplier.pendingBookings--;
-            this.dashboardData.supplier.confirmedBookings++;
-          }
+          this.bookingService
+            .updateBookingStatus(bookingId, 'confirmed')
+            .subscribe({
+              next: (response) => {
+                this.updateBookingStatus(bookingId, 'confirmed');
+                this.translate
+                  .get('supplierDashboard.bookings.actions.success.confirmed')
+                  .subscribe((successMsg: string) => alert(successMsg));
+              },
+              error: (error) => {
+                console.error('Error confirming booking:', error);
+                this.translate
+                  .get('supplierDashboard.bookings.actions.error.confirmed')
+                  .subscribe((errorMsg: string) => alert(errorMsg));
+              },
+              complete: () => {
+                this.processingBooking = null;
+              },
+            });
         }
-        alert('Booking confirmed successfully');
-      },
-      error: (error) => {
-        console.error('Error confirming booking:', error);
-        alert('Failed to confirm booking. Please try again.');
-      },
-      complete: () => {
-        this.processingBooking = null;
-      },
-    });
+      });
   }
 
   rejectBooking(bookingId: string) {
-    if (!confirm('Are you sure you want to reject this booking?')) {
-      return;
-    }
+    this.translate
+      .get('supplierDashboard.bookings.actions.confirmReject')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.processingBooking = bookingId;
 
-    this.processingBooking = bookingId;
+          this.bookingService
+            .updateBookingStatus(bookingId, 'cancelled')
+            .subscribe({
+              next: (response) => {
+                this.updateBookingStatus(bookingId, 'cancelled');
+                this.translate
+                  .get('supplierDashboard.bookings.actions.success.rejected')
+                  .subscribe((successMsg: string) => alert(successMsg));
+              },
+              error: (error) => {
+                console.error('Error rejecting booking:', error);
+                this.translate
+                  .get('supplierDashboard.bookings.actions.error.rejected')
+                  .subscribe((errorMsg: string) => alert(errorMsg));
+              },
+              complete: () => {
+                this.processingBooking = null;
+              },
+            });
+        }
+      });
+  }
 
-    this.bookingService.updateBookingStatus(bookingId, 'cancelled').subscribe({
-      next: (response) => {
-        // Update local state after successful API call
-        if (this.dashboardData) {
-          const booking = this.dashboardData.bookings.find(
-            (b) => b._id === bookingId
-          );
-          if (booking) {
-            booking.status = 'cancelled';
-            this.dashboardData.supplier.pendingBookings--;
+  private updateBookingStatus(
+    bookingId: string,
+    status: 'confirmed' | 'cancelled'
+  ) {
+    if (this.dashboardData) {
+      const booking = this.dashboardData.bookings.find(
+        (b) => b._id === bookingId
+      );
+      if (booking) {
+        const oldStatus = booking.status;
+        booking.status = status;
+
+        // Update booking counts
+        if (oldStatus === 'pending') {
+          this.dashboardData.supplier.pendingBookings--;
+          if (status === 'confirmed') {
+            this.dashboardData.supplier.confirmedBookings++;
+            // Add to total revenue when confirming
+            this.dashboardData.supplier.totalRevenue += booking.totalPrice || 0;
+          } else {
             this.dashboardData.supplier.cancelledBookings++;
           }
         }
-        alert('Booking rejected successfully');
-      },
-      error: (error) => {
-        console.error('Error rejecting booking:', error);
-        alert('Failed to reject booking. Please try again.');
-      },
-      complete: () => {
-        this.processingBooking = null;
-      },
-    });
+
+        console.log('Updated dashboard data:', this.dashboardData); // Debug updated data
+      }
+    }
   }
 }

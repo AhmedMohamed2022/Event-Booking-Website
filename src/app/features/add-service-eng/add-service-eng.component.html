@@ -7,7 +7,7 @@
         <button type="button" class="btn btn-link text-decoration-none p-0 me-3" (click)="goBack()">
           <i class="fas fa-arrow-left text-primary fs-5"></i>
         </button>
-        <h2 class="mb-0 text-dark fw-bold">Add New Service</h2>
+        <h2 class="mb-0 text-dark fw-bold">{{ 'addService.header.title' | translate }}</h2>
       </div>
 
       <!-- Form Card -->
@@ -18,127 +18,173 @@
             <!-- Service Basic Info -->
             <div class="row g-3 mb-4">
               <div class="col-12">
-                <label class="form-label fw-semibold text-dark">Service Name *</label>
-                <input type="text" class="form-control form-control-lg" [class.is-invalid]="isFieldInvalid('name')"
-                  formControlName="name" placeholder="Enter service name">
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.serviceName.label' | translate }}
+                </label>
+                <input type="text" class="form-control form-control-lg"
+                  [placeholder]="'addService.form.basicInfo.serviceName.placeholder' | translate"
+                  [class.is-invalid]="isFieldInvalid('name')" formControlName="name">
                 <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
                   {{ getFieldError('name') }}
                 </div>
               </div>
 
               <div class="col-12">
-                <label class="form-label fw-semibold text-dark">Description</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.description.label' | translate }}
+                </label>
                 <textarea class="form-control" rows="3" formControlName="description"
-                  placeholder="Detailed service description..."></textarea>
+                  [placeholder]="'addService.form.basicInfo.description.placeholder' | translate"></textarea>
               </div>
 
               <!-- Category and Subcategory Section -->
               <div class="row g-3 mb-4">
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold text-dark">Event Type *</label>
+                  <label class="form-label fw-semibold text-dark">
+                    {{ 'addService.form.basicInfo.eventType.label' | translate }}
+                  </label>
                   <select class="form-select form-select-lg" formControlName="category"
                     [class.is-invalid]="isFieldInvalid('category')" (change)="onCategoryChange($event)">
-                    <option value="">Select Event Type</option>
+                    <option value="">{{ 'addService.form.basicInfo.eventType.placeholder' | translate }}</option>
                     <option *ngFor="let cat of categories" [value]="cat.value">
                       {{cat.label}}
                     </option>
                   </select>
                   <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
-                    Please select an event type
+                    {{ 'addService.form.basicInfo.eventType.error' | translate }}
                   </div>
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold text-dark">Service Type *</label>
+                  <label class="form-label fw-semibold text-dark">
+                    {{ 'addService.form.basicInfo.serviceType.label' | translate }}
+                  </label>
                   <select class="form-select form-select-lg" formControlName="subcategory"
                     [class.is-invalid]="isFieldInvalid('subcategory')">
-                    <option value="">Select Service Type</option>
+                    <option value="">{{ 'addService.form.basicInfo.serviceType.placeholder' | translate }}</option>
                     <option *ngFor="let sub of subcategories" [value]="sub.value">
                       {{sub.label}}
                     </option>
                   </select>
                   <div class="invalid-feedback" *ngIf="isFieldInvalid('subcategory')">
-                    Please select a service type
+                    {{ 'addService.form.basicInfo.serviceType.error' | translate }}
                   </div>
                 </div>
               </div>
 
+              <!-- Price input -->
               <div class="col-md-4">
-                <label class="form-label fw-semibold text-dark">Price (USD) *</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.price.label' | translate }}
+                </label>
                 <input type="number" class="form-control form-control-lg" [class.is-invalid]="isFieldInvalid('price')"
-                  formControlName="price" placeholder="0.00" min="1" step="0.01">
+                  formControlName="price" [placeholder]="'addService.form.basicInfo.price.placeholder' | translate"
+                  min="1" step="0.01">
                 <div class="invalid-feedback" *ngIf="isFieldInvalid('price')">
-                  {{ getFieldError('price') }}
+                  {{ 'addService.form.basicInfo.price.error' | translate }}
+                </div>
+              </div>
+
+              <!-- Capacity inputs -->
+              <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.minCapacity.label' | translate }}
+                </label>
+                <input type="number" class="form-control form-control-lg" formControlName="minCapacity"
+                  [placeholder]="'addService.form.basicInfo.minCapacity.placeholder' | translate" min="1">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('minCapacity')">
+                  {{ 'addService.form.basicInfo.minCapacity.error' | translate }}
                 </div>
               </div>
 
               <div class="col-md-4">
-                <label class="form-label fw-semibold text-dark">Minimum Capacity</label>
-                <input type="number" class="form-control form-control-lg" formControlName="minCapacity"
-                  placeholder="e.g. 10" min="1">
-              </div>
-
-              <div class="col-md-4">
-                <label class="form-label fw-semibold text-dark">Maximum Capacity</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.maxCapacity.label' | translate }}
+                </label>
                 <input type="number" class="form-control form-control-lg" formControlName="maxCapacity"
-                  placeholder="e.g. 100" min="1">
+                  [placeholder]="'addService.form.basicInfo.maxCapacity.placeholder' | translate" min="1">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('maxCapacity')">
+                  {{ 'addService.form.basicInfo.maxCapacity.error' | translate }}
+                </div>
               </div>
             </div>
 
             <!-- Location Section -->
             <div class="border-top pt-4 mb-4">
-              <h5 class="text-dark fw-bold mb-3">Location</h5>
+              <h5 class="text-dark fw-bold mb-3">
+                {{ 'addService.form.location.title' | translate }}
+              </h5>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold text-dark">City *</label>
+                  <label class="form-label fw-semibold text-dark">
+                    {{ 'addService.form.location.city.label' | translate }}
+                  </label>
                   <select class="form-select form-select-lg" formControlName="city"
                     [class.is-invalid]="isFieldInvalid('city')">
-                    <option value="">Select City</option>
+                    <option value="">{{ 'addService.form.location.city.placeholder' | translate }}</option>
                     <option *ngFor="let city of cities" [value]="city">
                       {{city}}
                     </option>
                   </select>
                   <div class="invalid-feedback" *ngIf="isFieldInvalid('city')">
-                    Please select a city
+                    {{ 'addService.form.location.city.error' | translate }}
                   </div>
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold text-dark">Area</label>
+                  <label class="form-label fw-semibold text-dark">
+                    {{ 'addService.form.location.area.label' | translate }}
+                  </label>
                   <input type="text" class="form-control form-control-lg" formControlName="area"
-                    placeholder="e.g. Downtown">
+                    [placeholder]="'addService.form.location.area.placeholder' | translate">
                 </div>
 
                 <!-- Add map coordinates hint -->
                 <div class="col-12 mb-2">
                   <small class="text-muted">
                     <i class="fas fa-info-circle me-1"></i>
-                    Coordinates are optional but help customers find your location easily
+                    {{ 'addService.form.location.coordinates.hint' | translate }}
                   </small>
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold text-dark">Latitude</label>
-                  <input type="number" class="form-control form-control-lg" formControlName="lat" placeholder="31.9539"
-                    step="any">
+                  <label class="form-label fw-semibold text-dark">
+                    {{ 'addService.form.location.latitude.label' | translate }}
+                  </label>
+                  <input type="number" class="form-control form-control-lg" formControlName="lat"
+                    [placeholder]="'addService.form.location.latitude.placeholder' | translate" step="any">
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('lat')">
+                    {{ 'addService.form.location.latitude.error' | translate }}
+                  </div>
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold text-dark">Longitude</label>
-                  <input type="number" class="form-control form-control-lg" formControlName="lng" placeholder="35.9106"
-                    step="any">
+                  <label class="form-label fw-semibold text-dark">
+                    {{ 'addService.form.location.longitude.label' | translate }}
+                  </label>
+                  <input type="number" class="form-control form-control-lg" formControlName="lng"
+                    [placeholder]="'addService.form.location.longitude.placeholder' | translate" step="any">
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('lng')">
+                    {{ 'addService.form.location.longitude.error' | translate }}
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Available Dates Section -->
             <div class="border-top pt-4 mb-4">
-              <h5 class="text-dark fw-bold mb-3">Available Dates</h5>
+              <h5 class="text-dark fw-bold mb-3">
+                {{ 'addService.form.availability.title' | translate }}
+              </h5>
               <div class="row g-3">
                 <div class="col-md-6">
                   <input type="date" class="form-control form-control-lg" (change)="addAvailableDate($event)"
-                    placeholder="Select date">
+                    [placeholder]="'addService.form.availability.datePlaceholder' | translate">
                 </div>
+              </div>
+
+              <div *ngIf="availableDates.length === 0" class="text-muted mt-2">
+                {{ 'addService.form.availability.noDateSelected' | translate }}
               </div>
 
               <div *ngIf="availableDates.length > 0" class="mt-3">
@@ -154,11 +200,15 @@
 
             <!-- Media Upload Section -->
             <div class="border-top pt-4 mb-4">
-              <h5 class="text-dark fw-bold mb-3">Images and Videos</h5>
+              <h5 class="text-dark fw-bold mb-3">
+                {{ 'addService.form.media.title' | translate }}
+              </h5>
 
               <!-- Images Upload -->
               <div class="mb-3">
-                <label class="form-label fw-semibold text-dark">Images (up to 5 images)</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.media.images.label' | translate }}
+                </label>
                 <input type="file" class="form-control form-control-lg" multiple accept="image/*"
                   (change)="onImageSelect($event)">
 
@@ -183,7 +233,9 @@
 
               <!-- Videos Upload -->
               <div class="mb-3">
-                <label class="form-label fw-semibold text-dark">Videos (up to 3 videos)</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.media.videos.label' | translate }}
+                </label>
                 <input type="file" class="form-control form-control-lg" multiple accept="video/*"
                   (change)="onVideoSelect($event)">
 
@@ -211,13 +263,19 @@
             <div class="d-flex justify-content-end gap-2 mt-4">
               <button type="button" class="btn btn-outline-secondary btn-lg px-4" (click)="goBack()"
                 [disabled]="isLoading || isUploading">
-                Cancel
+                {{ 'addService.form.buttons.cancel' | translate }}
               </button>
               <button type="submit" class="btn btn-primary btn-lg px-4" [disabled]="isLoading || isUploading">
                 <span *ngIf="isLoading || isUploading" class="spinner-border spinner-border-sm me-2"></span>
-                <span *ngIf="isLoading">Saving...</span>
-                <span *ngIf="isUploading">Uploading files...</span>
-                <span *ngIf="!isLoading && !isUploading">Add Service</span>
+                <span *ngIf="isLoading">
+                  {{ 'addService.form.buttons.saving' | translate }}
+                </span>
+                <span *ngIf="isUploading">
+                  {{ 'addService.form.buttons.uploading' | translate }}
+                </span>
+                <span *ngIf="!isLoading && !isUploading">
+                  {{ 'addService.form.buttons.submit' | translate }}
+                </span>
               </button>
             </div>
 

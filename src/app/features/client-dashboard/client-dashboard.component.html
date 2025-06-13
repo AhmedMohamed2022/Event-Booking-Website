@@ -25,9 +25,9 @@
       <!-- Loading State -->
       <div *ngIf="loading" class="text-center py-5">
         <div class="spinner-border text-warning" role="status">
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">{{ 'clientDashboard.loading.text' | translate }}</span>
         </div>
-        <p class="mt-3 text-muted">Loading your bookings...</p>
+        <p class="mt-3 text-muted">{{ 'clientDashboard.loading.bookings' | translate }}</p>
       </div>
 
       <!-- Error State -->
@@ -42,9 +42,11 @@
         <div class="empty-icon mb-3">
           <i class="fas fa-calendar-times fa-3x text-muted"></i>
         </div>
-        <h3 class="text-muted">No Bookings Yet</h3>
-        <p class="text-muted">You haven't made any bookings yet. Start exploring our events!</p>
-        <a [routerLink]="['/']" class="btn btn-warning">Browse Events</a>
+        <h3 class="text-muted">{{ 'clientDashboard.empty.title' | translate }}</h3>
+        <p class="text-muted">{{ 'clientDashboard.empty.description' | translate }}</p>
+        <a [routerLink]="['/']" class="btn btn-warning">
+          {{ 'clientDashboard.empty.browseButton' | translate }}
+        </a>
       </div>
 
       <!-- Bookings List -->
@@ -87,15 +89,15 @@
               <!-- Pricing Details -->
               <div class="pricing-details mt-3">
                 <div class="price-row">
-                  <span class="price-label">Total Price:</span>
+                  <span class="price-label">{{ 'clientDashboard.booking.details.totalPrice' | translate }}:</span>
                   <span class="price-value">{{ formatPrice(booking.totalPrice) }}</span>
                 </div>
                 <div class="price-row">
-                  <span class="price-label">Paid Amount:</span>
+                  <span class="price-label">{{ 'clientDashboard.booking.details.paidAmount' | translate }}:</span>
                   <span class="price-value">{{ formatPrice(booking.paidAmount) }}</span>
                 </div>
                 <div *ngIf="booking.totalPrice > booking.paidAmount" class="price-row remaining">
-                  <span class="price-label">Remaining:</span>
+                  <span class="price-label">{{ 'clientDashboard.booking.details.remaining' | translate }}:</span>
                   <span class="price-value">{{ formatPrice(booking.totalPrice - booking.paidAmount) }}</span>
                 </div>
               </div>
@@ -152,7 +154,7 @@
       <!-- Chats Section -->
       <div class="chat-section mt-4" *ngIf="showChats">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h3 class="section-title">My Conversations</h3>
+          <h3 class="section-title">{{ 'clientDashboard.chat.title' | translate }}</h3>
           <button class="btn btn-outline-warning" (click)="toggleChats()">
             <i class="fas" [class.fa-chevron-up]="showChats" [class.fa-chevron-down]="!showChats"></i>
           </button>

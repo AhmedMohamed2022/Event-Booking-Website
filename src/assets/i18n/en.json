@@ -114,7 +114,18 @@
     "venues": "Venues & Halls",
     "conference-halls": "Conference Halls",
     "audio-equipment": "Audio Equipment",
+    "party-venues": "Party Venues",
+    "food-beverages": "Food & Beverages",
+    "party-decoration": "Party Decoration",
+    "corporate-venues": "Corporate Venues",
+    "av-equipment": "Audio/Visual Equipment",
+    "corporate-catering": "Corporate Catering",
+    "stage-decoration": "Stage & Decoration",
+    "graduation-venues": "Graduation Venues",
     "funeral-halls": "Funeral Halls",
+    "memorial-catering": "Memorial Catering",
+    "funeral-flowers": "Funeral Flowers & Wreaths",
+    "seating": "Seating Arrangements",
     "tents": "Memorial Tents",
     "transport": "Transportation Services"
   },
@@ -475,6 +486,51 @@
     "header": {
       "title": "My Bookings",
       "subtitle": "Manage your event bookings"
+    },
+    "loading": {
+      "text": "Loading...",
+      "bookings": "Loading your bookings..."
+    },
+    "empty": {
+      "title": "No Bookings Yet",
+      "description": "You haven't made any bookings yet. Start exploring our events!",
+      "browseButton": "Browse Events"
+    },
+    "booking": {
+      "details": {
+        "id": "ID",
+        "totalPrice": "Total Price",
+        "paidAmount": "Paid Amount",
+        "remaining": "Remaining",
+        "bookedOn": "Booked on",
+        "people": "person",
+        "peoplePlural": "people"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "cancelling": "Cancelling...",
+        "chat": "Chat with Supplier",
+        "chatPending": "Chat available after confirmation",
+        "chatNote": "Chat will be available once booking is confirmed by supplier"
+      },
+      "status": {
+        "cancelled": "Booking cancelled successfully",
+        "confirmed": "Cannot be cancelled - Booking is already confirmed. Please contact support for assistance.",
+        "default": "Cannot be cancelled"
+      }
+    },
+    "chat": {
+      "title": "My Conversations",
+      "empty": "No active conversations"
+    },
+    "confirmations": {
+      "logout": "Are you sure you want to logout?",
+      "cancelBooking": "Are you sure you want to cancel this booking?"
+    },
+    "errors": {
+      "loadBookings": "Failed to load your bookings. Please try again.",
+      "cancelBooking": "Failed to cancel booking. Please try again.",
+      "loginRequired": "Please login to chat with supplier"
     }
   },
   "supplierDashboard": {
@@ -483,8 +539,191 @@
       "welcome": "Welcome back",
       "subtitle": "Manage your services and bookings"
     },
+    "stats": {
+      "cards": {
+        "services": {
+          "title": "Total Services",
+          "label": "Services"
+        },
+        "bookings": {
+          "title": "Total Bookings",
+          "label": "Bookings"
+        },
+        "pending": {
+          "title": "Pending Bookings",
+          "label": "Pending"
+        },
+        "revenue": {
+          "title": "Total Revenue",
+          "label": "Revenue"
+        }
+      },
+      "quickStats": {
+        "confirmed": "Confirmed",
+        "pending": "Pending",
+        "cancelled": "Cancelled"
+      },
+      "currency": {
+        "format": "{{amount}} {{currency}}"
+      },
+      "defaults": {
+        "amount": "{{amount}} JD"
+      }
+    },
+    "bookings": {
+      "title": "Recent Bookings",
+      "subtitle": "Manage your latest booking requests",
+      "empty": {
+        "title": "No Bookings Yet",
+        "description": "Start by adding your services to receive booking requests",
+        "addService": "Add Your First Service"
+      },
+      "table": {
+        "service": "Service",
+        "client": "Client",
+        "eventDate": "Event Date",
+        "people": "People",
+        "status": "Status",
+        "amount": "Amount",
+        "bookedOn": "Booked On",
+        "actions": "Actions"
+      },
+      "actions": {
+        "accept": "Accept",
+        "reject": "Reject",
+        "processing": "Processing...",
+        "confirmAccept": "Are you sure you want to accept this booking?",
+        "confirmReject": "Are you sure you want to reject this booking?",
+        "success": {
+          "confirmed": "Booking confirmed successfully",
+          "rejected": "Booking rejected successfully"
+        },
+        "error": {
+          "confirmed": "Failed to confirm booking. Please try again.",
+          "rejected": "Failed to reject booking. Please try again."
+        }
+      }
+    },
+    "services": {
+      "title": "Your Services",
+      "subtitle": "Manage your service offerings",
+      "actions": {
+        "edit": "Edit",
+        "view": "View"
+      }
+    },
     "buttons": {
-      "addService": "Add Service"
+      "addService": "Add Service",
+      "tryAgain": "Try Again"
+    },
+    "loading": {
+      "text": "Loading...",
+      "dashboard": "Loading dashboard..."
+    },
+    "errors": {
+      "loadDashboard": "Failed to load dashboard data"
+    }
+  },
+  "addService": {
+    "header": {
+      "title": "Add New Service",
+      "backButton": "Back"
+    },
+    "form": {
+      "availability": {
+        "title": "Available Dates",
+        "datePlaceholder": "Select date",
+        "addButton": "Add Date",
+        "noDateSelected": "No dates selected yet"
+      },
+      "basicInfo": {
+        "serviceName": {
+          "label": "Service Name *",
+          "placeholder": "Enter service name"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Detailed service description..."
+        },
+        "eventType": {
+          "label": "Event Type *",
+          "placeholder": "Select Event Type"
+        },
+        "serviceType": {
+          "label": "Service Type *",
+          "placeholder": "Select Service Type"
+        },
+        "price": {
+          "label": "Price (JD)",
+          "placeholder": "0.00",
+          "error": "Please enter a valid price"
+        },
+        "minCapacity": {
+          "label": "Minimum Capacity",
+          "placeholder": "e.g. 10",
+          "error": "Please enter a valid minimum capacity"
+        },
+        "maxCapacity": {
+          "label": "Maximum Capacity",
+          "placeholder": "e.g. 100",
+          "error": "Please enter a valid maximum capacity"
+        }
+      },
+      "location": {
+        "title": "Location",
+        "city": {
+          "label": "City *",
+          "placeholder": "Select City"
+        },
+        "area": {
+          "label": "Area",
+          "placeholder": "e.g. Downtown"
+        },
+        "coordinates": {
+          "hint": "Coordinates are optional but help customers find your location easily",
+          "title": "Location Coordinates"
+        },
+        "latitude": {
+          "label": "Latitude",
+          "placeholder": "Enter latitude (e.g. 31.9539)",
+          "error": "Please enter a valid latitude"
+        },
+        "longitude": {
+          "label": "Longitude",
+          "placeholder": "Enter longitude (e.g. 35.9106)",
+          "error": "Please enter a valid longitude"
+        }
+      },
+      "dates": {
+        "title": "Available Dates",
+        "addDate": "Add Date"
+      },
+      "media": {
+        "title": "Images and Videos",
+        "images": {
+          "label": "Images (up to 5 images)",
+          "preview": "Image Preview"
+        },
+        "videos": {
+          "label": "Videos (up to 3 videos)",
+          "preview": "Video Preview"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "submit": "Add Service",
+        "saving": "Saving...",
+        "uploading": "Uploading files..."
+      },
+      "validation": {
+        "required": "This field is required",
+        "minLength": "Minimum length is {{length}} characters",
+        "minValue": "Minimum value is {{value}}",
+        "selectCity": "Please select a city",
+        "selectEventType": "Please select an event type",
+        "selectServiceType": "Please select a service type",
+        "invalidValue": "Invalid value"
+      }
     }
   }
 }

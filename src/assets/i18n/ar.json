@@ -85,38 +85,39 @@
   "categories": {
     "wedding": "زفاف",
     "birthday": "عيد ميلاد",
-    "corporate": "مؤسسي",
+    "corporate": "مناسبات شركات",
     "graduation": "تخرج",
-    "baby-shower": "استقبال مولود",
     "engagement": "خطوبة",
     "conference": "مؤتمر",
-    "funeral": "جنازة",
-    "venues": "القاعات",
-    "photography": "التصوير",
-    "dj": "خدمات الدي جي",
-    "decoration": "الديكور",
-    "catering": "خدمات الطعام",
-    "hall": "قاعات",
-    "sound": "المعدات الصوتية",
-    "farm": "المزارع",
-    "other": "خدمة أخرى"
+    "funeral": "عزاء"
   },
   "subcategories": {
-    "wedding-halls": "قاعات الأفراح",
-    "catering": "خدمات الطعام",
-    "decoration": "الديكور",
-    "photography": "التصوير والفيديو",
-    "entertainment": "الترفيه",
-    "equipment": "تأجير المعدات",
-    "chairs": "الكراسي والمقاعد",
-    "flowers": "الزهور والباقات",
-    "tables": "الطاولات والترتيبات",
-    "venues": "القاعات والأماكن",
-    "conference-halls": "قاعات المؤتمرات",
-    "audio-equipment": "المعدات الصوتية",
-    "funeral-halls": "قاعات العزاء",
-    "tents": "خيام التعزية",
-    "transport": "خدمات النقل"
+    "wedding-halls": "قاعات أفراح",
+    "catering": "خدمات ضيافة",
+    "decoration": "ديكور",
+    "photography": "تصوير وفيديو",
+    "entertainment": "ترفيه",
+    "equipment": "تأجير معدات",
+    "chairs": "كراسي وجلسات",
+    "flowers": "زهور وباقات",
+    "tables": "طاولات وتجهيزات",
+    "venues": "قاعات وصالات",
+    "conference-halls": "قاعات مؤتمرات",
+    "audio-equipment": "معدات صوتية",
+    "party-venues": "أماكن حفلات",
+    "food-beverages": "طعام ومشروبات",
+    "party-decoration": "ديكور حفلات",
+    "corporate-venues": "قاعات شركات",
+    "av-equipment": "معدات سمعية وبصرية",
+    "corporate-catering": "ضيافة شركات",
+    "stage-decoration": "ديكور مسرح",
+    "graduation-venues": "قاعات تخرج",
+    "funeral-halls": "صالات عزاء",
+    "memorial-catering": "ضيافة عزاء",
+    "funeral-flowers": "زهور وأكاليل عزاء",
+    "seating": "ترتيبات جلوس",
+    "tents": "خيم عزاء",
+    "transport": "خدمات نقل"
   },
   "cities": {
     "amman": "عمان",
@@ -469,6 +470,51 @@
     "header": {
       "title": "حجوزاتي",
       "subtitle": "إدارة حجوزات المناسبات"
+    },
+    "loading": {
+      "text": "جارِ التحميل...",
+      "bookings": "جارِ تحميل حجوزاتك..."
+    },
+    "empty": {
+      "title": "لا توجد حجوزات بعد",
+      "description": "لم تقم بأي حجوزات بعد. ابدأ باستكشاف المناسبات!",
+      "browseButton": "تصفح المناسبات"
+    },
+    "booking": {
+      "details": {
+        "id": "رقم الحجز",
+        "totalPrice": "السعر الإجمالي",
+        "paidAmount": "المبلغ المدفوع",
+        "remaining": "المتبقي",
+        "bookedOn": "تم الحجز في",
+        "people": "شخص",
+        "peoplePlural": "أشخاص"
+      },
+      "actions": {
+        "cancel": "إلغاء",
+        "cancelling": "جارِ الإلغاء...",
+        "chat": "الدردشة مع المزود",
+        "chatPending": "الدردشة متاحة بعد التأكيد",
+        "chatNote": "ستكون الدردشة متاحة بمجرد تأكيد الحجز من قبل المزود"
+      },
+      "status": {
+        "cancelled": "تم إلغاء الحجز بنجاح",
+        "confirmed": "لا يمكن الإلغاء - تم تأكيد الحجز بالفعل. يرجى الاتصال بالدعم للمساعدة.",
+        "default": "لا يمكن الإلغاء"
+      }
+    },
+    "chat": {
+      "title": "محادثاتي",
+      "empty": "لا توجد محادثات نشطة"
+    },
+    "confirmations": {
+      "logout": "هل أنت متأكد من تسجيل الخروج؟",
+      "cancelBooking": "هل أنت متأكد من إلغاء هذا الحجز؟"
+    },
+    "errors": {
+      "loadBookings": "فشل في تحميل حجوزاتك. يرجى المحاولة مرة أخرى.",
+      "cancelBooking": "فشل في إلغاء الحجز. يرجى المحاولة مرة أخرى.",
+      "loginRequired": "يرجى تسجيل الدخول للدردشة مع المزود"
     }
   },
   "supplierDashboard": {
@@ -477,8 +523,339 @@
       "welcome": "مرحباً بعودتك",
       "subtitle": "إدارة خدماتك وحجوزاتك"
     },
+    "stats": {
+      "cards": {
+        "services": {
+          "title": "إجمالي الخدمات",
+          "label": "الخدمات"
+        },
+        "bookings": {
+          "title": "إجمالي الحجوزات",
+          "label": "الحجوزات"
+        },
+        "pending": {
+          "title": "الحجوزات المعلقة",
+          "label": "معلق"
+        },
+        "revenue": {
+          "title": "إجمالي الإيرادات",
+          "label": "الإيرادات"
+        }
+      },
+      "quickStats": {
+        "title": "إحصائيات سريعة",
+        "confirmed": "مؤكدة",
+        "pending": "معلقة",
+        "cancelled": "ملغية",
+        "total": "الإجمالي"
+      },
+      "currency": {
+        "format": "{{amount}} {{currency}}"
+      },
+      "defaults": {
+        "amount": "{{amount}} دينار"
+      }
+    },
+    "bookings": {
+      "title": "آخر الحجوزات",
+      "subtitle": "إدارة طلبات الحجز الأخيرة",
+      "empty": {
+        "title": "لا توجد حجوزات بعد",
+        "description": "ابدأ بإضافة خدماتك لتلقي طلبات الحجز",
+        "addService": "أضف خدمتك الأولى"
+      },
+      "table": {
+        "service": "الخدمة",
+        "client": "العميل",
+        "eventDate": "تاريخ المناسبة",
+        "people": "الأشخاص",
+        "status": "الحالة",
+        "amount": "المبلغ",
+        "bookedOn": "تاريخ الحجز",
+        "actions": "الإجراءات"
+      },
+      "actions": {
+        "accept": "قبول",
+        "reject": "رفض",
+        "processing": "جارٍ المعالجة...",
+        "confirmAccept": "هل أنت متأكد من قبول هذا الحجز؟",
+        "confirmReject": "هل أنت متأكد من رفض هذا الحجز؟",
+        "success": {
+          "confirmed": "تم تأكيد الحجز بنجاح",
+          "rejected": "تم رفض الحجز بنجاح"
+        },
+        "error": {
+          "confirmed": "فشل في تأكيد الحجز. حاول مرة أخرى.",
+          "rejected": "فشل في رفض الحجز. حاول مرة أخرى."
+        }
+      }
+    },
+    "services": {
+      "title": "خدماتك",
+      "manageTitle": "إدارة الخدمات",
+      "subtitle": "إدارة خدماتك المقدمة",
+      "empty": {
+        "title": "لا توجد خدمات بعد",
+        "description": "ابدأ بإضافة خدماتك الأولى",
+        "addButton": "إضافة خدمة جديدة"
+      },
+      "card": {
+        "status": {
+          "active": "نشط",
+          "inactive": "غير نشط"
+        },
+        "bookings": "الحجوزات",
+        "revenue": "الإيرادات",
+        "actions": {
+          "edit": "تعديل",
+          "view": "عرض",
+          "delete": "حذف",
+          "activate": "تفعيل",
+          "deactivate": "تعطيل"
+        }
+      }
+    },
+    "bookingDetails": {
+      "title": "تفاصيل الحجز",
+      "service": {
+        "name": "اسم الخدمة",
+        "category": "الفئة"
+      },
+      "client": {
+        "name": "اسم العميل",
+        "phone": "رقم الهاتف"
+      },
+      "eventDate": "تاريخ المناسبة",
+      "peopleCount": "عدد الأشخاص",
+      "amount": {
+        "total": "المبلغ الإجمالي",
+        "paid": "المبلغ المدفوع",
+        "remaining": "المبلغ المتبقي"
+      },
+      "bookedOn": "تاريخ الحجز",
+      "status": {
+        "confirmed": "مؤكد",
+        "pending": "معلق",
+        "cancelled": "ملغي",
+        "processing": "قيد المعالجة"
+      }
+    },
+    "notifications": {
+      "newBooking": "لديك حجز جديد",
+      "bookingConfirmed": "تم تأكيد الحجز",
+      "bookingCancelled": "تم إلغاء الحجز",
+      "paymentReceived": "تم استلام الدفعة"
+    },
+    "metrics": {
+      "daily": "يومي",
+      "weekly": "أسبوعي",
+      "monthly": "شهري",
+      "yearly": "سنوي",
+      "revenue": {
+        "title": "الإيرادات",
+        "total": "إجمالي الإيرادات",
+        "average": "متوسط الإيرادات"
+      },
+      "bookings": {
+        "title": "الحجوزات",
+        "total": "إجمالي الحجوزات",
+        "average": "متوسط الحجوزات"
+      }
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "pending": "معلق",
+      "confirmed": "مؤكد",
+      "cancelled": "ملغي",
+      "processing": "قيد المعالجة"
+    },
+    "tooltips": {
+      "edit": "تعديل الخدمة",
+      "view": "عرض التفاصيل",
+      "delete": "حذف الخدمة",
+      "confirm": "تأكيد الحجز",
+      "reject": "رفض الحجز"
+    },
+    "confirmations": {
+      "deleteService": "هل أنت متأكد من حذف هذه الخدمة؟",
+      "deactivateService": "هل أنت متأكد من تعطيل هذه الخدمة؟",
+      "cancelBooking": "هل أنت متأكد من إلغاء هذا الحجز؟"
+    },
+    "errors": {
+      "failedToLoad": "فشل في تحميل البيانات",
+      "failedToUpdate": "فشل في تحديث البيانات",
+      "failedToDelete": "فشل في حذف الخدمة",
+      "serviceNotFound": "لم يتم العثور على الخدمة",
+      "bookingNotFound": "لم يتم العثور على الحجز",
+      "unauthorized": "غير مصرح لك بهذا الإجراء"
+    },
+    "success": {
+      "serviceUpdated": "تم تحديث الخدمة بنجاح",
+      "serviceDeleted": "تم حذف الخدمة بنجاح",
+      "bookingUpdated": "تم تحديث الحجز بنجاح",
+      "settingsSaved": "تم حفظ الإعدادات بنجاح"
+    },
+    "placeholders": {
+      "search": "البحث في الحجوزات...",
+      "filterByDate": "تصفية حسب التاريخ",
+      "filterByStatus": "تصفية حسب الحالة"
+    },
     "buttons": {
-      "addService": "إضافة خدمة"
+      "addService": "إضافة خدمة",
+      "exportData": "تصدير البيانات",
+      "settings": "الإعدادات",
+      "viewAll": "عرض الكل",
+      "loadMore": "تحميل المزيد",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "apply": "تطبيق",
+      "clear": "مسح",
+      "filter": "تصفية",
+      "tryAgain": "حاول مرة أخرى"
+    }
+  },
+  "addService": {
+    "header": {
+      "title": "إضافة خدمة جديدة",
+      "backButton": "رجوع"
+    },
+    "form": {
+      "availability": {
+        "title": "التواريخ المتاحة",
+        "datePlaceholder": "اختر التاريخ",
+        "addButton": "إضافة تاريخ",
+        "noDateSelected": "لم يتم اختيار تواريخ بعد"
+      },
+      "basicInfo": {
+        "serviceName": {
+          "label": "اسم الخدمة *",
+          "placeholder": "أدخل اسم الخدمة"
+        },
+        "description": {
+          "label": "الوصف",
+          "placeholder": "وصف تفصيلي للخدمة..."
+        },
+        "eventType": {
+          "label": "نوع المناسبة *",
+          "placeholder": "اختر نوع المناسبة"
+        },
+        "serviceType": {
+          "label": "نوع الخدمة *",
+          "placeholder": "اختر نوع الخدمة"
+        },
+        "price": {
+          "label": "السعر (دينار)",
+          "placeholder": "٠.٠٠",
+          "error": "يرجى إدخال سعر صحيح"
+        },
+        "minCapacity": {
+          "label": "الحد الأدنى للسعة",
+          "placeholder": "مثال: ١٠",
+          "error": "يرجى إدخال حد أدنى صحيح للسعة"
+        },
+        "maxCapacity": {
+          "label": "الحد الأقصى للسعة",
+          "placeholder": "مثال: ١٠٠",
+          "error": "يرجى إدخال حد أقصى صحيح للسعة"
+        }
+      },
+      "location": {
+        "title": "الموقع",
+        "city": {
+          "label": "المدينة *",
+          "placeholder": "اختر المدينة"
+        },
+        "area": {
+          "label": "المنطقة",
+          "placeholder": "مثال: وسط البلد"
+        },
+        "coordinates": {
+          "hint": "الإحداثيات اختيارية ولكنها تساعد العملاء في العثور على موقعك بسهولة",
+          "title": "إحداثيات الموقع"
+        },
+        "latitude": {
+          "label": "خط العرض",
+          "placeholder": "أدخل خط العرض (مثال: ٣١.٩٥٣٩)",
+          "error": "يرجى إدخال خط عرض صحيح"
+        },
+        "longitude": {
+          "label": "خط الطول",
+          "placeholder": "أدخل خط الطول (مثال: ٣٥.٩١٠٦)",
+          "error": "يرجى إدخال خط طول صحيح"
+        }
+      },
+      "dates": {
+        "title": "التواريخ المتاحة",
+        "addDate": "إضافة تاريخ"
+      },
+      "media": {
+        "title": "الصور والفيديوهات",
+        "images": {
+          "label": "الصور (حتى 5 صور)",
+          "preview": "معاينة الصورة"
+        },
+        "videos": {
+          "label": "الفيديوهات (حتى 3 فيديوهات)",
+          "preview": "معاينة الفيديو"
+        }
+      },
+      "buttons": {
+        "cancel": "إلغاء",
+        "submit": "إضافة الخدمة",
+        "saving": "جارِ الحفظ...",
+        "uploading": "جارِ رفع الملفات..."
+      },
+      "validation": {
+        "required": "هذا الحقل مطلوب",
+        "minLength": "الحد الأدنى {{length}} حروف",
+        "minValue": "الحد الأدنى {{value}}",
+        "selectCity": "يرجى اختيار المدينة",
+        "selectEventType": "يرجى اختيار نوع المناسبة",
+        "selectServiceType": "يرجى اختيار نوع الخدمة",
+        "invalidValue": "قيمة غير صالحة"
+      }
+    }
+  },
+  "editService": {
+    "header": {
+      "title": "تعديل الخدمة",
+      "backButton": "رجوع"
+    },
+    "form": {
+      "basicInfo": {
+        "serviceName": {
+          "label": "اسم الخدمة *",
+          "placeholder": "أدخل اسم الخدمة",
+          "error": "يرجى إدخال اسم صحيح للخدمة"
+        }
+      },
+      "media": {
+        "currentImages": "الصور الحالية",
+        "currentVideos": "الفيديوهات الحالية",
+        "addNewImages": "إضافة صور جديدة (حتى 5 صور إجمالي)",
+        "addNewVideos": "إضافة فيديوهات جديدة (حتى 3 فيديوهات إجمالي)",
+        "new": "جديد"
+      },
+      "buttons": {
+        "cancel": "إلغاء",
+        "save": "حفظ التغييرات",
+        "saving": "جاري الحفظ...",
+        "uploading": "جاري رفع الملفات..."
+      }
+    },
+    "loading": {
+      "title": "جاري التحميل...",
+      "message": "جاري تحميل بيانات الخدمة..."
+    },
+    "success": {
+      "update": "تم تحديث الخدمة بنجاح",
+      "mediaUpload": "تم تحديث الخدمة ولكن حدث خطأ في رفع الملفات الجديدة"
+    },
+    "errors": {
+      "loadFailed": "حدث خطأ في تحميل بيانات الخدمة",
+      "updateFailed": "حدث خطأ أثناء تحديث الخدمة. يرجى المحاولة مرة أخرى."
     }
   }
 }

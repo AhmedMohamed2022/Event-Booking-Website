@@ -9,7 +9,7 @@ import { ChatService } from '../../core/services/chat.service';
 import { ChatDialogService } from '../../core/services/chat-dialog.service';
 import { Router } from '@angular/router';
 import { Message } from '../../core/models/chat.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface ChatPreview {
   userId: string;
@@ -48,7 +48,8 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private chatService: ChatService,
     private chatDialog: ChatDialogService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -81,33 +82,50 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  cancelBooking(bookingId: string): void {
-    if (!confirm('Are you sure you want to cancel this booking?')) {
-      return;
-    }
-
-    this.cancelling = bookingId;
-
-    this.bookingService.cancelBooking(bookingId).subscribe({
-      next: (response) => {
-        // Update the booking status locally
-        const bookingIndex = this.bookings.findIndex(
-          (b) => b._id === bookingId
-        );
-        if (bookingIndex !== -1) {
-          this.bookings[bookingIndex] = {
-            ...this.bookings[bookingIndex],
-            status: 'cancelled',
-          };
+  logout() {
+    this.translate
+      .get('clientDashboard.confirmations.logout')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.authService.logout();
+          this.router.navigate(['/']);
         }
-        this.cancelling = null;
-      },
-      error: (error) => {
-        this.error = 'Failed to cancel booking. Please try again.';
-        this.cancelling = null;
-        console.error('Error cancelling booking:', error);
-      },
-    });
+      });
+  }
+
+  cancelBooking(bookingId: string): void {
+    this.translate
+      .get('clientDashboard.confirmations.cancelBooking')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.cancelling = bookingId;
+
+          this.bookingService.cancelBooking(bookingId).subscribe({
+            next: (response) => {
+              // Update the booking status locally
+              const bookingIndex = this.bookings.findIndex(
+                (b) => b._id === bookingId
+              );
+              if (bookingIndex !== -1) {
+                this.bookings[bookingIndex] = {
+                  ...this.bookings[bookingIndex],
+                  status: 'cancelled',
+                };
+              }
+              this.cancelling = null;
+            },
+            error: (error) => {
+              this.translate
+                .get('clientDashboard.errors.cancelBooking')
+                .subscribe((msg: string) => {
+                  this.error = msg;
+                });
+              this.cancelling = null;
+              console.error('Error cancelling booking:', error);
+            },
+          });
+        }
+      });
   }
 
   loadChats(): void {
@@ -162,14 +180,12 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
   }
 
   getCancellationMessage(booking: Booking): string {
-    switch (booking.status) {
-      case 'cancelled':
-        return 'Booking cancelled successfully';
-      case 'confirmed':
-        return 'Cannot be cancelled - Booking is already confirmed. Please contact support for assistance.';
-      default:
-        return 'Cannot be cancelled';
-    }
+    const key =
+      `clientDashboard.booking.status.${booking.status}` as keyof typeof this.translate;
+    return (
+      this.translate.instant(key) ||
+      this.translate.instant('clientDashboard.booking.status.default')
+    );
   }
 
   canCancelBooking(booking: Booking): boolean {
@@ -205,13 +221,6 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
 
   trackByBookingId(index: number, booking: Booking): string {
     return booking._id;
-  }
-
-  logout() {
-    if (confirm('Are you sure you want to logout?')) {
-      this.authService.logout();
-      this.router.navigate(['/']);
-    }
   }
 
   formatTime(date: Date): string {
@@ -283,13 +292,21 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     // Check if user is authenticated
     const token = localStorage.getItem('token');
     if (!token) {
-      this.error = 'Please login to chat with supplier';
+      this.translate
+        .get('clientDashboard.errors.loginRequired')
+        .subscribe((msg: string) => {
+          this.error = msg;
+        });
       return;
     }
 
     // Only allow chat if booking is confirmed
     if (booking.status !== 'confirmed') {
-      alert('You can only chat with supplier after booking is confirmed');
+      this.translate
+        .get('clientDashboard.booking.actions.chatPending')
+        .subscribe((msg: string) => {
+          alert(msg);
+        });
       return;
     }
 

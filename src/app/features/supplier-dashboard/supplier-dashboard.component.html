@@ -2,9 +2,9 @@
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container">
     <div class="spinner-border text-warning" role="status">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">{{ 'supplierDashboard.loading.text' | translate }}</span>
     </div>
-    <p class="mt-3 text-muted">Loading dashboard...</p>
+    <p class="mt-3 text-muted">{{ 'supplierDashboard.loading.dashboard' | translate }}</p>
   </div>
 
   <!-- Error State -->
@@ -12,7 +12,7 @@
     <i class="fas fa-exclamation-triangle me-2"></i>
     {{ error }}
     <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadDashboard()">
-      Try Again
+      {{ 'supplierDashboard.buttons.tryAgain' | translate }}
     </button>
   </div>
 
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Stats Overview -->
-    <div class="stats-section mb-5">
+    <div class="stats-section mb-5" *ngIf="dashboardData?.supplier">
       <div class="row g-3">
         <div class="col-md-3 col-sm-6">
           <div class="stat-card">
@@ -57,7 +57,7 @@
             </div>
             <div class="stat-content">
               <h3>{{ dashboardData.supplier.serviceCount }}</h3>
-              <p>Total Services</p>
+              <p>{{ 'supplierDashboard.stats.cards.services.title' | translate }}</p>
             </div>
           </div>
         </div>
@@ -69,7 +69,7 @@
             </div>
             <div class="stat-content">
               <h3>{{ dashboardData.supplier.totalBookings }}</h3>
-              <p>Total Bookings</p>
+              <p>{{ 'supplierDashboard.stats.cards.bookings.title' | translate }}</p>
             </div>
           </div>
         </div>
@@ -81,19 +81,22 @@
             </div>
             <div class="stat-content">
               <h3>{{ dashboardData.supplier.pendingBookings }}</h3>
-              <p>Pending Bookings</p>
+              <p>{{ 'supplierDashboard.stats.cards.pending.title' | translate }}</p>
             </div>
           </div>
         </div>
 
+        <!-- Revenue Card -->
         <div class="col-md-3 col-sm-6">
           <div class="stat-card">
             <div class="stat-icon revenue">
-              <i class="fas fa-dollar-sign"></i>
+              <i class="fas fa-money-bill-wave"></i>
             </div>
             <div class="stat-content">
-              <h3>{{ formatCurrency(dashboardData.supplier.totalRevenue) }}</h3>
-              <p>Total Revenue</p>
+              <h3 [class.text-end]="translate.currentLang === 'ar'">
+                {{ formatCurrency(dashboardData?.supplier?.totalRevenue) }}
+              </h3>
+              <p>{{ 'supplierDashboard.stats.cards.revenue.title' | translate }}</p>
             </div>
           </div>
         </div>
@@ -129,35 +132,37 @@
       <div class="section-header">
         <h2>
           <i class="fas fa-list me-2"></i>
-          Recent Bookings
+          {{ 'supplierDashboard.bookings.title' | translate }}
         </h2>
-        <p class="text-muted">Manage your latest booking requests</p>
+        <p class="text-muted">{{ 'supplierDashboard.bookings.subtitle' | translate }}</p>
       </div>
 
+      <!-- Empty State -->
       <div *ngIf="dashboardData.bookings.length === 0" class="empty-state">
         <div class="empty-icon">
           <i class="fas fa-calendar-times"></i>
         </div>
-        <h3>No Bookings Yet</h3>
-        <p>Start by adding your services to receive booking requests</p>
+        <h3>{{ 'supplierDashboard.bookings.empty.title' | translate }}</h3>
+        <p>{{ 'supplierDashboard.bookings.empty.description' | translate }}</p>
         <button class="btn btn-primary" [routerLink]="['/supplier/add-service-eng']">
-          Add Your First Service
+          {{ 'supplierDashboard.bookings.empty.addService' | translate }}
         </button>
       </div>
 
+      <!-- Bookings Table -->
       <div *ngIf="dashboardData.bookings.length > 0" class="bookings-table-wrapper">
         <div class="table-responsive">
           <table class="table booking-table">
             <thead>
               <tr>
-                <th>Service</th>
-                <th>Client</th>
-                <th>Event Date</th>
-                <th>People</th>
-                <th>Status</th>
-                <th>Amount</th>
-                <th>Booked On</th>
-                <th>Actions</th> <!-- Add this column -->
+                <th>{{ 'supplierDashboard.bookings.table.service' | translate }}</th>
+                <th>{{ 'supplierDashboard.bookings.table.client' | translate }}</th>
+                <th>{{ 'supplierDashboard.bookings.table.eventDate' | translate }}</th>
+                <th>{{ 'supplierDashboard.bookings.table.people' | translate }}</th>
+                <th>{{ 'supplierDashboard.bookings.table.status' | translate }}</th>
+                <th>{{ 'supplierDashboard.bookings.table.amount' | translate }}</th>
+                <th>{{ 'supplierDashboard.bookings.table.bookedOn' | translate }}</th>
+                <th>{{ 'supplierDashboard.bookings.table.actions' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -232,9 +237,9 @@
       <div class="section-header">
         <h2>
           <i class="fas fa-cogs me-2"></i>
-          Your Services
+          {{ 'supplierDashboard.services.title' | translate }}
         </h2>
-        <p class="text-muted">Manage your service offerings</p>
+        <p class="text-muted">{{ 'supplierDashboard.services.subtitle' | translate }}</p>
       </div>
 
       <div class="services-grid">

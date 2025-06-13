@@ -195,6 +195,41 @@ input[type="file"]:hover {
   opacity: 1;
 }
 
+/* Add or update these styles */
+.position-relative {
+  position: relative;
+}
+
+.btn-remove-media {
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  width: 20px !important;
+  height: 20px !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 2 !important;
+  background-color: #dc3545 !important;
+  border: 2px solid #fff !important;
+  color: white !important;
+  transform: none !important;
+}
+
+.btn-remove-media i {
+  font-size: 8px !important;
+}
+
+/* RTL Support */
+:host-context([dir="rtl"]) .btn-remove-media {
+  right: auto !important;
+  left: -8px !important;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .card-body {

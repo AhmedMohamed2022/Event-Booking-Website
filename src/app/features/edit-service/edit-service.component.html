@@ -5,55 +5,74 @@
       <!-- Header -->
       <div class="d-flex align-items-center mb-4">
         <button type="button" class="btn btn-link text-decoration-none p-0 me-3" (click)="goBack()">
-          <i class="fas fa-arrow-right text-primary fs-5"></i>
+          <i class="fas fa-arrow-left text-primary fs-5"></i>
         </button>
-        <h2 class="mb-0 text-dark fw-bold">تعديل الخدمة</h2>
+        <h2 class="mb-0 text-dark fw-bold">{{ 'addService.header.title' | translate }}</h2>
       </div>
 
       <!-- Form Card -->
       <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
           <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
-
-            <!-- Service Basic Info -->
+            <!-- Basic Info -->
             <div class="row g-3 mb-4">
               <div class="col-12">
-                <label class="form-label fw-semibold text-dark">اسم الخدمة *</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.serviceName.label' | translate }}
+                </label>
                 <input type="text" class="form-control form-control-lg" [class.is-invalid]="isFieldInvalid('name')"
-                  formControlName="name" placeholder="أدخل اسم الخدمة">
+                  formControlName="name"
+                  [placeholder]="'addService.form.basicInfo.serviceName.placeholder' | translate">
                 <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
                   {{ getFieldError('name') }}
                 </div>
               </div>
 
               <div class="col-12">
-                <label class="form-label fw-semibold text-dark">الوصف</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.description.label' | translate }}
+                </label>
                 <textarea class="form-control" rows="3" formControlName="description"
-                  placeholder="وصف تفصيلي للخدمة..."></textarea>
+                  [placeholder]="'addService.form.basicInfo.description.placeholder' | translate">
+                </textarea>
               </div>
 
+              <!-- Categories -->
               <div class="col-md-6">
-                <label class="form-label fw-semibold text-dark">Event Type/Category *</label>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.eventType.label' | translate }}
+                </label>
                 <select class="form-select form-select-lg" [class.is-invalid]="isFieldInvalid('category')"
                   formControlName="category" (change)="onCategoryChange($event)">
-                  <option value="">Select Event Type</option>
-                  <option *ngFor="let cat of categories" [value]="cat.value">
+                  <option value="">
+                    {{ 'addService.form.basicInfo.eventType.placeholder' | translate }}
+                  </option>
+                  <option *ngFor="let cat of getTranslatedCategories()" [value]="cat.value">
                     {{cat.label}}
                   </option>
                 </select>
                 <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
-                  {{ getFieldError('category') }}
+                  {{ 'addService.form.validation.selectEventType' | translate }}
                 </div>
               </div>
 
+              <!-- Subcategories -->
               <div class="col-md-6" *ngIf="subcategories.length">
-                <label class="form-label fw-semibold text-dark">Service Type/Subcategory *</label>
-                <select class="form-select form-select-lg" formControlName="subcategory">
-                  <option value="">Select Service Type</option>
+                <label class="form-label fw-semibold text-dark">
+                  {{ 'addService.form.basicInfo.serviceType.label' | translate }}
+                </label>
+                <select class="form-select form-select-lg" formControlName="subcategory"
+                  [class.is-invalid]="isFieldInvalid('subcategory')">
+                  <option value="">
+                    {{ 'addService.form.basicInfo.serviceType.placeholder' | translate }}
+                  </option>
                   <option *ngFor="let sub of subcategories" [value]="sub.value">
                     {{sub.label}}
                   </option>
                 </select>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('subcategory')">
+                  {{ 'addService.form.validation.selectServiceType' | translate }}
+                </div>
               </div>
 
               <div class="col-md-4">
@@ -145,9 +164,7 @@
                           <div class="small text-white">{{ getImageName(image) }}</div>
                         </div>
                       </div>
-                      <button type="button"
-                        class="btn btn-danger btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
-                        (click)="removeExistingImage(i)">
+                      <button type="button" class="btn btn-remove-media" (click)="removeExistingImage(i)">
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -170,9 +187,7 @@
                           <div class="small text-muted mt-1">{{ image.name }}</div>
                           <div class="badge bg-success small mt-1">جديد</div>
                         </div>
-                        <button type="button"
-                          class="btn btn-danger btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
-                          (click)="removeImage(i)">
+                        <button type="button" class="btn btn-remove-media" (click)="removeImage(i)">
                           <i class="fas fa-times"></i>
                         </button>
                       </div>
@@ -194,9 +209,7 @@
                           <div class="small text-white">{{ getVideoName(video) }}</div>
                         </div>
                       </div>
-                      <button type="button"
-                        class="btn btn-danger btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
-                        (click)="removeExistingVideo(i)">
+                      <button type="button" class="btn btn-remove-media" (click)="removeExistingVideo(i)">
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -219,9 +232,7 @@
                           <div class="small text-muted mt-1">{{ video.name }}</div>
                           <div class="badge bg-success small mt-1">جديد</div>
                         </div>
-                        <button type="button"
-                          class="btn btn-danger btn-sm position-absolute top-0 end-0 translate-middle rounded-circle"
-                          (click)="removeVideo(i)">
+                        <button type="button" class="btn btn-remove-media" (click)="removeVideo(i)">
                           <i class="fas fa-times"></i>
                         </button>
                       </div>
@@ -235,16 +246,21 @@
             <div class="d-flex justify-content-end gap-2 mt-4">
               <button type="button" class="btn btn-outline-secondary btn-lg px-4" (click)="goBack()"
                 [disabled]="isLoading || isUploading">
-                إلغاء
+                {{ 'addService.form.buttons.cancel' | translate }}
               </button>
-              <button type="submit" class="btn btn-warning btn-lg px-4" [disabled]="isLoading || isUploading">
+              <button type="submit" class="btn btn-primary btn-lg px-4" [disabled]="isLoading || isUploading">
                 <span *ngIf="isLoading || isUploading" class="spinner-border spinner-border-sm me-2"></span>
-                <span *ngIf="isLoading">جاري الحفظ...</span>
-                <span *ngIf="isUploading">جاري رفع الملفات...</span>
-                <span *ngIf="!isLoading && !isUploading">حفظ التغييرات</span>
+                <span *ngIf="isLoading">
+                  {{ 'addService.form.buttons.saving' | translate }}
+                </span>
+                <span *ngIf="isUploading">
+                  {{ 'addService.form.buttons.uploading' | translate }}
+                </span>
+                <span *ngIf="!isLoading && !isUploading">
+                  {{ 'addService.form.buttons.submit' | translate }}
+                </span>
               </button>
             </div>
-
           </form>
         </div>
       </div>
@@ -253,17 +269,9 @@
 </div>
 
 <!-- Loading State -->
-<div *ngIf="isLoadingData" class="container-fluid px-3 py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-lg-8">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4 text-center">
-          <div class="spinner-border text-primary mb-3" role="status">
-            <span class="visually-hidden">جاري التحميل...</span>
-          </div>
-          <h5 class="text-muted">جاري تحميل بيانات الخدمة...</h5>
-        </div>
-      </div>
-    </div>
+<div *ngIf="isLoadingData" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">{{ 'addService.loading.text' | translate }}</span>
   </div>
+  <p class="mt-3 text-muted">{{ 'addService.loading.dashboard' | translate }}</p>
 </div>

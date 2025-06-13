@@ -14,11 +14,13 @@ import {
   UpdateEventItemRequest,
 } from '../../core/models/event-item.model';
 import { EVENT_CATEGORIES } from '../../core/models/constants/categories.const';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
   selector: 'app-edit-service',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './edit-service.component.html',
   styleUrls: ['./edit-service.component.css'],
 })
@@ -41,7 +43,9 @@ export class EditServiceComponent implements OnInit {
     private fb: FormBuilder,
     private eventItemService: EventItemService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translate: TranslateService,
+    private translationService: TranslationService
   ) {
     this.serviceForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -110,14 +114,29 @@ export class EditServiceComponent implements OnInit {
 
     // Add this to populate subcategories
     const category = this.categories.find((c) => c.value === service.category);
-    this.subcategories = category?.subcategories || [];
+    if (category) {
+      this.subcategories = category.subcategories.map((sub) => ({
+        ...sub,
+        label: this.translate.instant(`subcategories.${sub.value}`),
+      }));
+    }
   }
 
   onCategoryChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const value = select.value;
     const category = this.categories.find((c) => c.value === value);
-    this.subcategories = category?.subcategories || [];
+
+    if (category) {
+      // Translate subcategories when category changes
+      this.subcategories = category.subcategories.map((sub) => ({
+        ...sub,
+        label: this.translate.instant(`subcategories.${sub.value}`),
+      }));
+    } else {
+      this.subcategories = [];
+    }
+
     this.serviceForm.patchValue({ subcategory: '' });
   }
 
@@ -270,12 +289,32 @@ export class EditServiceComponent implements OnInit {
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
+  // Add method to get translated categories
+  getTranslatedCategories() {
+    return this.categories.map((category) => ({
+      ...category,
+      label: this.translate.instant(`categories.${category.value}`),
+      subcategories: category.subcategories.map((sub) => ({
+        ...sub,
+        label: this.translate.instant(`subcategories.${sub.value}`),
+      })),
+    }));
+  }
+
+  // Update error messages to use translations
   getFieldError(fieldName: string): string {
     const field = this.serviceForm.get(fieldName);
     if (field?.errors) {
-      if (field.errors['required']) return 'هذا الحقل مطلوب';
-      if (field.errors['minlength']) return 'يجب أن يكون النص أطول';
-      if (field.errors['min']) return 'يجب أن تكون القيمة أكبر من صفر';
+      if (field.errors['required'])
+        return this.translate.instant('addService.form.validation.required');
+      if (field.errors['minlength'])
+        return this.translate.instant('addService.form.validation.minLength', {
+          length: field.errors['minlength'].requiredLength,
+        });
+      if (field.errors['min'])
+        return this.translate.instant('addService.form.validation.minValue', {
+          value: field.errors['min'].min,
+        });
     }
     return '';
   }

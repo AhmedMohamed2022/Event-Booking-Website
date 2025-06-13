@@ -418,3 +418,15 @@
     font-size: 1.8rem;
   }
 }
+
+:host-context([dir="rtl"]) {
+  .stat-content h3 {
+    direction: ltr;
+    text-align: right;
+  }
+
+  .amount-info strong {
+    direction: ltr;
+    display: inline-block;
+  }
+}
