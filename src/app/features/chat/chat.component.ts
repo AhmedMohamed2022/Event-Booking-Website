@@ -5,11 +5,14 @@ import {
   ViewChild,
   ElementRef,
   Input,
+  AfterViewInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ChatService } from '../../core/services/chat.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Message } from '../../core/models/chat.model';
 
 @Component({
@@ -33,35 +36,60 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Input() otherUserName!: string;
   @Input() onClose!: () => void;
 
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef // ✅ Inject it
+  ) {}
 
   ngOnInit() {
+    if (!this.authService.isAuthenticated()) {
+      console.error('User not authenticated');
+      this.error = 'Authentication required';
+      return;
+    }
+
     this.initializeChat();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (!this.otherUserId || !this.otherUserName) {
+        this.error = 'Recipient information missing';
+        return;
+      }
+
+      this.initializeChat();
+    }, 0);
   }
 
   private initializeChat() {
     this.isLoading = true;
     const currentUserId = this.getCurrentUserId();
 
-    if (!currentUserId) {
-      this.error = 'User not authenticated';
+    if (!currentUserId || !this.otherUserId) {
+      this.error = 'Missing user information';
+      this.isLoading = false;
       return;
     }
 
-    // Connect socket
-    this.chatService.connectSocket();
+    // Initialize socket connection
+    if (!this.chatService.isSocketConnected()) {
+      this.chatService.reinitializeSocket();
+    }
 
-    // Join user's room
-    this.chatService.joinRoom(currentUserId);
+    // Join user's room after short delay to ensure socket is connected
+    setTimeout(() => {
+      this.chatService.joinRoom(currentUserId);
+      this.loadMessages();
+    }, 1000);
 
-    // Load conversation history
-    this.loadMessages();
-
-    // Subscribe to new messages - Update this line
+    // Subscribe to new messages
     this.subscriptions.push(
       this.chatService.newMessage$.subscribe((message: Message | null) => {
         if (message) {
           this.handleNewMessage(message);
+          this.cdr.detectChanges();
         }
       })
     );

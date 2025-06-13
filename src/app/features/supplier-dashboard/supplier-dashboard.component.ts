@@ -5,11 +5,12 @@ import { SupplierDashboardData } from '../../core/models/supplier-dashboard.mode
 import { SupplierDashboardService } from '../../core/services/supplier-dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
 import { BookingService } from '../../core/services/booking.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-supplier-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './supplier-dashboard.component.html',
   styleUrls: ['./supplier-dashboard.component.css'],
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Booking } from '../../core/models/booking.model';
 import { BookingService } from '../../core/services/booking.service';
@@ -9,6 +9,7 @@ import { ChatService } from '../../core/services/chat.service';
 import { ChatDialogService } from '../../core/services/chat-dialog.service';
 import { Router } from '@angular/router';
 import { Message } from '../../core/models/chat.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ChatPreview {
   userId: string;
@@ -28,7 +29,7 @@ interface BookingWithSupplier extends Booking {
 @Component({
   selector: 'app-client-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, RouterLink, TranslateModule],
   templateUrl: './client-dashboard.component.html',
   styleUrls: ['./client-dashboard.component.css'],
 })

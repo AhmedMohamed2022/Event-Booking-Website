@@ -15,8 +15,15 @@ interface AuthResponse {
   user: User;
 }
 
+// interface SendOTPResponse {
+//   message: string;
+
+// }
 interface SendOTPResponse {
   message: string;
+  phone: string;
+  otp?: string; // Optional for development
+  expiresIn?: number;
 }
 
 @Injectable({
@@ -37,6 +44,12 @@ export class AuthService {
   );
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  // Add token subject
+  private tokenSubject = new BehaviorSubject<string | null>(
+    this.getTokenFromStorage()
+  );
+  public token$ = this.tokenSubject.asObservable();
+
   constructor() {
     // Initialize user state on service creation
     this.initializeUserState();
@@ -51,13 +64,15 @@ export class AuthService {
 
     if (user && token) {
       this.currentUserSubject.next(user);
+      this.tokenSubject.next(token);
     }
   }
 
   /**
    * Send OTP to phone number
    */
-  async sendOTP(phone: string, name: string): Promise<void> {
+  // async sendOTP(phone: string, name: string): Promise<void> {
+  async sendOTP(phone: string, name: string): Promise<SendOTPResponse> {
     try {
       const response = await firstValueFrom(
         this.http.post<SendOTPResponse>(`${this.API_BASE}/auth/send-otp`, {
@@ -69,8 +84,13 @@ export class AuthService {
       if (!response.message) {
         throw new Error('Failed to send OTP');
       }
+      //added for development purposes
+
+      return response;
     } catch (error) {
       this.handleError(error);
+      //added for development purposes
+      throw error;
     }
   }
 
@@ -113,6 +133,10 @@ export class AuthService {
   setToken(token: string): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem(this.TOKEN_KEY, token);
+      // Ensure token emission happens after storage
+      setTimeout(() => {
+        this.tokenSubject.next(token);
+      }, 0);
     }
   }
 
@@ -198,6 +222,7 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     this.currentUserSubject.next(null);
+    this.tokenSubject.next(null);
 
     // Clear any stored redirect URLs
     this.clearRedirectUrl();

@@ -337,6 +337,29 @@
   color: #2c2c2c;
 }
 
+/* Add to both component CSS files */
+.dashboard-header .btn-outline-primary {
+  transition: all 0.3s ease;
+}
+
+.dashboard-header .btn-outline-primary:hover {
+  background-color: var(--bs-primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.dashboard-header .d-flex.align-items-center.gap-3 {
+  flex-wrap: wrap;
+}
+
+/* RTL support */
+:host-context([dir="rtl"]) {
+  .dashboard-header .btn i {
+    margin-right: 0;
+    margin-left: 0.5rem;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .supplier-dashboard {

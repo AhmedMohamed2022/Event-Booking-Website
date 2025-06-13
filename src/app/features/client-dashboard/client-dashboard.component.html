@@ -6,12 +6,18 @@
       <!-- Header -->
       <div class="dashboard-header mb-4">
         <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h1 class="dashboard-title">My Bookings</h1>
-            <p class="dashboard-subtitle text-muted">Manage your event bookings</p>
+          <div class="d-flex align-items-center gap-3">
+            <!-- Add Home button -->
+            <button class="btn btn-outline-primary" routerLink="/">
+              <i class="bi bi-house-door me-2"></i>{{ 'header.home' | translate }}
+            </button>
+            <div>
+              <h1 class="dashboard-title">{{ 'clientDashboard.header.title' | translate }}</h1>
+              <p class="dashboard-subtitle text-muted">{{ 'clientDashboard.header.subtitle' | translate }}</p>
+            </div>
           </div>
           <button class="btn btn-outline-danger" (click)="logout()">
-            <i class="fas fa-sign-out-alt me-2"></i>Logout
+            <i class="fas fa-sign-out-alt me-2"></i>{{ 'header.logout' | translate }}
           </button>
         </div>
       </div>

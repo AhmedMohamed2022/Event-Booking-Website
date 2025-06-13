@@ -276,6 +276,27 @@ export class ServiceDetailComponent implements OnInit {
     return isClient;
   }
 
+  // Initialize chat connection
+  initializeChat() {
+    // First check if user is authenticated
+    if (!this.authService.isAuthenticated()) {
+      console.log('User not authenticated, skipping chat initialization');
+      return;
+    }
+
+    const token = this.authService.getToken();
+    if (!token) {
+      console.log('No token available, skipping chat initialization');
+      return;
+    }
+
+    // Initialize chat only if authenticated and token exists
+    if (!this.chatService.isSocketConnected()) {
+      console.log('Initializing chat connection...');
+      this.chatService.reinitializeSocket();
+    }
+  }
+
   // Utility methods
   shouldShowBookingButton(): boolean {
     return (

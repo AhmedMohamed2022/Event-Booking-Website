@@ -22,19 +22,26 @@
     <!-- Header Section -->
     <div class="dashboard-header">
       <div class="row align-items-center mb-4">
-        <div class="col-md-8">
-          <h1 class="dashboard-title">
-            <i class="fas fa-tachometer-alt me-3"></i>
-            Supplier Dashboard
-          </h1>
-          <p class="text-muted mb-0">Welcome back, {{ dashboardData.supplier.name }}</p>
+        <div class="col-md-8 d-flex align-items-center gap-3">
+          <!-- Add Home button -->
+          <button class="btn btn-outline-primary" routerLink="/">
+            <i class="bi bi-house-door me-2"></i>{{ 'header.home' | translate }}
+          </button>
+          <div>
+            <h1 class="dashboard-title">
+              <i class="fas fa-tachometer-alt me-3"></i>
+              {{ 'supplierDashboard.header.title' | translate }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'supplierDashboard.header.welcome' | translate }}, {{
+              dashboardData.supplier.name }}</p>
+          </div>
         </div>
         <div class="col-md-4 text-end">
           <button class="btn btn-primary me-2" [routerLink]="['/supplier/add-service-eng']">
-            <i class="fas fa-plus me-2"></i>Add Service
+            <i class="fas fa-plus me-2"></i>{{ 'supplierDashboard.buttons.addService' | translate }}
           </button>
           <button class="btn btn-outline-danger" (click)="logout()">
-            <i class="fas fa-sign-out-alt me-2"></i>Logout
+            <i class="fas fa-sign-out-alt me-2"></i>{{ 'header.logout' | translate }}
           </button>
         </div>
       </div>

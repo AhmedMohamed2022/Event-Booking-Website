@@ -4,7 +4,8 @@
     "signIn": "Sign In",
     "userMenu": "User Menu",
     "dashboard": "Dashboard",
-    "logout": "Logout"
+    "logout": "Logout",
+    "home": "Home"
   },
   "home": {
     "heroTitle": "Find Perfect Event Services",
@@ -297,7 +298,9 @@
       "otpSendFailed": "Failed to send OTP. Please try again.",
       "loginSuccess": "Login successful! Redirecting...",
       "otpInvalid": "Invalid OTP. Please try again.",
-      "newUserName": "It looks like you're new! Please enter your name."
+      "newUserName": "It looks like you're new! Please enter your name.",
+      "otpExpiry": "OTP will expire in {{minutes}} minutes",
+      "devMode": "Development Mode: OTP auto-filled"
     },
     "footer": {
       "termsNotice": "By continuing, you agree to our Terms of Service"
@@ -466,6 +469,22 @@
     "status": {
       "pending": "Your request is pending approval.",
       "approved": "Your request has been approved."
+    }
+  },
+  "clientDashboard": {
+    "header": {
+      "title": "My Bookings",
+      "subtitle": "Manage your event bookings"
+    }
+  },
+  "supplierDashboard": {
+    "header": {
+      "title": "Supplier Dashboard",
+      "welcome": "Welcome back",
+      "subtitle": "Manage your services and bookings"
+    },
+    "buttons": {
+      "addService": "Add Service"
     }
   }
 }
