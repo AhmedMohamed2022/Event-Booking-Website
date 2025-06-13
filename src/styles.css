@@ -153,3 +153,14 @@ body.lang-ar .btn i.me-2 {
 body.lang-ar {
   font-family: "Cairo", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
+/* Common utility classes and shared styles */
+.text-muted {
+  color: #6c757d;
+}
+.btn {
+  transition: all 0.3s ease;
+}
+.table {
+  margin-bottom: 0;
+}
