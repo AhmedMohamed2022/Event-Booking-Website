@@ -133,39 +133,17 @@
   border-radius: 8px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
   z-index: 1000;
+  overflow: hidden;
 }
 
 /* RTL Support */
-:host-context([dir="rtl"]) {
-  .stat-icon {
-    margin-right: 0;
-    margin-left: 1rem;
-  }
-  .stat-content h3 {
-    direction: ltr;
-    text-align: right;
-  }
-  .amount-info strong {
-    direction: ltr;
-    display: inline-block;
-  }
-  .chat-window-container {
-    right: auto;
-    left: 20px;
-  }
+:host-context([dir="rtl"]) .chat-window-container {
+  right: auto;
+  left: 20px;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .supplier-dashboard {
-    padding: 1rem;
-  }
-  .dashboard-header {
-    padding: 1.25rem;
-  }
-  .stat-card {
-    margin-bottom: 1rem;
-  }
   .chat-window-container {
     width: 100%;
     height: 100%;
@@ -491,8 +469,6 @@
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Responsive Chat Window */

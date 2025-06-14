@@ -329,6 +329,6 @@
 
 <!-- Chat Window -->
 <div *ngIf="showChatWindow && currentChatUserId && currentChatUserName" class="chat-window-container">
-  <app-chat [otherUserId]="currentChatUserId" [otherUserName]="currentChatUserName" (onClose)="closeChat()">
+  <app-chat [otherUserId]="currentChatUserId" [otherUserName]="currentChatUserName" [onClose]="closeChat.bind(this)">
   </app-chat>
 </div>

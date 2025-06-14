@@ -33,6 +33,7 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
   currentChatUserName: string | null = null;
   private messageSubscription!: Subscription;
   private currentUserId: string | null = null;
+  private processedMessageIds = new Set<string>(); // Add this to track message IDs
 
   constructor(
     private supplierService: SupplierDashboardService,
@@ -120,23 +121,27 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     console.log('Joining room with supplier ID:', this.currentUserId);
     this.chatService.joinRoom(this.currentUserId);
 
-    // Subscribe to new messages
+    // Update message subscription to handle duplicates
     this.messageSubscription = this.chatService.newMessage$.subscribe(
       (message: any) => {
         if (message && message.to === this.currentUserId) {
-          console.log('New message received in supplier dashboard:', message);
+          // Only process new messages
+          if (!this.processedMessageIds.has(message._id)) {
+            console.log('New message received in supplier dashboard:', message);
+            this.processedMessageIds.add(message._id);
 
-          // Update unread count for this sender
-          if (!this.unreadMessages[message.from]) {
-            this.unreadMessages[message.from] = 0;
+            // Update unread count for this sender
+            if (!this.unreadMessages[message.from]) {
+              this.unreadMessages[message.from] = 0;
+            }
+            this.unreadMessages[message.from]++;
+
+            // If this is a new chat, load active chats
+            this.loadActiveChats();
+
+            // Play notification sound
+            this.playNotificationSound();
           }
-          this.unreadMessages[message.from]++;
-
-          // If this is a new chat, load active chats
-          this.loadActiveChats();
-
-          // Play notification sound
-          this.playNotificationSound();
         }
       },
       (error: any) => {
@@ -183,11 +188,12 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     this.unreadMessages[userId] = 0;
   }
 
-  closeChat() {
+  closeChat = () => {
+    console.log('Closing chat window');
     this.showChatWindow = false;
     this.currentChatUserId = null;
     this.currentChatUserName = null;
-  }
+  };
 
   getTotalUnreadMessages(): number {
     return Object.values(this.unreadMessages).reduce(
@@ -219,10 +225,11 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Clean up subscriptions
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
     }
+    // Clear any open chat windows
+    this.closeChat();
   }
 
   formatDate(date: string | Date): string {
