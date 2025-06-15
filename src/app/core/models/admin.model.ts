@@ -9,6 +9,12 @@ export interface AdminStats {
   cancelledBookings: number;
   totalRevenue: number;
   topCategories: TopCategory[];
+  // Add new fields
+  totalContactRequests: number;
+  contactOnlySuppliers: number;
+  lockedSuppliers: number;
+  activeSubscriptions: number;
+  contactMessages: number;
 }
 
 export interface TopCategory {

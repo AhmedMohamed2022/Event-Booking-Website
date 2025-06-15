@@ -8,6 +8,8 @@ import { Router, RouterLink } from '@angular/router';
 import { AdminStats, JoinRequest } from '../../core/models/admin.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/services/language.service';
+import { ContactMessage } from '../../core/models/contact.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,6 +25,25 @@ export class AdminDashboardComponent implements OnInit {
   error = '';
   selectedTab = 'overview';
 
+  // Update the contact messages property to be an array
+  contactMessages: any[] = [];
+
+  // Update the contactInfoArray structure
+  contactInfoArray = [
+    {
+      icon: 'bi bi-geo-alt',
+      type: 'address',
+    },
+    {
+      icon: 'bi bi-telephone',
+      type: 'phone',
+    },
+    {
+      icon: 'bi bi-envelope',
+      type: 'email',
+    },
+  ];
+
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
@@ -33,32 +54,47 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.loadContactMessages();
+  }
+
+  // Load contact messages
+  loadContactMessages() {
+    this.adminService.getContactMessages().subscribe({
+      next: (response: any) => {
+        // Ensure we're getting an array of messages
+        this.contactMessages = Array.isArray(response.messages)
+          ? response.messages
+          : [];
+      },
+      error: (error) => {
+        console.error('Error loading contact messages:', error);
+      },
+    });
   }
 
   loadDashboardData(): void {
     this.loading = true;
     this.error = '';
 
-    // Load admin stats
-    this.adminService.getAdminStats().subscribe({
-      next: (stats) => {
-        this.stats = stats;
+    // Use forkJoin to handle multiple requests
+    forkJoin({
+      stats: this.adminService.getAdminStats(),
+      requests: this.adminService.getJoinRequests(),
+      messages: this.adminService.getContactMessages(),
+    }).subscribe({
+      next: (data: any) => {
+        this.stats = data.stats;
+        this.joinRequests = data.requests;
+        // Ensure messages is an array
+        this.contactMessages = Array.isArray(data.messages.messages)
+          ? data.messages.messages
+          : [];
         this.loading = false;
       },
       error: (err) => {
         this.error = 'Failed to load dashboard data';
         this.loading = false;
         console.error('Dashboard error:', err);
-      },
-    });
-
-    // Load join requests
-    this.adminService.getJoinRequests().subscribe({
-      next: (requests) => {
-        this.joinRequests = requests;
-      },
-      error: (err) => {
-        console.error('Join requests error:', err);
       },
     });
   }
@@ -169,5 +205,56 @@ export class AdminDashboardComponent implements OnInit {
     notification.className = 'alert alert-danger';
     notification.textContent = message;
     // Add to DOM and remove after timeout
+  }
+
+  // Add method to unlock suppliers
+  unlockSupplier(supplierId: string): void {
+    this.adminService.unlockSupplier(supplierId).subscribe({
+      next: () => {
+        this.loadDashboardData(); // Refresh data
+        this.showSuccessMessage('Supplier unlocked successfully');
+      },
+      error: (err) => {
+        this.showErrorMessage('Failed to unlock supplier');
+      },
+    });
+  }
+  // Add new methods
+  getMessageStatusBadge(status: string): string {
+    return `badge ${
+      status === 'pending' ? 'bg-warning text-dark' : 'bg-success'
+    }`;
+  }
+
+  viewMessageDetails(message: ContactMessage): void {
+    const details = `
+      ${this.translate.instant('adminDashboard.messages.table.name')}: ${
+      message.name
+    }
+      ${this.translate.instant('adminDashboard.messages.table.email')}: ${
+      message.email
+    }
+      ${this.translate.instant('adminDashboard.messages.table.message')}:
+      ${message.message}
+    `;
+    // Replace with proper modal implementation
+    alert(details);
+  }
+
+  markMessageAsRead(message: ContactMessage): void {
+    // You'll need to add this method to your AdminService
+    this.adminService.markContactMessageAsRead(message._id).subscribe({
+      next: () => {
+        message.status = 'read';
+        this.showSuccessMessage(
+          this.translate.instant('adminDashboard.messages.marked.success')
+        );
+      },
+      error: (err) => {
+        this.showErrorMessage(
+          this.translate.instant('adminDashboard.messages.marked.error')
+        );
+      },
+    });
   }
 }

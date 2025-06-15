@@ -28,8 +28,8 @@
     "quickLinksTitle": "Quick Links",
     "aboutLink": "About Us",
     "servicesLink": "Services",
-    "contactLink": "Contact",
-    "termsLink": "Terms",
+    "contactLink": "Contact Us",
+    "termsLink": "Terms & Conditions",
     "contactInfoTitle": "Contact Info",
     "emailInfo": "📧 info@eventbook.com",
     "phoneInfo": "📞 +962 6 123 4567",
@@ -429,6 +429,45 @@
         "rejected": "Rejected",
         "reviewed": "Reviewed"
       }
+    },
+    "messages": {
+      "title": "Contact Messages",
+      "table": {
+        "date": "Date",
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "read": "Read",
+        "pending": "Pending"
+      },
+      "empty": {
+        "title": "No Messages",
+        "message": "No contact messages to display"
+      },
+      "marked": {
+        "success": "Message marked as read",
+        "error": "Failed to mark message as read"
+      }
+    },
+    "contact": {
+      "info": {
+        "address": {
+          "title": "Address",
+          "value": "Amman, Jordan"
+        },
+        "phone": {
+          "title": "Phone",
+          "value": "+962 6 123 4567"
+        },
+        "email": {
+          "title": "Email",
+          "value": "info@eventbook.com"
+        }
+      }
     }
   },
   "join": {
@@ -725,5 +764,81 @@
         "invalidValue": "Invalid value"
       }
     }
+  },
+  "about": {
+    "title": "About Us",
+    "mission": {
+      "title": "Our Mission",
+      "description": "We aim to simplify event planning by connecting event organizers with the best service providers in Jordan."
+    },
+    "whatWeDo": {
+      "title": "What We Do",
+      "features": [
+        {
+          "icon": "fas fa-search",
+          "title": "Easy Discovery",
+          "description": "Find the perfect venue and services for your events"
+        },
+        {
+          "icon": "fas fa-calendar-check",
+          "title": "Simple Booking",
+          "description": "Book services directly through our platform"
+        },
+        {
+          "icon": "fas fa-star",
+          "title": "Quality Assurance",
+          "description": "We verify all service providers"
+        },
+        {
+          "icon": "fas fa-handshake",
+          "title": "Trusted Partners",
+          "description": "Work with reliable service providers"
+        }
+      ]
+    }
+  },
+  "terms": {
+    "title": "Terms & Conditions",
+    "sections": [
+      {
+        "title": "1. Acceptance of Terms",
+        "content": "By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement."
+      },
+      {
+        "title": "2. Use License",
+        "content": "Permission is granted to temporarily download one copy of the materials for personal, non-commercial transitory viewing only."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact Us",
+    "info": [
+      {
+        "icon": "fas fa-map-marker-alt",
+        "title": "Address",
+        "value": "Amman, Jordan"
+      },
+      {
+        "icon": "fas fa-phone",
+        "title": "Phone",
+        "value": "+962 6 123 4567"
+      },
+      {
+        "icon": "fas fa-envelope",
+        "title": "Email",
+        "value": "info@eventbook.com"
+      }
+    ],
+    "form": {
+      "name": "Your Name",
+      "email": "Your Email",
+      "message": "Your Message",
+      "submit": "Send Message"
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for might have been removed or is temporarily unavailable.",
+    "backHome": "Back to Home"
   }
 }

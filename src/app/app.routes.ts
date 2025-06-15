@@ -123,6 +123,39 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/home/home.component').then((c) => c.HomeComponent),
       },
+      {
+        path: 'about',
+        loadComponent: () =>
+          import('./features/about/about.component').then(
+            (c) => c.AboutComponent
+          ),
+      },
+      {
+        path: 'contact',
+        loadComponent: () =>
+          import('./features/contact/contact.component').then(
+            (c) => c.ContactComponent
+          ),
+      },
+      {
+        path: 'terms',
+        loadComponent: () =>
+          import('./features/terms/terms.component').then(
+            (c) => c.TermsComponent
+          ),
+      },
+      {
+        path: '**',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
     ],
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./features/notfound/notfound.component').then(
+        (c) => c.NotFoundComponent
+      ),
   },
 ];

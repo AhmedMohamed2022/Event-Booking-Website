@@ -143,6 +143,15 @@
               </span>
             </button>
           </li>
+          <!-- Add to nav tabs -->
+          <li class="nav-item">
+            <button class="nav-link" [class.active]="selectedTab === 'messages'" (click)="selectTab('messages')">
+              {{ 'adminDashboard.tabs.contactMessages' | translate }}
+              <span *ngIf="contactMessages?.length" class="badge bg-danger ms-2">
+                {{ contactMessages.length }}
+              </span>
+            </button>
+          </li>
         </ul>
       </div>
 
@@ -268,6 +277,76 @@
             <i class="bi bi-inbox display-1 text-muted"></i>
             <h5 class="text-muted mt-3">{{ 'adminDashboard.requests.history.empty.title' | translate }}</h5>
             <p class="text-muted">{{ 'adminDashboard.requests.history.empty.message' | translate }}</p>
+          </div>
+        </div>
+        <!-- Add inside card-body after existing tabs -->
+        <!-- Contact Messages Tab -->
+        <div *ngIf="selectedTab === 'messages'" class="tab-pane">
+          <h5 class="text-primary-dark mb-3">
+            <i class="bi bi-envelope me-2"></i>
+            {{ 'adminDashboard.messages.title' | translate }}
+          </h5>
+
+          <!-- Messages List -->
+          <div class="table-responsive" *ngIf="contactMessages.length > 0">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>{{ 'adminDashboard.messages.table.date' | translate }}</th>
+                  <th>{{ 'adminDashboard.messages.table.name' | translate }}</th>
+                  <th>{{ 'adminDashboard.messages.table.email' | translate }}</th>
+                  <th>{{ 'adminDashboard.messages.table.message' | translate }}</th>
+                  <th>{{ 'adminDashboard.messages.table.status' | translate }}</th>
+                  <th>{{ 'adminDashboard.messages.table.actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let message of contactMessages">
+                  <td>{{ message.createdAt | date:'short' }}</td>
+                  <td>{{ message.name }}</td>
+                  <td>
+                    <a [href]="'mailto:' + message.email">{{ message.email }}</a>
+                  </td>
+                  <td>
+                    <button class="btn btn-link p-0" (click)="viewMessageDetails(message)">
+                      {{ message.message | slice:0:50 }}{{ message.message.length > 50 ? '...' : '' }}
+                    </button>
+                  </td>
+                  <td>
+                    <span [class]="getMessageStatusBadge(message.status)">
+                      {{ 'adminDashboard.messages.status.' + message.status | translate }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="markMessageAsRead(message)"
+                      *ngIf="message.status === 'pending'">
+                      <i class="bi bi-check2-all"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-info" (click)="viewMessageDetails(message)">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- No Messages State -->
+          <div *ngIf="contactMessages.length === 0" class="text-center py-5">
+            <i class="bi bi-envelope-open display-1 text-muted"></i>
+            <h5 class="text-muted mt-3">{{ 'adminDashboard.messages.empty.title' | translate }}</h5>
+            <p class="text-muted">{{ 'adminDashboard.messages.empty.message' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Contact Info Row -->
+        <div *ngIf="selectedTab === 'messages'" class="row mb-4">
+          <div class="col-md-4" *ngFor="let info of contactInfoArray">
+            <div class="text-center">
+              <i [class]="info.icon + ' fs-2 text-warning mb-3'"></i>
+              <h6>{{ 'adminDashboard.contact.info.' + info.type + '.title' | translate }}</h6>
+              <p class="text-muted">{{ 'adminDashboard.contact.info.' + info.type + '.value' | translate }}</p>
+            </div>
           </div>
         </div>
       </div>

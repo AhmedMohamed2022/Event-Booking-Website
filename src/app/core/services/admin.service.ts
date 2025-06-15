@@ -2,56 +2,83 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { AdminStats, JoinRequest } from '../models/admin.model';
 import { environment } from '../../environments/environment';
-import { tap, catchError } from 'rxjs/operators';
+import { ContactMessage, ContactResponse } from '../models/contact.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
-  private joinApiUrl = `${environment.apiUrl}/join`; // Base URL for join endpoints
-  private apiUrl = environment.apiUrl; // Base URL for other admin endpoints
+  private readonly baseUrl = environment.apiUrl;
+  private readonly adminUrl = `${this.baseUrl}/admin`;
+  private readonly joinUrl = `${this.baseUrl}/join`;
+  private readonly contactUrl = `${this.baseUrl}/contact`;
+
   constructor(private http: HttpClient) {}
 
+  // Admin Stats
   getAdminStats(): Observable<AdminStats> {
-    return this.http.get<AdminStats>(`${this.apiUrl}/admin/stats`);
+    return this.http.get<AdminStats>(`${this.adminUrl}/stats`);
   }
 
+  // Join Requests
   getJoinRequests(status?: string): Observable<JoinRequest[]> {
-    let params = new HttpParams();
-    if (status) {
-      params = params.set('status', status);
-    }
-    return this.http.get<JoinRequest[]>(`${this.joinApiUrl}/join-requests`, {
+    const params = status ? new HttpParams().set('status', status) : undefined;
+    return this.http.get<JoinRequest[]>(`${this.joinUrl}/join-requests`, {
       params,
     });
   }
 
   approveJoinRequest(requestId: string): Observable<any> {
-    return this.http.patch(`${this.joinApiUrl}/${requestId}/approve`, {}).pipe(
-      tap((response) => {
-        console.log('Supplier approved:', response);
+    return this.http.patch(`${this.joinUrl}/${requestId}/approve`, {});
+  }
+
+  rejectJoinRequest(requestId: string): Observable<any> {
+    return this.http.patch(`${this.joinUrl}/${requestId}/reject`, {});
+  }
+
+  markAsReviewed(requestId: string): Observable<any> {
+    return this.http.patch(`${this.joinUrl}/${requestId}/review`, {});
+  }
+
+  // getRecentActivity(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.apiUrl}/activity`);
+  // }
+
+  // Add any other admin-related API calls here
+  // Add to AdminService
+  // Contact Messages
+  getContactMessages(): Observable<any> {
+    return this.http.get<any>(`${this.contactUrl}`).pipe(
+      map((response) => {
+        // Ensure we're returning an array even if the backend returns an object
+        return {
+          messages: Array.isArray(response.messages) ? response.messages : [],
+          success: response.success,
+        };
       }),
       catchError((error) => {
-        console.error('Error approving supplier:', error);
-        throw error;
+        console.error('Error fetching contact messages:', error);
+        return of({ messages: [], success: false });
       })
     );
   }
 
-  rejectJoinRequest(requestId: string): Observable<any> {
-    return this.http.patch(`${this.joinApiUrl}/${requestId}/reject`, {});
+  markContactMessageAsRead(messageId: string): Observable<ContactResponse> {
+    return this.http.patch<ContactResponse>(
+      `${this.contactUrl}/${messageId}/read`,
+      {}
+    );
   }
 
-  markAsReviewed(requestId: string): Observable<any> {
-    return this.http.patch(`${this.joinApiUrl}/${requestId}/review`, {});
+  // Supplier Management
+  unlockSupplier(supplierId: string): Observable<any> {
+    return this.http.patch(
+      `${this.adminUrl}/unlock-supplier/${supplierId}`,
+      {}
+    );
   }
-
-  getRecentActivity(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/activity`);
-  }
-
-  // Add any other admin-related API calls here
 }

@@ -1,0 +1,29 @@
+.contact-section {
+  background: linear-gradient(135deg, var(--bs-light) 0%, #fff 100%);
+  min-height: 80vh;
+}
+
+.alert {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.form-control:focus {
+  border-color: var(--bs-warning);
+  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}
+
+.btn-warning:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}

@@ -121,7 +121,9 @@
       <div class="col-6 col-md-4 col-lg-2" *ngFor="let category of eventCategories">
         <div class="service-card text-center cursor-pointer"
           (click)="searchForm.eventType = category.value; onSearchSubmit()">
-          <div class="service-icon">{{category.value | uppercase | slice:0:1}}</div>
+          <div class="service-icon">
+            <i [class]="getCategoryIcon(category.value)"></i>
+          </div>
           <h6 class="mt-3 text-dark">{{category.label}}</h6>
         </div>
       </div>
@@ -158,10 +160,26 @@
       <div class="col-md-4 mb-4">
         <h6 class="mb-3">{{ 'footer.quickLinksTitle' | translate }}</h6>
         <ul class="list-unstyled">
-          <li><a href="#" class="text-light-50 text-decoration-none">{{ 'footer.aboutLink' | translate }}</a></li>
-          <li><a href="#" class="text-light-50 text-decoration-none">{{ 'footer.servicesLink' | translate }}</a></li>
-          <li><a href="#" class="text-light-50 text-decoration-none">{{ 'footer.contactLink' | translate }}</a></li>
-          <li><a href="#" class="text-light-50 text-decoration-none">{{ 'footer.termsLink' | translate }}</a></li>
+          <li>
+            <a routerLink="/about" class="text-light-50 text-decoration-none">
+              {{ 'footer.aboutLink' | translate }}
+            </a>
+          </li>
+          <!-- <li>
+            <a routerLink="/search-results" class="text-light-50 text-decoration-none">
+              {{ 'footer.servicesLink' | translate }}
+            </a>
+          </li> -->
+          <li>
+            <a routerLink="/contact" class="text-light-50 text-decoration-none">
+              {{ 'footer.contactLink' | translate }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/terms" class="text-light-50 text-decoration-none">
+              {{ 'footer.termsLink' | translate }}
+            </a>
+          </li>
         </ul>
       </div>
 

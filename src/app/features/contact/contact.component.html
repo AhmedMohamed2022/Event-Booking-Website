@@ -1,0 +1,68 @@
+<section class="contact-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h1 class="text-center mb-4">{{ 'contact.title' | translate }}</h1>
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <!-- Contact Info -->
+            <div class="row mb-4">
+              <div class="col-md-4" *ngFor="let info of contactInfo">
+                <div class="text-center">
+                  <i [class]="info.icon + ' fs-2 text-warning mb-3'"></i>
+                  <h6>{{ 'adminDashboard.contact.info.' + info.type + '.title' | translate }}</h6>
+                  <p class="text-muted">{{ 'adminDashboard.contact.info.' + info.type + '.value' | translate }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Form -->
+            <form (ngSubmit)="onSubmit(contactForm)" #contactForm="ngForm">
+              <!-- Error Message -->
+              <div *ngIf="submitError" class="alert alert-danger">
+                {{ submitError }}
+              </div>
+
+              <!-- Success Message -->
+              <div *ngIf="submitSuccess" class="alert alert-success">
+                {{ 'contact.form.successMessage' | translate }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">{{ 'contact.form.name' | translate }}</label>
+                <input type="text" class="form-control" name="name" [(ngModel)]="formData.name" #name="ngModel" required
+                  [class.is-invalid]="name.invalid && (name.dirty || name.touched)">
+                <div class="invalid-feedback" *ngIf="name.invalid && (name.dirty || name.touched)">
+                  {{ 'contact.form.validation.nameRequired' | translate }}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">{{ 'contact.form.email' | translate }}</label>
+                <input type="email" class="form-control" name="email" [(ngModel)]="formData.email" #email="ngModel"
+                  required email [class.is-invalid]="email.invalid && (email.dirty || email.touched)">
+                <div class="invalid-feedback" *ngIf="email.invalid && (email.dirty || email.touched)">
+                  {{ 'contact.form.validation.emailInvalid' | translate }}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">{{ 'contact.form.message' | translate }}</label>
+                <textarea class="form-control" rows="5" name="message" [(ngModel)]="formData.message" #message="ngModel"
+                  required [class.is-invalid]="message.invalid && (message.dirty || message.touched)"></textarea>
+                <div class="invalid-feedback" *ngIf="message.invalid && (message.dirty || message.touched)">
+                  {{ 'contact.form.validation.messageRequired' | translate }}
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-warning w-100" [disabled]="contactForm.invalid || isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                {{ (isSubmitting ? 'contact.form.submitting' : 'contact.form.submit') | translate }}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

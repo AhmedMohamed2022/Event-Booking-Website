@@ -173,4 +173,18 @@ export class HomeComponent implements OnInit {
       this.authService.logout();
     }
   }
+
+  getCategoryIcon(categoryValue: string): string {
+    const iconMap: { [key: string]: string } = {
+      wedding: 'fas fa-ring',
+      engagement: 'fas fa-heart',
+      conference: 'fas fa-microphone',
+      birthday: 'fas fa-birthday-cake',
+      corporate: 'fas fa-briefcase',
+      graduation: 'fas fa-graduation-cap',
+      funeral: 'fas fa-dove',
+    };
+
+    return iconMap[categoryValue] || 'fas fa-calendar-alt'; // fallback icon
+  }
 }
