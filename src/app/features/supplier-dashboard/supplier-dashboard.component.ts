@@ -11,11 +11,18 @@ import { Message, ActiveChat, ChatPreview } from '../../core/models/chat.model';
 import { Subscription } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { ChatComponent } from '../chat/chat.component';
+import { SubscriptionOverviewComponent } from '../subscription-overview/subscription-overview.component';
 
 @Component({
   selector: 'app-supplier-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, ChatComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    ChatComponent,
+    SubscriptionOverviewComponent,
+  ],
   templateUrl: './supplier-dashboard.component.html',
   styleUrls: ['./supplier-dashboard.component.css'],
 })

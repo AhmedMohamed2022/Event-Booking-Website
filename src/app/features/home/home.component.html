@@ -1,8 +1,8 @@
 <!-- Header -->
-<header class="navbar navbar-expand-lg bg-white shadow-sm">
+<header class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container">
     <!-- Brand -->
-    <a class="navbar-brand fw-bold text-dark" href="#">
+    <a class="navbar-brand fw-bold text-dark" href="#" (click)="scrollToSection('hero')">
       <span class="text-warning">✨</span> {{ 'header.brandName' | translate }}
     </a>
 
@@ -12,17 +12,17 @@
 
       <!-- Auth Button -->
       <ng-container *ngIf="!isAuthenticated">
-        <button class="btn btn-warning" routerLink="/login">
+        <button class="btn btn-warning rounded-pill px-4" routerLink="/login">
           <i class="fas fa-sign-in-alt me-2"></i>{{ 'header.signIn' | translate }}
         </button>
       </ng-container>
 
       <!-- User Menu -->
       <div class="nav-item dropdown" *ngIf="isAuthenticated">
-        <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+        <button class="btn btn-outline-primary dropdown-toggle rounded-pill px-4" data-bs-toggle="dropdown">
           <i class="fas fa-user me-2"></i>{{ currentUser?.name }}
         </button>
-        <ul class="dropdown-menu dropdown-menu-end">
+        <ul class="dropdown-menu dropdown-menu-end shadow">
           <li>
             <a class="dropdown-item" [routerLink]="getDashboardLink()">
               <i class="fas fa-tachometer-alt me-2"></i>{{ 'header.dashboard' | translate }}
@@ -43,103 +43,140 @@
 </header>
 
 <!-- Hero Section -->
-<section class="hero-section">
-  <div class="container">
+<section id="hero" class="hero-section">
+  <div class="hero-background">
+    <div class="hero-overlay"></div>
+    <div class="floating-elements">
+      <div class="floating-element floating-element-1"></div>
+      <div class="floating-element floating-element-2"></div>
+      <div class="floating-element floating-element-3"></div>
+    </div>
+  </div>
+
+  <div class="container position-relative">
     <div class="row justify-content-center">
       <div class="col-lg-10">
-        <div class="text-center mb-5">
-          <h1 class="display-4 fw-bold text-dark mb-3">
+        <div class="text-center mb-5 hero-content">
+          <h1 class="hero-title animate-fade-in">
             {{ 'home.heroTitle' | translate }}
           </h1>
-          <p class="lead text-muted">
+          <p class="hero-subtitle animate-fade-in-delayed">
             {{ 'home.heroSubtitle' | translate }}
           </p>
+
+          <!-- Main CTA Button -->
+          <div class="hero-cta animate-bounce-in">
+            <button class="btn btn-warning btn-lg px-5 py-3 rounded-pill shadow-lg" (click)="openSearchModal()">
+              <i class="fas fa-search me-2"></i>
+              {{ 'home.searchButton' | translate }}
+            </button>
+          </div>
         </div>
 
-        <!-- Search Panel -->
-        <div class="search-panel">
-          <form (ngSubmit)="onSearchSubmit()" #searchFormRef="ngForm">
-            <div class="row g-3">
-              <!-- City -->
-              <div class="col-md-6 col-lg-3">
-                <label class="form-label text-dark fw-semibold">{{ 'home.cityLabel' | translate }} *</label>
-                <select class="form-select" [(ngModel)]="searchForm.city" name="city" required>
-                  <option value="">{{ 'home.selectCity' | translate }}</option>
-                  <option *ngFor="let city of translatedCities" [value]="city.original">
-                    {{ city.translated }}
-                  </option>
-                </select>
-              </div>
-
-              <!-- Event Type -->
-              <div class="col-md-6 col-lg-3">
-                <label class="form-label text-dark fw-semibold">{{ 'home.eventTypeLabel' | translate }} *</label>
-                <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType" required>
-                  <option value="">{{ 'home.selectEventType' | translate }}</option>
-                  <option *ngFor="let category of eventCategories" [value]="category.value">
-                    {{ category.label }}
-                  </option>
-                </select>
-              </div>
-
-              <!-- People -->
-              <div class="col-md-6 col-lg-2">
-                <label class="form-label text-dark fw-semibold">{{ 'home.peopleLabel' | translate }}</label>
-                <select class="form-select" [(ngModel)]="searchForm.people" name="people">
-                  <option value="">{{ 'home.selectPeople' | translate }}</option>
-                  <option *ngFor="let range of peopleRanges" [value]="range.label">
-                    {{ range.label }}
-                  </option>
-                </select>
-              </div>
-
-              <!-- Date -->
-              <div class="col-md-6 col-lg-2">
-                <label class="form-label text-dark fw-semibold">{{ 'home.dateLabel' | translate }} *</label>
-                <input type="date" class="form-control" [(ngModel)]="searchForm.date" name="date" required>
-              </div>
-
-              <!-- Search Button -->
-              <div class="col-lg-2">
-                <label class="form-label d-none d-lg-block">&nbsp;</label>
-                <button type="submit" class="btn btn-warning w-100 fw-semibold">
-                  {{ 'home.searchButton' | translate }}
-                </button>
+        <!-- Stats Section -->
+        <div class="stats-section animate-slide-up">
+          <div class="row g-4">
+            <div class="col-6 col-md-3" *ngFor="let stat of stats">
+              <div class="stat-card text-center">
+                <div class="stat-icon mb-2">
+                  <i [class]="stat.icon"></i>
+                </div>
+                <div class="stat-number fw-bold display-6">{{ stat.number }}</div>
+                <div class="stat-label text-muted">{{ stat.label | translate: { count: stat.count } }}</div>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Services Section -->
-<section class="services-section py-5">
+<!-- Popular Categories Section -->
+<section class="popular-categories-section py-5">
   <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">{{ 'home.popularCategories' | translate }}</h2>
+      <p class="section-subtitle text-muted">{{ 'home.popularCategoriesSubtitle' | translate }}</p>
+    </div>
+
     <div class="row g-4">
-      <div class="col-6 col-md-4 col-lg-2" *ngFor="let category of eventCategories">
-        <div class="service-card text-center cursor-pointer"
-          (click)="searchForm.eventType = category.value; onSearchSubmit()">
+      <div class="col-6 col-md-3" *ngFor="let categoryValue of popularCategories">
+        <div class="category-card" (click)="selectCategory(categoryValue)" [attr.data-category]="categoryValue">
+          <div class="category-icon">
+            <i [class]="getCategoryIcon(categoryValue)"></i>
+          </div>
+          <h6 class="category-title">
+            {{ 'categories.' + categoryValue | translate }}
+          </h6>
+          <div class="category-overlay">
+            <span class="category-action">{{ 'home.selectCategory' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- All Services Section -->
+<section id="services" class="services-section py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">{{ 'home.allServices' | translate }}</h2>
+      <p class="section-subtitle text-muted">{{ 'home.allServicesSubtitle' | translate }}</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-6 col-md-4 col-lg-3" *ngFor="let category of eventCategories">
+        <div class="service-card text-center" (click)="selectCategory(category.value)">
           <div class="service-icon">
             <i [class]="getCategoryIcon(category.value)"></i>
           </div>
-          <h6 class="mt-3 text-dark">{{category.label}}</h6>
+          <h6 class="service-title">{{ category.label }}</h6>
+          <div class="service-count">
+            {{ category.subcategories.length }} {{ 'home.services' | translate }}
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Testimonials Section -->
+<!-- <section class="testimonials-section py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title text-white">{{ 'home.testimonials' | translate }}</h2>
+      <p class="section-subtitle text-white-50">{{ 'home.testimonialsSubtitle' | translate }}</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4" *ngFor="let testimonial of testimonials">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <i class="fas fa-star" *ngFor="let star of getStarArray(testimonial.rating)"></i>
+          </div>
+          <p class="testimonial-text">{{ testimonial.text | translate }}</p>
+          <div class="testimonial-author">{{ testimonial.author | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
 <!-- CTA Section -->
-<section class="cta-section">
+<section class="cta-section py-5">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8 text-center">
         <div class="cta-card">
+          <div class="cta-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
           <h3 class="fw-bold text-dark mb-3">{{ 'home.vendorCTATitle' | translate }}</h3>
           <p class="text-muted mb-4">{{ 'home.vendorCTAText' | translate }}</p>
-          <button class="btn btn-warning btn-lg fw-semibold" (click)="navigateToVendorJoin()">
+          <button class="btn btn-warning btn-lg fw-semibold rounded-pill px-5" (click)="navigateToVendorJoin()">
+            <i class="fas fa-rocket me-2"></i>
             {{ 'home.joinButton' | translate }}
           </button>
         </div>
@@ -148,36 +185,141 @@
   </div>
 </section>
 
+<!-- Search Modal -->
+<div class="search-modal-overlay" [class.show]="isSearchModalOpen" (click)="onModalBackdropClick($event)">
+  <div class="search-modal" #searchModal>
+    <div class="search-modal-header">
+      <h4 class="modal-title">
+        <i class="fas fa-search me-2"></i>
+        {{ 'home.searchTitle' | translate }}
+      </h4>
+      <button class="modal-close-btn" (click)="closeSearchModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="search-modal-body">
+      <form (ngSubmit)="onSearchSubmit()" #searchFormRef="ngForm">
+        <div class="row g-4">
+          <!-- City -->
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="fas fa-map-marker-alt me-2"></i>
+              {{ 'home.cityLabel' | translate }} *
+            </label>
+            <select class="form-select" [(ngModel)]="searchForm.city" name="city" required>
+              <option value="">{{ 'home.selectCity' | translate }}</option>
+              <option *ngFor="let city of translatedCities" [value]="city.original">
+                {{ city.translated }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Event Type -->
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="fas fa-calendar me-2"></i>
+              {{ 'home.eventTypeLabel' | translate }} *
+            </label>
+            <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType"
+              (change)="onCategoryChange()" required>
+              <option value="">{{ 'home.selectEventType' | translate }}</option>
+              <option *ngFor="let category of eventCategories" [value]="category.value">
+                {{ category.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Subcategory -->
+          <!-- <div class="col-md-6" *ngIf="availableSubcategories.length > 0">
+            <label class="form-label">
+              <i class="fas fa-list me-2"></i>
+              {{ 'home.subcategoryLabel' | translate }}
+            </label>
+            <select class="form-select" [(ngModel)]="searchForm.subcategory" name="subcategory">
+              <option value="">{{ 'home.selectSubcategory' | translate }}</option>
+              <option *ngFor="let sub of availableSubcategories" [value]="sub.value">
+                {{ sub.label }}
+              </option>
+            </select>
+          </div> -->
+
+          <!-- People -->
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="fas fa-users me-2"></i>
+              {{ 'home.peopleLabel' | translate }}
+            </label>
+            <select class="form-select" [(ngModel)]="searchForm.people" name="people">
+              <option value="">{{ 'home.selectPeople' | translate }}</option>
+              <option *ngFor="let range of peopleRanges" [value]="range.label">
+                {{ range.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Date -->
+          <div class="col-md-6">
+            <label class="form-label">
+              <i class="fas fa-calendar-day me-2"></i>
+              {{ 'home.dateLabel' | translate }} *
+            </label>
+            <input type="date" class="form-control" [(ngModel)]="searchForm.date" name="date" required>
+          </div>
+        </div>
+
+        <div class="search-modal-footer">
+          <button type="button" class="btn btn-outline-secondary me-3" (click)="closeSearchModal()">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button type="submit" class="btn btn-warning px-5" [disabled]="!searchFormRef.form.valid">
+            <i class="fas fa-search me-2"></i>
+            {{ 'home.searchButton' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Footer -->
 <footer class="bg-dark text-light py-5">
   <div class="container">
     <div class="row">
       <div class="col-md-4 mb-4">
-        <h5 class="text-warning mb-3">{{ 'footer.brandName' | translate }}</h5>
+        <h5 class="text-warning mb-3">
+          <span class="text-warning">✨</span> {{ 'footer.brandName' | translate }}
+        </h5>
         <p class="text-light-50">{{ 'footer.description' | translate }}</p>
+        <div class="social-links mt-3">
+          <a href="#" class="social-link me-3"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link me-3"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link me-3"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+        </div>
       </div>
 
       <div class="col-md-4 mb-4">
         <h6 class="mb-3">{{ 'footer.quickLinksTitle' | translate }}</h6>
         <ul class="list-unstyled">
           <li>
-            <a routerLink="/about" class="text-light-50 text-decoration-none">
+            <a routerLink="/about" class="footer-link">
               {{ 'footer.aboutLink' | translate }}
             </a>
           </li>
-          <!-- <li>
-            <a routerLink="/search-results" class="text-light-50 text-decoration-none">
-              {{ 'footer.servicesLink' | translate }}
-            </a>
-          </li> -->
           <li>
-            <a routerLink="/contact" class="text-light-50 text-decoration-none">
+            <a routerLink="/contact" class="footer-link">
               {{ 'footer.contactLink' | translate }}
             </a>
           </li>
           <li>
-            <a routerLink="/terms" class="text-light-50 text-decoration-none">
+            <a routerLink="/terms" class="footer-link">
               {{ 'footer.termsLink' | translate }}
+            </a>
+          </li>
+          <li>
+            <a routerLink="/privacy" class="footer-link">
+              {{ 'footer.privacyLink' | translate }}
             </a>
           </li>
         </ul>
@@ -186,16 +328,25 @@
       <div class="col-md-4 mb-4">
         <h6 class="mb-3">{{ 'footer.contactInfoTitle' | translate }}</h6>
         <ul class="list-unstyled text-light-50">
-          <li>{{ 'footer.emailInfo' | translate }}</li>
-          <li>{{ 'footer.phoneInfo' | translate }}</li>
-          <li>{{ 'footer.addressInfo' | translate }}</li>
+          <li class="mb-2">
+            <i class="fas fa-envelope me-2"></i>
+            {{ 'footer.emailInfo' | translate }}
+          </li>
+          <li class="mb-2">
+            <i class="fas fa-phone me-2"></i>
+            {{ 'footer.phoneInfo' | translate }}
+          </li>
+          <li>
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{ 'footer.addressInfo' | translate }}
+          </li>
         </ul>
       </div>
     </div>
 
     <hr class="my-4">
     <div class="text-center text-light-50">
-      <p>{{ 'footer.copyright' | translate }}</p>
+      <p class="mb-0">{{ 'footer.copyright' | translate }}</p>
     </div>
   </div>
 </footer>

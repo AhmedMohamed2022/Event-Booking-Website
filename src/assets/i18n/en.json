@@ -7,6 +7,9 @@
     "logout": "Logout",
     "home": "Home"
   },
+  "common": {
+    "cancel": "Cancel"
+  },
   "home": {
     "heroTitle": "Find Perfect Event Services",
     "heroSubtitle": "Discover and book the best venues, decorations, and services for your special events",
@@ -20,7 +23,28 @@
     "searchButton": "Search Services",
     "vendorCTATitle": "Are you a vendor?",
     "vendorCTAText": "Join our platform and reach thousands of customers looking for event services",
-    "joinButton": "Join Us Today"
+    "joinButton": "Join Us Today",
+    "searchTitle": "Search for Event Services",
+    "allServices": "All Services",
+    "allServicesSubtitle": "Browse all available event service categories",
+    "selectCategory": "Select",
+    "services": "services",
+    "stats": {
+      "vendors": "{{count}} Vendors",
+      "events": "{{count}} Events",
+      "cities": "{{count}} Cities",
+      "support": "24/7 Support"
+    },
+    "popularCategories": "Popular Categories",
+    "popularCategoriesSubtitle": "Browse the most popular event types",
+    "testimonials": {
+      "first": "EventBook made planning my wedding so easy! Highly recommended.",
+      "firstAuthor": "Sara A.",
+      "second": "Great variety of venues and professional service.",
+      "secondAuthor": "Mohammad K.",
+      "third": "I found the perfect birthday party place for my son!",
+      "thirdAuthor": "Lina M."
+    }
   },
   "footer": {
     "brandName": "EventBook",
@@ -365,7 +389,8 @@
     "tabs": {
       "overview": "Overview",
       "joinRequests": "Join Requests",
-      "allRequestsHistory": "All Requests History"
+      "allRequestsHistory": "All Requests History",
+      "lockedSuppliers": "Locked Suppliers"
     },
     "overview": {
       "title": "Platform Overview",
@@ -468,6 +493,26 @@
           "value": "info@eventbook.com"
         }
       }
+    },
+    "locked": {
+      "title": "Locked Suppliers",
+      "table": {
+        "name": "Name",
+        "phone": "Phone",
+        "category": "Category",
+        "contacts": "Contacts",
+        "lockDate": "Lock Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "unlock": "Unlock"
+      },
+      "empty": {
+        "title": "No Locked Suppliers",
+        "message": "All suppliers are currently active"
+      },
+      "success": "Supplier unlocked successfully",
+      "error": "Failed to unlock supplier"
     }
   },
   "join": {
@@ -840,5 +885,33 @@
     "title": "Page Not Found",
     "description": "The page you are looking for might have been removed or is temporarily unavailable.",
     "backHome": "Back to Home"
+  },
+  "supplier": {
+    "subscription": {
+      "title": "Subscription Overview",
+      "status": {
+        "active": "Active",
+        "expired": "Expired",
+        "cancelled": "Cancelled",
+        "inactive": "Inactive"
+      },
+      "usage": "Usage",
+      "contacts": "Contacts",
+      "warnings": {
+        "expiring": "Your subscription is expiring soon.",
+        "near-limit": "You are near your contact limit.",
+        "locked": "Your account is locked due to contact limit."
+      },
+      "type": "Plan Type",
+      "types": {
+        "basic": "Basic",
+        "premium": "Premium",
+        "undefined": "Unknown"
+      },
+      "expiry": "Expiry Date",
+      "actions": {
+        "renew": "Renew Subscription"
+      }
+    }
   }
 }

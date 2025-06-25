@@ -152,6 +152,66 @@
               </span>
             </button>
           </li>
+          <!-- Add to admin-dashboard.component.html nav tabs -->
+          <li class="nav-item">
+            <button class="nav-link" [class.active]="selectedTab === 'locked'" (click)="selectTab('locked')">
+              {{ 'adminDashboard.tabs.lockedSuppliers' | translate }}
+              <span *ngIf="stats?.lockedSuppliers?.length" class="badge bg-danger ms-2">
+                {{ stats.lockedSuppliers.length }}
+              </span>
+            </button>
+          </li>
+
+          <!-- Add new tab content -->
+          <div *ngIf="selectedTab === 'locked'">
+            <h5 class="text-primary-dark mb-3">
+              <i class="bi bi-lock me-2"></i>
+              {{ 'adminDashboard.locked.title' | translate }}
+            </h5>
+
+            <!-- Locked Suppliers Table -->
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>{{ 'adminDashboard.locked.table.name' | translate }}</th>
+                    <th>{{ 'adminDashboard.locked.table.phone' | translate }}</th>
+                    <th>{{ 'adminDashboard.locked.table.category' | translate }}</th>
+                    <th>{{ 'adminDashboard.locked.table.contacts' | translate }}</th>
+                    <th>{{ 'adminDashboard.locked.table.lockDate' | translate }}</th>
+                    <th>{{ 'adminDashboard.locked.table.actions' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let supplier of stats?.lockedSuppliers">
+                    <td>{{ supplier.name }}</td>
+                    <td>{{ supplier.phone }}</td>
+                    <td>{{ supplier.category }}</td>
+                    <td>
+                      <span class="badge bg-warning">
+                        {{ supplier.contactCount }}/50
+                      </span>
+                    </td>
+                    <td>{{ supplier.lockDate | date:'short' }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-success" (click)="unlockSupplier(supplier._id)"
+                        [disabled]="unlockingSupplier === supplier._id">
+                        <i class="bi bi-unlock me-1"></i>
+                        {{ 'adminDashboard.locked.actions.unlock' | translate }}
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- No Locked Suppliers State -->
+            <div *ngIf="!stats?.lockedSuppliers?.length" class="text-center py-5">
+              <i class="bi bi-shield-check display-1 text-muted"></i>
+              <h5 class="text-muted mt-3">{{ 'adminDashboard.locked.empty.title' | translate }}</h5>
+              <p class="text-muted">{{ 'adminDashboard.locked.empty.message' | translate }}</p>
+            </div>
+          </div>
         </ul>
       </div>
 

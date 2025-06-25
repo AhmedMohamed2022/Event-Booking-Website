@@ -1,8 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
 import { LanguageService } from '../../core/services/language.service';
@@ -18,6 +25,12 @@ interface TranslatedCity {
   translated: string;
 }
 
+interface PeopleRange {
+  min: number;
+  max: number | null;
+  label: string;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -31,14 +44,22 @@ interface TranslatedCity {
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  @ViewChild('searchModal') searchModal!: ElementRef;
+
+  private destroy$ = new Subject<void>();
+
   // Search form data
   searchForm = {
     city: '',
     eventType: '',
+    subcategory: '',
     people: '',
     date: '',
   };
+
+  // Modal state
+  isSearchModalOpen = false;
 
   // Data for dropdowns
   cities = [
@@ -58,13 +79,59 @@ export class HomeComponent implements OnInit {
   // Event categories with translations
   eventCategories: CategoryConfig[] = [];
 
-  peopleRanges = [
-    { min: 50, max: 100, label: '50-100' },
-    { min: 100, max: 150, label: '100-150' },
-    { min: 150, max: 200, label: '150-200' },
-    { min: 200, max: 300, label: '200-300' },
-    { min: 300, max: 500, label: '300-500' },
-    { min: 500, max: null, label: '500+' },
+  // Available subcategories based on selected category
+  availableSubcategories: { value: string; label: string }[] = [];
+
+  peopleRanges: PeopleRange[] = [];
+
+  // Hero section stats (for enhanced visual appeal)
+  stats = [
+    {
+      number: '1000+',
+      label: 'home.stats.vendors',
+      icon: 'fas fa-store',
+      count: 1000,
+    },
+    {
+      number: '5000+',
+      label: 'home.stats.events',
+      icon: 'fas fa-calendar-check',
+      count: 5000,
+    },
+    {
+      number: '50+',
+      label: 'home.stats.cities',
+      icon: 'fas fa-map-marker-alt',
+      count: 50,
+    },
+    {
+      number: '24/7',
+      label: 'home.stats.support',
+      icon: 'fas fa-headset',
+      count: 24,
+    },
+  ];
+
+  // Popular categories for quick access
+  popularCategories = ['wedding', 'engagement', 'conference', 'birthday'];
+
+  // Testimonials for social proof
+  testimonials = [
+    {
+      text: 'testimonials.first',
+      author: 'testimonials.firstAuthor',
+      rating: 5,
+    },
+    {
+      text: 'testimonials.second',
+      author: 'testimonials.secondAuthor',
+      rating: 5,
+    },
+    {
+      text: 'testimonials.third',
+      author: 'testimonials.thirdAuthor',
+      rating: 5,
+    },
   ];
 
   isAuthenticated = false;
@@ -79,13 +146,15 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe((user) => {
-      this.currentUser = user;
-      this.isAuthenticated = !!user;
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        this.currentUser = user;
+        this.isAuthenticated = !!user;
+      });
 
     // Wait for translations to be loaded before initial update
-    this.translate.onLangChange.subscribe(() => {
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.updateTranslations();
     });
 
@@ -93,6 +162,21 @@ export class HomeComponent implements OnInit {
     this.translate.get('header.brandName').subscribe(() => {
       this.updateTranslations();
     });
+
+    // Add escape key listener for modal
+    document.addEventListener('keydown', this.handleEscapeKey.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    document.removeEventListener('keydown', this.handleEscapeKey.bind(this));
+  }
+
+  private handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === 'Escape' && this.isSearchModalOpen) {
+      this.closeSearchModal();
+    }
   }
 
   private updateTranslations() {
@@ -107,6 +191,52 @@ export class HomeComponent implements OnInit {
 
     // Update people ranges with translations
     this.peopleRanges = this.translationService.getTranslatedPeopleRanges();
+  }
+
+  // Modal methods
+  openSearchModal() {
+    this.isSearchModalOpen = true;
+    document.body.classList.add('modal-open');
+    // Focus on first input after modal opens
+    setTimeout(() => {
+      const firstInput = document.querySelector(
+        '.search-modal input, .search-modal select'
+      ) as HTMLElement;
+      firstInput?.focus();
+    }, 100);
+  }
+
+  closeSearchModal() {
+    this.isSearchModalOpen = false;
+    document.body.classList.remove('modal-open');
+  }
+
+  onModalBackdropClick(event: Event) {
+    if (event.target === event.currentTarget) {
+      this.closeSearchModal();
+    }
+  }
+
+  // Category selection handling
+  onCategoryChange() {
+    const selectedCategory = this.eventCategories.find(
+      (cat) => cat.value === this.searchForm.eventType
+    );
+
+    if (selectedCategory) {
+      this.availableSubcategories = selectedCategory.subcategories;
+      this.searchForm.subcategory = ''; // Reset subcategory when category changes
+    } else {
+      this.availableSubcategories = [];
+      this.searchForm.subcategory = '';
+    }
+  }
+
+  // Quick category selection
+  selectCategory(categoryValue: string) {
+    this.searchForm.eventType = categoryValue;
+    this.onCategoryChange();
+    this.openSearchModal();
   }
 
   onSearchSubmit() {
@@ -128,7 +258,7 @@ export class HomeComponent implements OnInit {
       (range) => range.label === this.searchForm.people
     );
 
-    const queryParams = {
+    const queryParams: any = {
       city: this.searchForm.city,
       category: this.searchForm.eventType,
       date: this.searchForm.date,
@@ -136,13 +266,17 @@ export class HomeComponent implements OnInit {
       maxCapacity: selectedRange?.max,
     };
 
+    // Add subcategory if selected
+    if (this.searchForm.subcategory) {
+      queryParams.subcategory = this.searchForm.subcategory;
+    }
+
     // Remove undefined values
     Object.keys(queryParams).forEach(
-      (key) =>
-        queryParams[key as keyof typeof queryParams] === undefined &&
-        delete queryParams[key as keyof typeof queryParams]
+      (key) => queryParams[key] === undefined && delete queryParams[key]
     );
 
+    this.closeSearchModal();
     this.router.navigate(['/search-results'], { queryParams });
   }
 
@@ -185,6 +319,28 @@ export class HomeComponent implements OnInit {
       funeral: 'fas fa-dove',
     };
 
-    return iconMap[categoryValue] || 'fas fa-calendar-alt'; // fallback icon
+    return iconMap[categoryValue] || 'fas fa-calendar-alt';
+  }
+
+  // Get star rating array for testimonials
+  getStarArray(rating: number): number[] {
+    return Array(rating).fill(0);
+  }
+
+  // Scroll to section
+  scrollToSection(sectionId: string) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Animation trigger for stats
+  animateStats() {
+    // This can be enhanced with intersection observer for better performance
+    const elements = document.querySelectorAll('.stat-number');
+    elements.forEach((el) => {
+      el.classList.add('animate');
+    });
   }
 }

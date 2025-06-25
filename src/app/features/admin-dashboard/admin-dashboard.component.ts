@@ -208,14 +208,44 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // Add method to unlock suppliers
+  // unlockSupplier(supplierId: string): void {
+  //   this.adminService.unlockSupplier(supplierId).subscribe({
+  //     next: () => {
+  //       this.loadDashboardData(); // Refresh data
+  //       this.showSuccessMessage('Supplier unlocked successfully');
+  //     },
+  //     error: (err) => {
+  //       this.showErrorMessage('Failed to unlock supplier');
+  //     },
+  //   });
+  // }
+  // Add property to track unlocking state
+  unlockingSupplier: string | null = null;
+
+  // Update unlockSupplier method
   unlockSupplier(supplierId: string): void {
+    if (this.unlockingSupplier) return;
+
+    this.unlockingSupplier = supplierId;
     this.adminService.unlockSupplier(supplierId).subscribe({
       next: () => {
-        this.loadDashboardData(); // Refresh data
-        this.showSuccessMessage('Supplier unlocked successfully');
+        // Remove supplier from locked list
+        if (this.stats?.lockedSuppliers) {
+          this.stats.lockedSuppliers = this.stats.lockedSuppliers.filter(
+            (s) => s._id !== supplierId
+          );
+        }
+        this.showSuccessMessage(
+          this.translate.instant('adminDashboard.locked.success')
+        );
+        this.unlockingSupplier = null;
       },
       error: (err) => {
-        this.showErrorMessage('Failed to unlock supplier');
+        console.error('Unlock error:', err);
+        this.showErrorMessage(
+          this.translate.instant('adminDashboard.locked.error')
+        );
+        this.unlockingSupplier = null;
       },
     });
   }

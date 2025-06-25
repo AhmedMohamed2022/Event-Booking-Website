@@ -1,0 +1,67 @@
+<div class="subscription-overview">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center p-4">
+    <div class="spinner-border text-primary">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Subscription Content -->
+  <div *ngIf="overviewModel && !loading" class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">{{ 'supplier.subscription.title' | translate }}</h5>
+      <span [class]="'badge ' + (overviewModel.status === 'active' ? 'bg-success' : 'bg-danger')">
+        {{ 'supplier.subscription.status.' + overviewModel.status | translate }}
+      </span>
+    </div>
+
+    <div class="card-body">
+      <!-- Usage Progress -->
+      <div class="mb-4">
+        <label class="form-label">{{ 'supplier.subscription.usage' | translate }}</label>
+        <div class="progress">
+          <div class="progress-bar" [ngClass]="getProgressBarClass()" [style.width.%]="stats?.usagePercentage || 0"
+            role="progressbar">
+            {{ stats?.usagePercentage || 0 }}%
+          </div>
+        </div>
+        <small class="text-muted">
+          {{ overviewModel.contactsUsed }}/{{ overviewModel.contactLimit }}
+          {{ 'supplier.subscription.contacts' | translate }}
+        </small>
+      </div>
+
+      <!-- Warning Messages -->
+      <div *ngIf="stats?.hasWarning" class="alert" [ngClass]="{'alert-warning': stats?.warningType === 'near-limit' || stats?.warningType === 'expiring',
+                      'alert-danger': stats?.warningType === 'locked'}">
+        <i class="bi" [ngClass]="{'bi-exclamation-triangle': !stats?.isLocked, 
+                                 'bi-lock-fill': stats?.isLocked}"></i>
+        {{ 'supplier.subscription.warnings.' + (stats?.warningType || '') | translate }}
+      </div>
+
+      <!-- Subscription Details -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">{{ 'supplier.subscription.type' | translate }}</label>
+          <p class="mb-0">{{ 'supplier.subscription.types.' + overviewModel.type | translate }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">{{ 'supplier.subscription.expiry' | translate }}</label>
+          <p class="mb-0">{{ overviewModel.expiryDate | date }}</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="mt-4">
+        <button class="btn btn-primary" (click)="handleRenewClick()" [disabled]="overviewModel.status === 'active'">
+          {{ 'supplier.subscription.actions.renew' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

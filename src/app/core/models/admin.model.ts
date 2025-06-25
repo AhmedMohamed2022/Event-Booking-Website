@@ -12,9 +12,16 @@ export interface AdminStats {
   // Add new fields
   totalContactRequests: number;
   contactOnlySuppliers: number;
-  lockedSuppliers: number;
   activeSubscriptions: number;
   contactMessages: number;
+  lockedSuppliers: {
+    _id: string;
+    name: string;
+    phone: string;
+    contactCount: number;
+    lockDate: string;
+    category: string;
+  }[];
 }
 
 export interface TopCategory {

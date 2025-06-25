@@ -51,8 +51,9 @@
 }
 
 /* Arabic font */
-[dir="rtl"] body {
-  font-family: "Cairo", "Segoe UI", system-ui, sans-serif;
+[dir="rtl"] body,
+.lang-ar {
+  font-family: "Cairo", "Segoe UI", system-ui, sans-serif !important;
 }
 
 /* Language specific styles */
