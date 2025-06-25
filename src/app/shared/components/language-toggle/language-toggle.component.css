@@ -20,11 +20,11 @@
 .btn:hover {
   background-color: var(--accent-gold);
   border-color: var(--accent-gold);
-  color: var(--accent-gold);
+  color: var(--primary-dark);
 }
 
 .btn.active {
   background-color: var(--accent-gold);
   border-color: var(--accent-gold);
-  color: #ffc107;
+  color: var(--primary-dark);
 }
