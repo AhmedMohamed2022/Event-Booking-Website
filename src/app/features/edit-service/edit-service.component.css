@@ -1,7 +1,7 @@
 /* src/app/features/edit-service/edit-service.component.css */
 
 /* Earth-tone color palette */
-:root {
+* {
   --earth-brown: #8b4513;
   --earth-tan: #d2b48c;
   --earth-sage: #9caf88;
