@@ -1,0 +1,85 @@
+/* ===== CUSTOM THEME COLORS ===== */
+/* This file contains all custom color definitions for easy modification */
+
+:root {
+  /* Main Gold Color Palette */
+  --custom-gold: #cba135;
+  --custom-gold-hover: #b8942e;
+  --custom-gold-light: #e6d4a3;
+  --custom-gold-medium: #d4c078;
+  --custom-gold-dark: #a88a2a;
+  --custom-gold-rgb: 203, 161, 53;
+
+  /* Alternative Color Palettes (uncomment to use) */
+
+  /* Blue Theme */
+  /*
+  --custom-gold: #007bff;
+  --custom-gold-hover: #0056b3;
+  --custom-gold-light: #b3d7ff;
+  --custom-gold-medium: #66a3ff;
+  --custom-gold-dark: #004085;
+  --custom-gold-rgb: 0, 123, 255;
+  */
+
+  /* Green Theme */
+  /*
+  --custom-gold: #28a745;
+  --custom-gold-hover: #1e7e34;
+  --custom-gold-light: #b8e6c1;
+  --custom-gold-medium: #6bcb7a;
+  --custom-gold-dark: #155724;
+  --custom-gold-rgb: 40, 167, 69;
+  */
+
+  /* Purple Theme */
+  /*
+  --custom-gold: #6f42c1;
+  --custom-gold-hover: #5a2d91;
+  --custom-gold-light: #d1c4e9;
+  --custom-gold-medium: #9c7dc2;
+  --custom-gold-dark: #3d1b5a;
+  --custom-gold-rgb: 111, 66, 193;
+  */
+
+  /* Red Theme */
+  /*
+  --custom-gold: #dc3545;
+  --custom-gold-hover: #c82333;
+  --custom-gold-light: #f5c6cb;
+  --custom-gold-medium: #e4606d;
+  --custom-gold-dark: #721c24;
+  --custom-gold-rgb: 220, 53, 69;
+  */
+
+  /* Orange Theme */
+  /*
+  --custom-gold: #fd7e14;
+  --custom-gold-hover: #e55a00;
+  --custom-gold-light: #ffd4b3;
+  --custom-gold-medium: #ffa366;
+  --custom-gold-dark: #b35a00;
+  --custom-gold-rgb: 253, 126, 20;
+  */
+}
+
+/* ===== HOW TO CHANGE COLORS ===== */
+/*
+To change your theme colors:
+
+1. Modify the values in the :root section above
+2. For a completely different color, update all the --custom-gold variables
+3. Make sure to update the RGB values to match your new color
+4. The RGB values are used for transparency effects (like focus shadows)
+
+Example for a blue theme:
+--custom-gold: #007bff;
+--custom-gold-hover: #0056b3;
+--custom-gold-light: #b3d7ff;
+--custom-gold-medium: #66a3ff;
+--custom-gold-dark: #004085;
+--custom-gold-rgb: 0, 123, 255;
+
+This will automatically update ALL Bootstrap warning-themed components
+throughout your entire application!
+*/

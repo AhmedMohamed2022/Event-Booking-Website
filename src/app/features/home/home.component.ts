@@ -84,34 +84,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   peopleRanges: PeopleRange[] = [];
 
-  // Hero section stats (for enhanced visual appeal)
-  stats = [
-    {
-      number: '1000+',
-      label: 'home.stats.vendors',
-      icon: 'fas fa-store',
-      count: 1000,
-    },
-    {
-      number: '5000+',
-      label: 'home.stats.events',
-      icon: 'fas fa-calendar-check',
-      count: 5000,
-    },
-    {
-      number: '50+',
-      label: 'home.stats.cities',
-      icon: 'fas fa-map-marker-alt',
-      count: 50,
-    },
-    {
-      number: '24/7',
-      label: 'home.stats.support',
-      icon: 'fas fa-headset',
-      count: 24,
-    },
-  ];
-
   // Popular categories for quick access
   popularCategories = ['wedding', 'engagement', 'conference', 'birthday'];
 
@@ -333,14 +305,5 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-  }
-
-  // Animation trigger for stats
-  animateStats() {
-    // This can be enhanced with intersection observer for better performance
-    const elements = document.querySelectorAll('.stat-number');
-    elements.forEach((el) => {
-      el.classList.add('animate');
-    });
   }
 }

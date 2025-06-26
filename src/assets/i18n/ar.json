@@ -29,12 +29,6 @@
     "allServicesSubtitle": "تصفح جميع فئات خدمات المناسبات المتاحة",
     "selectCategory": "اختر",
     "services": "خدمات",
-    "stats": {
-      "vendors": "{{count}} مقدم خدمة",
-      "events": "{{count}} فعالية",
-      "cities": "{{count}} مدينة",
-      "support": "دعم 24/7"
-    },
     "popularCategories": "الفئات الأكثر شهرة",
     "popularCategoriesSubtitle": "تصفح أشهر أنواع المناسبات",
     "testimonials": {

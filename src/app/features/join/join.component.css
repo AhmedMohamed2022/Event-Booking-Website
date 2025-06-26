@@ -51,8 +51,8 @@
 
 .join-form .form-control:focus,
 .join-form .form-select:focus {
-  border-color: #ffc107;
-  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 0.2rem rgba(203, 161, 53, 0.25);
 }
 
 .join-form .form-control::placeholder {
@@ -91,7 +91,11 @@
 
 /* Submit Button */
 .join-submit-btn {
-  background: linear-gradient(135deg, #ffc107 0%, #ffcd39 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-gold) 0%,
+    var(--accent-gold-medium) 100%
+  );
   border: none;
   border-radius: 8px;
   padding: 0.75rem 2rem;
@@ -104,9 +108,13 @@
 }
 
 .join-submit-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ffcd39 0%, #ffc107 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-gold-medium) 0%,
+    var(--accent-gold) 100%
+  );
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+  box-shadow: 0 4px 12px rgba(203, 161, 53, 0.3);
 }
 
 .join-submit-btn:disabled {
@@ -215,7 +223,7 @@
   }
 
   .input-group .form-control:focus {
-    border-right: 2px solid #ffc107;
+    border-right: 2px solid var(--accent-gold);
     border-left: none;
   }
 }

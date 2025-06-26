@@ -2,7 +2,12 @@
 :root {
   --primary-white: #ffffff;
   --primary-dark: #2c2c2c;
-  --accent-gold: #ffc107;
+  --accent-gold: #cba135;
+  --accent-gold-hover: #b8942e;
+  --accent-gold-light: #e6d4a3;
+  --accent-gold-medium: #d4c078;
+  --accent-gold-dark: #a88a2a;
+  --accent-gold-secondary: #d4c078;
   --light-gray: #f8f9fa;
   --text-muted: #6c757d;
   --border-color: #e9ecef;
@@ -83,8 +88,8 @@
 }
 
 .form-check-input:checked {
-  background-color: #ffc107;
-  border-color: #ffc107;
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold);
 }
 
 .form-check-label {
@@ -281,8 +286,8 @@
 }
 
 .btn-warning:hover {
-  background-color: #e0a800;
-  border-color: #d39e00;
+  background-color: var(--accent-gold-hover);
+  border-color: var(--accent-gold-dark);
 }
 
 /* Supplier Info */

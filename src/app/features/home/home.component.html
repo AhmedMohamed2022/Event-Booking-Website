@@ -72,21 +72,6 @@
             </button>
           </div>
         </div>
-
-        <!-- Stats Section -->
-        <div class="stats-section animate-slide-up">
-          <div class="row g-4">
-            <div class="col-6 col-md-3" *ngFor="let stat of stats">
-              <div class="stat-card text-center">
-                <div class="stat-icon mb-2">
-                  <i [class]="stat.icon"></i>
-                </div>
-                <div class="stat-number fw-bold display-6">{{ stat.number }}</div>
-                <div class="stat-label text-muted">{{ stat.label | translate: { count: stat.count } }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -295,7 +280,7 @@
           <a href="#" class="social-link me-3"><i class="fab fa-facebook-f"></i></a>
           <a href="#" class="social-link me-3"><i class="fab fa-twitter"></i></a>
           <a href="#" class="social-link me-3"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-link me-3"><i class="fab fa-linkedin-in"></i></a>
         </div>
       </div>
 

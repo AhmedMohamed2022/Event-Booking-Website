@@ -1,3 +1,15 @@
+/* CSS Variables */
+:root {
+  --primary-white: #ffffff;
+  --primary-dark: #2c2c2c;
+  --accent-gold: #cba135;
+  --accent-gold-hover: #b8942e;
+  --accent-gold-light: #e6d4a3;
+  --accent-gold-medium: #d4c078;
+  --accent-gold-dark: #a88a2a;
+  --accent-gold-secondary: #d4c078;
+}
+
 /* Main Container */
 .booking-form-container {
   background-color: #f8f9fa;
@@ -97,8 +109,8 @@
 }
 
 .form-control:focus {
-  border-color: #ffc107;
-  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 0.25rem rgba(203, 161, 53, 0.25);
 }
 
 .form-control-lg {
@@ -134,34 +146,34 @@
 
 /* Form Check */
 .form-check-input:checked {
-  background-color: #ffc107;
-  border-color: #ffc107;
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold);
 }
 
 .form-check-input:focus {
-  border-color: #ffc107;
+  border-color: var(--accent-gold);
   outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+  box-shadow: 0 0 0 0.25rem rgba(203, 161, 53, 0.25);
 }
 
 /* Buttons */
 .btn-warning {
-  background-color: #ffc107;
-  border-color: #ffc107;
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold);
   color: #2c2c2c;
   border-radius: 10px;
   padding: 1rem 2rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+  box-shadow: 0 4px 12px rgba(203, 161, 53, 0.3);
 }
 
 .btn-warning:hover {
-  background-color: #e0a800;
-  border-color: #d39e00;
+  background-color: var(--accent-gold-hover);
+  border-color: var(--accent-gold-dark);
   color: #2c2c2c;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+  box-shadow: 0 6px 20px rgba(203, 161, 53, 0.4);
 }
 
 .btn-warning:disabled {
@@ -180,7 +192,7 @@
 }
 
 .btn-link:hover {
-  color: #ffc107;
+  color: var(--accent-gold);
 }
 
 /* Alerts */
@@ -193,7 +205,7 @@
 .alert-warning {
   background-color: #fff3cd;
   color: #856404;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--accent-gold);
 }
 
 .alert-danger {
@@ -283,7 +295,7 @@
 }
 
 .form-control:hover {
-  border-color: #ffc107;
+  border-color: var(--accent-gold);
 }
 
 /* Focus States */
@@ -295,7 +307,7 @@
 
 /* Text Colors */
 .text-warning {
-  color: #ffc107 !important;
+  color: var(--accent-gold) !important;
 }
 
 .text-dark {
@@ -318,10 +330,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ffc107;
+  background: var(--accent-gold);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e0a800;
+  background: var(--accent-gold-hover);
 }

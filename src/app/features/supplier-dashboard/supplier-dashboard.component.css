@@ -63,13 +63,17 @@
 }
 
 .stat-icon.services {
-  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-gold) 0%,
+    var(--accent-gold-hover) 100%
+  );
 }
 .stat-icon.bookings {
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
 }
 .stat-icon.pending {
-  background: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
+  background: linear-gradient(135deg, #fd7e14 0%, var(--accent-gold) 100%);
 }
 .stat-icon.revenue {
   background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
@@ -95,7 +99,7 @@
   border-left: 4px solid #28a745;
 }
 .quick-stat.pending {
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--accent-gold);
 }
 .quick-stat.cancelled {
   border-left: 4px solid #dc3545;
@@ -275,7 +279,7 @@
 }
 
 .quick-stat.pending {
-  border-left: 4px solid #ff9800;
+  border-left: 4px solid var(--accent-gold);
 }
 
 .quick-stat.cancelled {

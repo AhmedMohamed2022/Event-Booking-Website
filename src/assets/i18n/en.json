@@ -29,12 +29,6 @@
     "allServicesSubtitle": "Browse all available event service categories",
     "selectCategory": "Select",
     "services": "services",
-    "stats": {
-      "vendors": "{{count}} Vendors",
-      "events": "{{count}} Events",
-      "cities": "{{count}} Cities",
-      "support": "24/7 Support"
-    },
     "popularCategories": "Popular Categories",
     "popularCategoriesSubtitle": "Browse the most popular event types",
     "testimonials": {

@@ -1,5 +1,17 @@
 /* src/app/features/dashboard/dashboard.component.css */
 
+/* CSS Variables */
+:root {
+  --primary-white: #ffffff;
+  --primary-dark: #2c2c2c;
+  --accent-gold: #cba135;
+  --accent-gold-hover: #b8942e;
+  --accent-gold-light: #e6d4a3;
+  --accent-gold-medium: #d4c078;
+  --accent-gold-dark: #a88a2a;
+  --accent-gold-secondary: #d4c078;
+}
+
 /* Dashboard Header */
 .dashboard-header {
   text-align: center;
@@ -96,7 +108,7 @@
 }
 
 .badge-warning {
-  background: #ffc107;
+  background: var(--accent-gold);
   color: #2c2c2c;
 }
 
@@ -148,7 +160,7 @@
   background: #f8f9fa;
   padding: 1rem;
   border-radius: 8px;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--accent-gold);
 }
 
 .price-row {
@@ -231,7 +243,7 @@
 }
 
 .text-warning {
-  color: #ffc107 !important;
+  color: var(--accent-gold) !important;
 }
 
 /* Loading States */

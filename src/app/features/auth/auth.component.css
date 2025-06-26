@@ -1,3 +1,15 @@
+/* CSS Variables */
+:root {
+  --primary-white: #ffffff;
+  --primary-dark: #2c2c2c;
+  --accent-gold: #cba135;
+  --accent-gold-hover: #b8942e;
+  --accent-gold-light: #e6d4a3;
+  --accent-gold-medium: #d4c078;
+  --accent-gold-dark: #a88a2a;
+  --accent-gold-secondary: #d4c078;
+}
+
 /* Auth Container */
 .auth-container {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -42,8 +54,8 @@
 }
 
 .form-control:focus {
-  border-color: #ffc107;
-  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 0.2rem rgba(203, 161, 53, 0.25);
   background-color: #ffffff;
 }
 
@@ -54,7 +66,7 @@
 
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label {
-  color: #ffc107;
+  color: var(--accent-gold);
   font-weight: 500;
 }
 
