@@ -7,7 +7,6 @@ import { SearchService } from '../../core/services/search-result.service';
 import { EventItem } from '../../core/models/event-item.model';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslationService } from '../../core/services/translation.service';
-import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 import {
   EVENT_CATEGORIES,
   CategoryConfig,
@@ -16,13 +15,7 @@ import {
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    TranslateModule,
-    LanguageToggleComponent,
-  ],
+  imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.css'],
 })

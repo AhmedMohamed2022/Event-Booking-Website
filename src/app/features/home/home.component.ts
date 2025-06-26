@@ -7,14 +7,13 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslationService } from '../../core/services/translation.service';
-import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 import {
   EVENT_CATEGORIES,
   CategoryConfig,
@@ -34,13 +33,7 @@ interface PeopleRange {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    TranslateModule,
-    LanguageToggleComponent,
-  ],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
