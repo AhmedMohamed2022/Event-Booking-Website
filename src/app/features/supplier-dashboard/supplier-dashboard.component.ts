@@ -256,12 +256,18 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
   }
 
   getCurrentUserId(): string | null {
+    const user = this.authService.getCurrentUser();
+    if (user && user.id) {
+      return user.id;
+    }
+
+    // Fallback to token decoding if user object is not available
     const token = this.authService.getToken();
     if (!token) return null;
 
     try {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken.userId || decodedToken.id || null;
+      return decodedToken.id || null;
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;

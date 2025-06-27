@@ -248,7 +248,7 @@ export class ChatService {
 
   // Get conversation history
   getConversation(userId: string): Observable<Message[]> {
-    const endpoint = `/chat/conversation/${userId}`;
+    const endpoint = `/chat/${userId}`;
 
     if (!this.rateLimiter.canMakeCall(endpoint)) {
       return throwError(
@@ -261,21 +261,19 @@ export class ChatService {
 
     this.rateLimiter.recordCall(endpoint);
 
-    return this.http
-      .get<Message[]>(`${this.baseUrl}/chat/conversation/${userId}`)
-      .pipe(
-        catchError((error) => {
-          if (error.status === 429) {
-            this.rateLimiter.recordFailedCall(endpoint);
-          }
-          return throwError(() => error);
-        })
-      );
+    return this.http.get<Message[]>(`${this.baseUrl}/chat/${userId}`).pipe(
+      catchError((error) => {
+        if (error.status === 429) {
+          this.rateLimiter.recordFailedCall(endpoint);
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   // Send message through HTTP
   sendMessage(to: string, text: string): Observable<Message> {
-    const endpoint = '/chat/send';
+    const endpoint = '/chat';
 
     if (!this.rateLimiter.canMakeCall(endpoint)) {
       return throwError(
@@ -288,16 +286,14 @@ export class ChatService {
 
     this.rateLimiter.recordCall(endpoint);
 
-    return this.http
-      .post<Message>(`${this.baseUrl}/chat/send`, { to, text })
-      .pipe(
-        catchError((error) => {
-          if (error.status === 429) {
-            this.rateLimiter.recordFailedCall(endpoint);
-          }
-          return throwError(() => error);
-        })
-      );
+    return this.http.post<Message>(`${this.baseUrl}/chat`, { to, text }).pipe(
+      catchError((error) => {
+        if (error.status === 429) {
+          this.rateLimiter.recordFailedCall(endpoint);
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   // Send message through socket

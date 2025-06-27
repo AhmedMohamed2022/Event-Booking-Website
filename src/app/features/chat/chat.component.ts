@@ -105,6 +105,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
             const messageExists = this.messages.some(
               (m) => m._id === message._id
             );
+
             if (!messageExists && !this.processedMessageIds.has(message._id)) {
               this.processedMessageIds.add(message._id);
               this.messages.push(message);
@@ -158,66 +159,43 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     const messageText = this.newMessage.trim();
     this.newMessage = ''; // Clear input immediately
 
-    // Create temporary message for optimistic UI
-    const tempMessage: Message = {
-      _id: 'temp-' + Date.now(),
-      from: currentUserId,
-      to: this.otherUserId,
-      text: messageText,
-      createdAt: new Date(),
-    };
-
-    // Add to UI immediately for better UX
-    this.messages.push(tempMessage);
-    this.scrollToBottom();
-
     // Focus back on input field after sending
     if (this.messageInput) {
       this.messageInput.nativeElement.focus();
     }
 
-    // Send via HTTP first
+    // Send via HTTP only - the backend will handle socket emission
     this.chatService.sendMessage(this.otherUserId, messageText).subscribe(
       (message) => {
         console.log('Message sent via HTTP:', message);
-
         // Add to processed IDs to prevent duplication
         this.processedMessageIds.add(message._id);
-
-        // Replace temp message with real one
-        const index = this.messages.findIndex((m) => m._id === tempMessage._id);
-        if (index !== -1) {
-          this.messages[index] = message;
-        }
       },
       (error) => {
         console.error('Error sending message via HTTP:', error);
         this.error = 'Failed to send message';
-
-        // Remove temp message on error
-        const index = this.messages.findIndex((m) => m._id === tempMessage._id);
-        if (index !== -1) {
-          this.messages.splice(index, 1);
-        }
+        // Restore the message text on error
+        this.newMessage = messageText;
       }
     );
 
-    // Send via socket for real-time delivery
-    const messageData = {
-      from: currentUserId,
-      to: this.otherUserId,
-      text: messageText,
-    };
-    this.chatService.sendSocketMessage(messageData);
+    // Remove socket sending to prevent duplication
+    // The backend will handle socket emission when the message is saved
   }
 
   getCurrentUserId(): string | null {
+    const user = this.authService.getCurrentUser();
+    if (user && user.id) {
+      return user.id;
+    }
+
+    // Fallback to token decoding if user object is not available
     const token = this.authService.getToken();
     if (!token) return null;
 
     try {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken.userId || decodedToken.id || null;
+      return decodedToken.id || null;
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
