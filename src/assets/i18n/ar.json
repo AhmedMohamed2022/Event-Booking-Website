@@ -373,7 +373,9 @@
     "tabs": {
       "overview": "نظرة عامة",
       "joinRequests": "طلبات الانضمام",
-      "allRequestsHistory": "سجل جميع الطلبات"
+      "allRequestsHistory": "سجل جميع الطلبات",
+      "lockedSuppliers": "المزودين المقفلين",
+      "contactMessages": "رسائل الاتصال"
     },
     "overview": {
       "title": "نظرة عامة على المنصة",

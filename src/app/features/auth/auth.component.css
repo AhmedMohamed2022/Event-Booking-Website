@@ -87,7 +87,7 @@
 
 /* Buttons */
 .btn-primary {
-  background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+  background: linear-gradient(135deg, #cba135 0%, #cba135 100%);
   border: none;
   border-radius: 12px;
   padding: 0.875rem 1.5rem;
@@ -98,7 +98,7 @@
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #ffca2c 0%, #ffc107 100%);
+  background: linear-gradient(135deg, #b8942e 0%, #b8942e 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
 }
@@ -117,13 +117,13 @@
 }
 
 .btn-link {
-  color: #ffc107;
+  color: #cba135;
   text-decoration: none;
   font-weight: 500;
 }
 
 .btn-link:hover {
-  color: #ffca2c;
+  color: #b8942e;
   text-decoration: underline;
 }
 
@@ -247,7 +247,7 @@
 /* Focus States for Accessibility */
 .btn:focus-visible,
 .form-control:focus-visible {
-  outline: 2px solid #ffc107;
+  outline: 2px solid #cba135;
   outline-offset: 2px;
 }
 

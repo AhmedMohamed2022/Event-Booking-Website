@@ -384,7 +384,8 @@
       "overview": "Overview",
       "joinRequests": "Join Requests",
       "allRequestsHistory": "All Requests History",
-      "lockedSuppliers": "Locked Suppliers"
+      "lockedSuppliers": "Locked Suppliers",
+      "contactMessages": "Contact Messages"
     },
     "overview": {
       "title": "Platform Overview",

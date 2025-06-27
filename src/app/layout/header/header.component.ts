@@ -29,6 +29,7 @@ import { AuthService } from '../../core/services/auth.service';
 
         <!-- Hamburger for mobile -->
         <button
+          *ngIf="!drawerOpen"
           class="navbar-toggler d-lg-none"
           type="button"
           (click)="drawerOpen = true"
@@ -49,19 +50,31 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- Side Drawer for mobile -->
       <app-side-drawer [open]="drawerOpen" (close)="drawerOpen = false">
         <div class="drawer-menu">
-          <a class="navbar-brand fw-bold text-dark mb-4" routerLink="/">
+          <a
+            class="navbar-brand fw-bold text-dark mb-4"
+            routerLink="/"
+            (click)="closeDrawer()"
+          >
             <span class="text-warning">✨</span>
             {{ getCurrentLanguage() === 'ar' ? 'حجز المناسبات' : 'EventBook' }}
           </a>
-          <ng-container *ngTemplateOutlet="navLinks"></ng-container>
-          <app-language-toggle></app-language-toggle>
+          <ng-container
+            *ngTemplateOutlet="navLinks; context: { closeDrawer: closeDrawer }"
+          ></ng-container>
+          <app-language-toggle
+            (languageChange)="closeDrawer()"
+          ></app-language-toggle>
         </div>
       </app-side-drawer>
 
       <!-- Shared nav links/user menu template -->
-      <ng-template #navLinks>
+      <ng-template #navLinks let-closeDrawer="closeDrawer">
         <ng-container *ngIf="!isAuthenticated">
-          <button class="btn btn-warning rounded-pill px-4" routerLink="/login">
+          <button
+            class="btn btn-warning rounded-pill px-4"
+            routerLink="/login"
+            (click)="closeDrawer()"
+          >
             <i class="fas fa-sign-in-alt me-2"></i
             >{{ getCurrentLanguage() === 'ar' ? 'تسجيل الدخول' : 'Sign In' }}
           </button>
@@ -75,7 +88,11 @@ import { AuthService } from '../../core/services/auth.service';
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow">
             <li>
-              <a class="dropdown-item" [routerLink]="getDashboardLink()">
+              <a
+                class="dropdown-item"
+                [routerLink]="getDashboardLink()"
+                (click)="closeDrawer()"
+              >
                 <i class="fas fa-tachometer-alt me-2"></i
                 >{{
                   getCurrentLanguage() === 'ar' ? 'لوحة التحكم' : 'Dashboard'
@@ -86,7 +103,10 @@ import { AuthService } from '../../core/services/auth.service';
               <hr class="dropdown-divider" />
             </li>
             <li>
-              <button class="dropdown-item text-danger" (click)="logout()">
+              <button
+                class="dropdown-item text-danger"
+                (click)="logout(); closeDrawer()"
+              >
                 <i class="fas fa-sign-out-alt me-2"></i
                 >{{ getCurrentLanguage() === 'ar' ? 'تسجيل الخروج' : 'Logout' }}
               </button>
@@ -149,6 +169,11 @@ export class HeaderComponent {
   drawerOpen = false;
   isAuthenticated = false;
   currentUser: any = null;
+
+  // Function to close the drawer, used in template context
+  closeDrawer = () => {
+    this.drawerOpen = false;
+  };
 
   constructor(
     public languageService: LanguageService,
