@@ -1,192 +1,194 @@
-<!-- Hero Section -->
-<section id="hero" class="hero-section">
-  <div class="hero-background">
-    <div class="hero-overlay"></div>
-    <div class="floating-elements">
-      <div class="floating-element floating-element-1"></div>
-      <div class="floating-element floating-element-2"></div>
-      <div class="floating-element floating-element-3"></div>
+<div class="home-fade-in">
+  <!-- Hero Section -->
+  <section id="hero" class="hero-section">
+    <div class="hero-background">
+      <div class="hero-overlay"></div>
+      <div class="floating-elements">
+        <div class="floating-element floating-element-1"></div>
+        <div class="floating-element floating-element-2"></div>
+        <div class="floating-element floating-element-3"></div>
+      </div>
     </div>
-  </div>
 
-  <div class="container position-relative">
-    <div class="row justify-content-center">
-      <div class="col-lg-10">
-        <div class="text-center mb-5 hero-content">
-          <h1 class="hero-title animate-fade-in">
-            {{ 'home.heroTitle' | translate }}
-          </h1>
-          <p class="hero-subtitle animate-fade-in-delayed">
-            {{ 'home.heroSubtitle' | translate }}
-          </p>
+    <div class="container position-relative">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="text-center mb-5 hero-content">
+            <h1 class="hero-title animate-fade-in">
+              {{ 'home.heroTitle' | translate }}
+            </h1>
+            <p class="hero-subtitle animate-fade-in-delayed">
+              {{ 'home.heroSubtitle' | translate }}
+            </p>
 
-          <!-- Main CTA Button -->
-          <div class="hero-cta animate-bounce-in">
-            <button class="btn btn-warning btn-lg px-5 py-3 rounded-pill shadow-lg" (click)="openSearchModal()">
-              <i class="fas fa-search me-2"></i>
-              {{ 'home.searchButton' | translate }}
+            <!-- Main CTA Button -->
+            <div class="hero-cta animate-bounce-in">
+              <button class="btn btn-warning btn-lg px-5 py-3 rounded-pill shadow-lg" (click)="openSearchModal()">
+                <i class="fas fa-search me-2"></i>
+                {{ 'home.searchButton' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Categories Section -->
+  <section class="popular-categories-section py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="section-title">{{ 'home.popularCategories' | translate }}</h2>
+        <p class="section-subtitle text-muted">{{ 'home.popularCategoriesSubtitle' | translate }}</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-6 col-md-3" *ngFor="let categoryValue of popularCategories">
+          <div class="category-card" (click)="selectCategory(categoryValue)" [attr.data-category]="categoryValue">
+            <div class="category-icon">
+              <i [class]="getCategoryIcon(categoryValue)"></i>
+            </div>
+            <h6 class="category-title">
+              {{ 'categories.' + categoryValue | translate }}
+            </h6>
+            <div class="category-overlay">
+              <span class="category-action">{{ 'home.selectCategory' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- All Services Section -->
+  <section id="services" class="services-section py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="section-title">{{ 'home.allServices' | translate }}</h2>
+        <p class="section-subtitle text-muted">{{ 'home.allServicesSubtitle' | translate }}</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-6 col-md-4 col-lg-3" *ngFor="let category of eventCategories">
+          <div class="service-card text-center" (click)="selectCategory(category.value)">
+            <div class="service-icon">
+              <i [class]="getCategoryIcon(category.value)"></i>
+            </div>
+            <h6 class="service-title">{{ category.label }}</h6>
+            <div class="service-count">
+              {{ category.subcategories.length }} {{ 'home.services' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CTA Section -->
+  <section class="cta-section py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <div class="cta-card">
+            <div class="cta-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <h3 class="fw-bold text-dark mb-3">{{ 'home.vendorCTATitle' | translate }}</h3>
+            <p class="text-muted mb-4">{{ 'home.vendorCTAText' | translate }}</p>
+            <button class="btn btn-warning btn-lg fw-semibold rounded-pill px-5" (click)="navigateToVendorJoin()">
+              <i class="fas fa-rocket me-2"></i>
+              {{ 'home.joinButton' | translate }}
             </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Popular Categories Section -->
-<section class="popular-categories-section py-5">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="section-title">{{ 'home.popularCategories' | translate }}</h2>
-      <p class="section-subtitle text-muted">{{ 'home.popularCategoriesSubtitle' | translate }}</p>
-    </div>
+  <!-- Search Modal -->
+  <div class="search-modal-overlay" [class.show]="isSearchModalOpen" (click)="onModalBackdropClick($event)">
+    <div class="search-modal" #searchModal>
+      <div class="search-modal-header">
+        <h4 class="modal-title">
+          <i class="fas fa-search me-2"></i>
+          {{ 'home.searchTitle' | translate }}
+        </h4>
+        <button class="modal-close-btn" (click)="closeSearchModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
 
-    <div class="row g-4">
-      <div class="col-6 col-md-3" *ngFor="let categoryValue of popularCategories">
-        <div class="category-card" (click)="selectCategory(categoryValue)" [attr.data-category]="categoryValue">
-          <div class="category-icon">
-            <i [class]="getCategoryIcon(categoryValue)"></i>
+      <div class="search-modal-body">
+        <form (ngSubmit)="onSearchSubmit()" #searchFormRef="ngForm">
+          <div class="row g-4">
+            <!-- City -->
+            <div class="col-md-6">
+              <label class="form-label">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                {{ 'home.cityLabel' | translate }} *
+              </label>
+              <select class="form-select" [(ngModel)]="searchForm.city" name="city" required>
+                <option value="">{{ 'home.selectCity' | translate }}</option>
+                <option *ngFor="let city of translatedCities" [value]="city.original">
+                  {{ city.translated }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Event Type -->
+            <div class="col-md-6">
+              <label class="form-label">
+                <i class="fas fa-calendar me-2"></i>
+                {{ 'home.eventTypeLabel' | translate }} *
+              </label>
+              <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType"
+                (change)="onCategoryChange()" required>
+                <option value="">{{ 'home.selectEventType' | translate }}</option>
+                <option *ngFor="let category of eventCategories" [value]="category.value">
+                  {{ category.label }}
+                </option>
+              </select>
+            </div>
+
+
+            <!-- People -->
+            <div class="col-md-6">
+              <label class="form-label">
+                <i class="fas fa-users me-2"></i>
+                {{ 'home.peopleLabel' | translate }}
+              </label>
+              <select class="form-select" [(ngModel)]="searchForm.people" name="people">
+                <option value="">{{ 'home.selectPeople' | translate }}</option>
+                <option *ngFor="let range of peopleRanges" [value]="range.label">
+                  {{ range.label }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Date -->
+            <div class="col-md-6">
+              <label class="form-label">
+                <i class="fas fa-calendar-day me-2"></i>
+                {{ 'home.dateLabel' | translate }} *
+              </label>
+              <input type="date" class="form-control" [(ngModel)]="searchForm.date" name="date" required>
+            </div>
           </div>
-          <h6 class="category-title">
-            {{ 'categories.' + categoryValue | translate }}
-          </h6>
-          <div class="category-overlay">
-            <span class="category-action">{{ 'home.selectCategory' | translate }}</span>
+
+          <div class="search-modal-footer">
+            <button type="button" class="btn btn-outline-secondary me-3" (click)="closeSearchModal()">
+              {{ 'common.cancel' | translate }}
+            </button>
+            <button type="submit" class="btn btn-warning px-5" [disabled]="!searchFormRef.form.valid">
+              <i class="fas fa-search me-2"></i>
+              {{ 'home.searchButton' | translate }}
+            </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
-</section>
 
-<!-- All Services Section -->
-<section id="services" class="services-section py-5">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="section-title">{{ 'home.allServices' | translate }}</h2>
-      <p class="section-subtitle text-muted">{{ 'home.allServicesSubtitle' | translate }}</p>
-    </div>
-
-    <div class="row g-4">
-      <div class="col-6 col-md-4 col-lg-3" *ngFor="let category of eventCategories">
-        <div class="service-card text-center" (click)="selectCategory(category.value)">
-          <div class="service-icon">
-            <i [class]="getCategoryIcon(category.value)"></i>
-          </div>
-          <h6 class="service-title">{{ category.label }}</h6>
-          <div class="service-count">
-            {{ category.subcategories.length }} {{ 'home.services' | translate }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- CTA Section -->
-<section class="cta-section py-5">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8 text-center">
-        <div class="cta-card">
-          <div class="cta-icon">
-            <i class="fas fa-handshake"></i>
-          </div>
-          <h3 class="fw-bold text-dark mb-3">{{ 'home.vendorCTATitle' | translate }}</h3>
-          <p class="text-muted mb-4">{{ 'home.vendorCTAText' | translate }}</p>
-          <button class="btn btn-warning btn-lg fw-semibold rounded-pill px-5" (click)="navigateToVendorJoin()">
-            <i class="fas fa-rocket me-2"></i>
-            {{ 'home.joinButton' | translate }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Search Modal -->
-<div class="search-modal-overlay" [class.show]="isSearchModalOpen" (click)="onModalBackdropClick($event)">
-  <div class="search-modal" #searchModal>
-    <div class="search-modal-header">
-      <h4 class="modal-title">
-        <i class="fas fa-search me-2"></i>
-        {{ 'home.searchTitle' | translate }}
-      </h4>
-      <button class="modal-close-btn" (click)="closeSearchModal()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="search-modal-body">
-      <form (ngSubmit)="onSearchSubmit()" #searchFormRef="ngForm">
-        <div class="row g-4">
-          <!-- City -->
-          <div class="col-md-6">
-            <label class="form-label">
-              <i class="fas fa-map-marker-alt me-2"></i>
-              {{ 'home.cityLabel' | translate }} *
-            </label>
-            <select class="form-select" [(ngModel)]="searchForm.city" name="city" required>
-              <option value="">{{ 'home.selectCity' | translate }}</option>
-              <option *ngFor="let city of translatedCities" [value]="city.original">
-                {{ city.translated }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Event Type -->
-          <div class="col-md-6">
-            <label class="form-label">
-              <i class="fas fa-calendar me-2"></i>
-              {{ 'home.eventTypeLabel' | translate }} *
-            </label>
-            <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType"
-              (change)="onCategoryChange()" required>
-              <option value="">{{ 'home.selectEventType' | translate }}</option>
-              <option *ngFor="let category of eventCategories" [value]="category.value">
-                {{ category.label }}
-              </option>
-            </select>
-          </div>
-
-
-          <!-- People -->
-          <div class="col-md-6">
-            <label class="form-label">
-              <i class="fas fa-users me-2"></i>
-              {{ 'home.peopleLabel' | translate }}
-            </label>
-            <select class="form-select" [(ngModel)]="searchForm.people" name="people">
-              <option value="">{{ 'home.selectPeople' | translate }}</option>
-              <option *ngFor="let range of peopleRanges" [value]="range.label">
-                {{ range.label }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Date -->
-          <div class="col-md-6">
-            <label class="form-label">
-              <i class="fas fa-calendar-day me-2"></i>
-              {{ 'home.dateLabel' | translate }} *
-            </label>
-            <input type="date" class="form-control" [(ngModel)]="searchForm.date" name="date" required>
-          </div>
-        </div>
-
-        <div class="search-modal-footer">
-          <button type="button" class="btn btn-outline-secondary me-3" (click)="closeSearchModal()">
-            {{ 'common.cancel' | translate }}
-          </button>
-          <button type="submit" class="btn btn-warning px-5" [disabled]="!searchFormRef.form.valid">
-            <i class="fas fa-search me-2"></i>
-            {{ 'home.searchButton' | translate }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <!-- Footer will be injected by layout -->
 </div>
-
-<!-- Footer will be injected by layout -->
