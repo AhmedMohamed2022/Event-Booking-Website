@@ -99,7 +99,9 @@
     "graduation": "تخرج",
     "engagement": "خطوبة",
     "conference": "مؤتمر",
-    "funeral": "عزاء"
+    "funeral": "عزاء",
+    "farm": "مزارع",
+    "other": "خدمات أخرى"
   },
   "subcategories": {
     "wedding-halls": "قاعات أفراح",
@@ -125,9 +127,14 @@
     "funeral-halls": "صالات عزاء",
     "memorial-catering": "ضيافة عزاء",
     "funeral-flowers": "زهور وأكاليل عزاء",
-    "seating": "ترتيبات جلوس",
-    "tents": "خيم عزاء",
-    "transport": "خدمات نقل"
+    "seating": "ترتيب المقاعد",
+    "tents": "خيام التذكارية",
+    "transport": "خدمات النقل",
+    "farm-venues": "أماكن المزارع",
+    "outdoor-events": "المناسبات الخارجية",
+    "farm-catering": "مطاعم المزارع",
+    "farm-decoration": "ديكور المزارع",
+    "farm-photography": "تصوير المزارع"
   },
   "cities": {
     "amman": "عمان",
@@ -198,6 +205,7 @@
       "title": "جاهز للحجز؟",
       "bookNow": "احجز الآن",
       "contactSupplier": "تواصل مع المزود",
+      "sendContactRequest": "إرسال طلب تواصل",
       "hallFarmNote": "حجوزات القاعات والمزارع تتطلب الاتصال المباشر بالمزود"
     },
     "related": {
@@ -566,6 +574,32 @@
       "loadBookings": "فشل في تحميل حجوزاتك. يرجى المحاولة مرة أخرى.",
       "cancelBooking": "فشل في إلغاء الحجز. يرجى المحاولة مرة أخرى.",
       "loginRequired": "يرجى تسجيل الدخول للدردشة مع المزود"
+    },
+    "contactRequests": {
+      "title": "طلبات التواصل",
+      "subtitle": "تتبع طلبات التواصل مع المزودين",
+      "table": {
+        "supplier": "المزود",
+        "service": "الخدمة",
+        "message": "الرسالة",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "actions": "الإجراءات"
+      },
+      "status": {
+        "pending": "معلق",
+        "accepted": "مقبول",
+        "rejected": "مرفوض"
+      },
+      "actions": {
+        "chat": "دردشة",
+        "waiting": "في انتظار الرد",
+        "rejected": "تم رفض الطلب"
+      },
+      "empty": {
+        "title": "لا توجد طلبات تواصل",
+        "description": "لم ترسل أي طلبات تواصل بعد."
+      }
     }
   },
   "supplierDashboard": {
@@ -1012,5 +1046,12 @@
         "renew": "تجديد الاشتراك"
       }
     }
+  },
+  "rateLimit": {
+    "active": "حد النشاط مفعل",
+    "message": "يتم تقييد استدعاءات API لمنع تحميل الخادم. يرجى الانتظار قبل إجراء المزيد من الطلبات.",
+    "refreshDisabled": "حد النشاط مفعل - التحديث معطل",
+    "rateLimited": "مقيد النشاط",
+    "tooManyRequests": "طلبات كثيرة جداً. يرجى الانتظار قليلاً قبل التحديث."
   }
 }

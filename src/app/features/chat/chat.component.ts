@@ -102,10 +102,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
             (message.from === currentUserId && message.to === this.otherUserId)
           ) {
             // Check if message already exists to avoid duplicates
-            if (!this.processedMessageIds.has(message._id)) {
+            const messageExists = this.messages.some(
+              (m) => m._id === message._id
+            );
+            if (!messageExists && !this.processedMessageIds.has(message._id)) {
               this.processedMessageIds.add(message._id);
               this.messages.push(message);
               this.scrollToBottom();
+              console.log('New message added to conversation:', message._id);
             } else {
               console.log('Duplicate message skipped:', message._id);
             }
@@ -151,25 +155,20 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
 
-    const messageData = {
-      from: currentUserId,
-      to: this.otherUserId,
-      text: this.newMessage,
-    };
+    const messageText = this.newMessage.trim();
+    this.newMessage = ''; // Clear input immediately
 
-    // Show optimistic UI update
+    // Create temporary message for optimistic UI
     const tempMessage: Message = {
       _id: 'temp-' + Date.now(),
       from: currentUserId,
       to: this.otherUserId,
-      text: this.newMessage,
+      text: messageText,
       createdAt: new Date(),
     };
 
-    // Add to UI immediately
+    // Add to UI immediately for better UX
     this.messages.push(tempMessage);
-    const sentMessage = this.newMessage;
-    this.newMessage = '';
     this.scrollToBottom();
 
     // Focus back on input field after sending
@@ -177,10 +176,11 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.messageInput.nativeElement.focus();
     }
 
-    // Send via HTTP
-    this.chatService.sendMessage(this.otherUserId, sentMessage).subscribe(
+    // Send via HTTP first
+    this.chatService.sendMessage(this.otherUserId, messageText).subscribe(
       (message) => {
         console.log('Message sent via HTTP:', message);
+
         // Add to processed IDs to prevent duplication
         this.processedMessageIds.add(message._id);
 
@@ -193,10 +193,21 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       (error) => {
         console.error('Error sending message via HTTP:', error);
         this.error = 'Failed to send message';
+
+        // Remove temp message on error
+        const index = this.messages.findIndex((m) => m._id === tempMessage._id);
+        if (index !== -1) {
+          this.messages.splice(index, 1);
+        }
       }
     );
 
-    // Send via socket with correct message format
+    // Send via socket for real-time delivery
+    const messageData = {
+      from: currentUserId,
+      to: this.otherUserId,
+      text: messageText,
+    };
     this.chatService.sendSocketMessage(messageData);
   }
 

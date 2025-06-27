@@ -189,14 +189,26 @@
                   <span class="price-amount">JOD {{ service.price }}</span>
                   <small class="text-muted">{{ 'search.results.perBooking' | translate }}</small>
                 </div>
-                <button class="btn btn-warning btn-sm" (click)="viewServiceDetails(service._id)">
+
+                <!-- Show appropriate button based on service type -->
+                <button *ngIf="!isContactOnly(service)" class="btn btn-warning btn-sm"
+                  (click)="viewServiceDetails(service._id)">
                   {{ 'search.results.viewDetails' | translate }}
+                </button>
+
+                <button *ngIf="isContactOnly(service)" class="btn btn-outline-warning btn-sm"
+                  (click)="viewServiceDetails(service._id)">
+                  📞 {{ 'serviceDetails.booking.sendContactRequest' | translate }}
                 </button>
               </div>
 
               <div class="supplier-info">
                 <small class="text-muted">
                   {{ 'search.results.by' | translate }} {{ service.supplier.name }} • {{ service.supplier.phone }}
+                </small>
+                <!-- Show note for contact-only services -->
+                <small *ngIf="isContactOnly(service)" class="text-muted d-block">
+                  <em>{{ 'serviceDetails.booking.hallFarmNote' | translate }}</em>
                 </small>
               </div>
             </div>

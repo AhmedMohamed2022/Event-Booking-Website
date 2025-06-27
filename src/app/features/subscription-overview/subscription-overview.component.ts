@@ -67,16 +67,14 @@ export class SubscriptionOverviewComponent implements OnInit {
   private tryBuildOverviewModel(): void {
     if (!this.subscription || !this.stats) return;
 
-    const contactLimit = this.subscription.plan === 'premium' ? 100 : 10;
-    const contactsUsed = Math.round(
-      (this.stats.usagePercentage / 100) * contactLimit
-    );
+    const contactLimit = this.stats.maxContacts || 50;
+    const contactsUsed = this.stats.currentContacts || 0;
 
     this.overviewModel = {
       contactsUsed,
       contactLimit,
-      type: this.subscription.plan,
-      expiryDate: this.subscription.endDate,
+      type: this.subscription.type,
+      expiryDate: this.subscription.expiryDate,
       status: this.subscription.status,
     };
   }
@@ -92,15 +90,40 @@ export class SubscriptionOverviewComponent implements OnInit {
 
   handleRenewClick(): void {
     if (confirm('Are you sure you want to renew your subscription?')) {
-      this.subscriptionService.renewSubscription().subscribe({
-        next: (updated) => {
-          this.subscription = updated;
-          this.tryBuildOverviewModel();
-          // Show success message
+      const planType = this.subscription?.type || 'basic';
+      this.subscriptionService.renewSubscription(planType).subscribe({
+        next: (response) => {
+          if (response.success && response.subscription) {
+            this.subscription = response.subscription;
+            this.tryBuildOverviewModel();
+            alert('Subscription renewed successfully!');
+          } else {
+            alert(response.message || 'Failed to renew subscription');
+          }
         },
         error: (err) => {
           console.error('Renewal error:', err);
-          // Show error message
+          alert('Failed to renew subscription. Please try again.');
+        },
+      });
+    }
+  }
+
+  handlePlanChange(newPlanType: 'basic' | 'premium' | 'enterprise'): void {
+    if (confirm(`Are you sure you want to change to ${newPlanType} plan?`)) {
+      this.subscriptionService.renewSubscription(newPlanType).subscribe({
+        next: (response) => {
+          if (response.success && response.subscription) {
+            this.subscription = response.subscription;
+            this.tryBuildOverviewModel();
+            alert(`Successfully changed to ${newPlanType} plan!`);
+          } else {
+            alert(response.message || 'Failed to change plan');
+          }
+        },
+        error: (err) => {
+          console.error('Plan change error:', err);
+          alert('Failed to change plan. Please try again.');
         },
       });
     }

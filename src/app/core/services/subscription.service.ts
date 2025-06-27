@@ -5,6 +5,8 @@ import { environment } from '../../environments/environment';
 import {
   SupplierSubscription,
   SubscriptionStats,
+  RenewSubscriptionRequest,
+  RenewSubscriptionResponse,
 } from '../models/subscription.model';
 
 @Injectable({
@@ -23,8 +25,14 @@ export class SubscriptionService {
     return this.http.get<SubscriptionStats>(`${this.apiUrl}/stats`);
   }
 
-  renewSubscription(): Observable<SupplierSubscription> {
-    return this.http.post<SupplierSubscription>(`${this.apiUrl}/renew`, {});
+  renewSubscription(
+    planType: 'basic' | 'premium' | 'enterprise'
+  ): Observable<RenewSubscriptionResponse> {
+    const request: RenewSubscriptionRequest = { planType };
+    return this.http.post<RenewSubscriptionResponse>(
+      `${this.apiUrl}/renew`,
+      request
+    );
   }
 
   toggleAutoRenew(): Observable<{ autoRenew: boolean }> {
@@ -32,5 +40,10 @@ export class SubscriptionService {
       `${this.apiUrl}/auto-renew`,
       {}
     );
+  }
+
+  // New method to get available plans
+  getAvailablePlans(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/plans`);
   }
 }

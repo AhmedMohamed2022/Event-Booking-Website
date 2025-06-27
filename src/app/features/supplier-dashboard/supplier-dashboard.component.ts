@@ -5,9 +5,15 @@ import { SupplierDashboardData } from '../../core/models/supplier-dashboard.mode
 import { SupplierDashboardService } from '../../core/services/supplier-dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
 import { BookingService } from '../../core/services/booking.service';
+import { ContactService } from '../../core/services/contact.service';
+import { RateLimiterService } from '../../core/services/rate-limiter.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ChatService } from '../../core/services/chat.service';
 import { Message, ActiveChat, ChatPreview } from '../../core/models/chat.model';
+import {
+  ContactRequest,
+  ContactLimitInfo,
+} from '../../core/models/contact.model';
 import { Subscription } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { ChatComponent } from '../chat/chat.component';
@@ -42,11 +48,29 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
   private currentUserId: string | null = null;
   private processedMessageIds = new Set<string>(); // Add this to track message IDs
 
+  // Contact request properties
+  contactRequests: ContactRequest[] = [];
+  contactLimitInfo: ContactLimitInfo | null = null;
+  showContactRequests = false;
+
+  // Caching and rate limiting
+  private cacheTimeout = 5 * 60 * 1000; // 5 minutes cache
+  private lastContactLoad = 0;
+  private lastLimitLoad = 0;
+  private contactCache: ContactRequest[] = [];
+  private limitCache: ContactLimitInfo | null = null;
+  private rateLimitSubscription?: Subscription;
+  rateLimitStatus: { isLimited: boolean; message?: string } = {
+    isLimited: false,
+  };
+
   constructor(
     private supplierService: SupplierDashboardService,
     private bookingService: BookingService,
     private authService: AuthService,
     private chatService: ChatService,
+    private contactService: ContactService,
+    private rateLimiterService: RateLimiterService,
     private router: Router,
     public translate: TranslateService
   ) {}
@@ -54,6 +78,19 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadDashboard();
     this.setupChatNotifications();
+    this.loadContactLimitInfo(); // Automatically load contact limit info
+
+    // Subscribe to rate limit status
+    this.rateLimitSubscription =
+      this.rateLimiterService.rateLimitStatus$.subscribe((status) => {
+        this.rateLimitStatus = status;
+        if (status.isLimited) {
+          console.warn(
+            'Rate limit active in supplier dashboard:',
+            status.message
+          );
+        }
+      });
   }
 
   loadDashboard() {
@@ -235,6 +272,9 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
     }
+    if (this.rateLimitSubscription) {
+      this.rateLimitSubscription.unsubscribe();
+    }
     // Clear any open chat windows
     this.closeChat();
   }
@@ -307,31 +347,123 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
 
   private updateBookingStatus(
     bookingId: string,
-    newStatus: 'pending' | 'confirmed' | 'cancelled'
+    newStatus: 'confirmed' | 'cancelled'
   ) {
-    if (!this.dashboardData) return;
+    this.bookingService.updateBookingStatus(bookingId, newStatus).subscribe({
+      next: () => {
+        this.loadDashboard(); // Reload dashboard data
+      },
+      error: (error) => {
+        console.error('Error updating booking status:', error);
+      },
+    });
+  }
 
-    // Find the booking in our list
-    const booking = this.dashboardData.bookings.find(
-      (b) => b._id === bookingId
-    );
-
-    if (booking) {
-      const oldStatus = booking.status;
-      booking.status = newStatus;
-
-      // Update counts in supplier data
-      if (oldStatus === 'pending') {
-        this.dashboardData.supplier.pendingBookings--;
-
-        if (newStatus === 'confirmed') {
-          this.dashboardData.supplier.confirmedBookings++;
-          // Add to total revenue if confirmed
-          this.dashboardData.supplier.totalRevenue += booking.totalPrice || 0;
-        } else if (newStatus === 'cancelled') {
-          this.dashboardData.supplier.cancelledBookings++;
-        }
-      }
+  // Contact request methods
+  loadContactRequests() {
+    // Check cache first
+    const now = Date.now();
+    if (
+      this.contactCache.length > 0 &&
+      now - this.lastContactLoad < this.cacheTimeout
+    ) {
+      console.log('Using cached contact requests data');
+      this.contactRequests = this.contactCache;
+      return;
     }
+
+    this.contactService.getContactRequests().subscribe({
+      next: (requests: ContactRequest[]) => {
+        console.log('Contact requests loaded:', requests);
+        this.contactRequests = requests;
+        this.contactCache = requests; // Cache the results
+        this.lastContactLoad = now;
+      },
+      error: (error: any) => {
+        console.error('Error loading contact requests:', error);
+      },
+    });
+  }
+
+  loadContactLimitInfo() {
+    // Check cache first
+    const now = Date.now();
+    if (this.limitCache && now - this.lastLimitLoad < this.cacheTimeout) {
+      console.log('Using cached contact limit info');
+      this.contactLimitInfo = this.limitCache;
+      return;
+    }
+
+    this.contactService.getContactLimitInfo().subscribe({
+      next: (limitInfo: ContactLimitInfo) => {
+        console.log('Contact limit info loaded:', limitInfo);
+        this.contactLimitInfo = limitInfo;
+        this.limitCache = limitInfo; // Cache the results
+        this.lastLimitLoad = now;
+      },
+      error: (error: any) => {
+        console.error('Error loading contact limit info:', error);
+      },
+    });
+  }
+
+  updateContactRequestStatus(
+    requestId: string,
+    status: 'accepted' | 'rejected'
+  ) {
+    this.contactService
+      .updateContactRequestStatus(requestId, status)
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            // Reload contact requests and limit info
+            this.loadContactRequests();
+            this.loadContactLimitInfo();
+            alert(`Contact request ${status} successfully`);
+          } else {
+            alert(response.message || 'Failed to update contact request');
+          }
+        },
+        error: (error) => {
+          console.error('Error updating contact request status:', error);
+          alert('Failed to update contact request status');
+        },
+      });
+  }
+
+  toggleContactRequests() {
+    this.showContactRequests = !this.showContactRequests;
+    if (this.showContactRequests) {
+      this.loadContactRequests();
+    }
+  }
+
+  // Helper methods to safely access client and service properties
+  getClientName(request: ContactRequest): string {
+    if (typeof request.client === 'string') {
+      return 'Unknown Client';
+    }
+    return request.client.name || 'Unknown Client';
+  }
+
+  getClientPhone(request: ContactRequest): string {
+    if (typeof request.client === 'string') {
+      return '';
+    }
+    return request.client.phone || '';
+  }
+
+  getServiceName(request: ContactRequest): string {
+    if (typeof request.service === 'string') {
+      return 'Unknown Service';
+    }
+    return request.service.name || 'Unknown Service';
+  }
+
+  getServiceCategory(request: ContactRequest): string {
+    if (typeof request.service === 'string') {
+      return '';
+    }
+    return request.service.category || '';
   }
 }

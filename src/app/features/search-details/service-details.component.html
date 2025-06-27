@@ -177,10 +177,16 @@
                   <i class="fas fa-phone me-2"></i>{{ 'serviceDetails.supplier.call' | translate }}
                 </button>
 
-                <button class="btn btn-warning" (click)="openChat()" [disabled]="!canChat()">
-                  <i class="fas fa-comments me-2"></i>
-                  {{ canChat() ? ('serviceDetails.supplier.chatWithSupplier' | translate) :
-                  ('serviceDetails.supplier.loginToChat' | translate) }}
+                <!-- Chat button with different states -->
+                <button class="btn btn-warning" (click)="openChat()" [disabled]="!canChat() || checkingChatAccess"
+                  [class.btn-outline-warning]="!canChat()" [title]="getChatButtonTooltip()">
+                  <i class="fas fa-comments me-2" [class.fa-spin]="checkingChatAccess"></i>
+                  <span *ngIf="checkingChatAccess">Checking...</span>
+                  <span *ngIf="!checkingChatAccess && canChat()">{{ 'serviceDetails.supplier.chatWithSupplier' |
+                    translate }}</span>
+                  <span *ngIf="!checkingChatAccess && !canChat() && chatAccess.reason">{{ chatAccess.reason }}</span>
+                  <span *ngIf="!checkingChatAccess && !canChat() && !chatAccess.reason">{{
+                    'serviceDetails.supplier.loginToChat' | translate }}</span>
                 </button>
               </div>
             </div>
@@ -206,8 +212,21 @@
                 📅 {{ 'serviceDetails.booking.bookNow' | translate }}
               </button>
 
-              <button class="btn btn-outline-warning w-100" [class.btn-lg]="!shouldShowBookingButton()"
-                (click)="contactSupplier()">
+              <!-- Contact Request Button for Halls and Farms -->
+              <button *ngIf="!shouldShowBookingButton() && canSendContactRequest()"
+                class="btn btn-warning btn-lg w-100 mb-3" (click)="sendContactRequest()">
+                📞 {{ 'serviceDetails.booking.sendContactRequest' | translate }}
+              </button>
+
+              <!-- Contact Request Button for other services -->
+              <button *ngIf="shouldShowBookingButton() && canSendContactRequest()"
+                class="btn btn-outline-warning w-100 mb-2" (click)="sendContactRequest()">
+                📞 {{ 'serviceDetails.booking.sendContactRequest' | translate }}
+              </button>
+
+              <!-- Phone call button as fallback -->
+              <button class="btn btn-outline-warning w-100"
+                [class.btn-lg]="!shouldShowBookingButton() && !canSendContactRequest()" (click)="contactSupplier()">
                 📞 {{ 'serviceDetails.booking.contactSupplier' | translate }}
               </button>
             </div>

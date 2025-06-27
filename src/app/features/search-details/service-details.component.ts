@@ -7,10 +7,16 @@ import { ChatDialogService } from '../../core/services/chat-dialog.service';
 import { ChatService } from '../../core/services/chat.service';
 import { ChatComponent } from '../chat/chat.component';
 import { AuthService } from '../../core/services/auth.service';
+import { ContactService } from '../../core/services/contact.service';
+import {
+  ContactChatService,
+  ContactChatAccess,
+} from '../../core/services/contact-chat.service';
 // Add translation imports
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslationService } from '../../core/services/translation.service';
+import { isContactOnlyService } from '../../core/models/constants/categories.const';
 
 @Component({
   selector: 'app-service-detail',
@@ -40,6 +46,10 @@ export class ServiceDetailComponent implements OnInit {
   googleMapUrl = '';
   directionUrl = '';
 
+  // Contact chat access
+  chatAccess: ContactChatAccess = { canChat: false };
+  checkingChatAccess = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -47,6 +57,8 @@ export class ServiceDetailComponent implements OnInit {
     private chatDialog: ChatDialogService,
     private chatService: ChatService,
     private authService: AuthService,
+    private contactService: ContactService,
+    private contactChatService: ContactChatService,
     // Add translation services
     private translate: TranslateService,
     private languageService: LanguageService,
@@ -93,6 +105,11 @@ export class ServiceDetailComponent implements OnInit {
 
         // Update translations for the loaded service
         this.updateTranslations();
+
+        // Check chat access if user is authenticated
+        if (this.authService.isAuthenticated() && this.service?.supplier?._id) {
+          this.checkChatAccess();
+        }
 
         this.loadRelatedServices();
         this.loading = false;
@@ -244,7 +261,17 @@ export class ServiceDetailComponent implements OnInit {
         return;
       }
 
-      console.log('User authenticated:', user);
+      // Check if user can chat (has approved contact request)
+      if (!this.chatAccess.canChat) {
+        console.log('User cannot chat - no approved contact request');
+        alert(
+          this.chatAccess.reason ||
+            'You need an approved contact request to chat with this supplier.'
+        );
+        return;
+      }
+
+      console.log('User authenticated and can chat:', user);
       console.log('Initializing chat with supplier:', {
         supplierId: this.service.supplier._id,
         supplierName: this.service.supplier.name,
@@ -267,13 +294,14 @@ export class ServiceDetailComponent implements OnInit {
     });
   }
 
-  // Update the canChat method to properly decode the token
+  // Update the canChat method to check contact request approval
   canChat(): boolean {
-    let isClient = false;
-    this.authService.currentUser$.subscribe((user) => {
-      isClient = user?.role === 'client';
-    });
-    return isClient;
+    // User must be authenticated, be a client, and have approved contact request
+    return (
+      this.authService.isAuthenticated() &&
+      this.authService.getCurrentUser()?.role === 'client' &&
+      this.chatAccess.canChat
+    );
   }
 
   // Initialize chat connection
@@ -299,9 +327,12 @@ export class ServiceDetailComponent implements OnInit {
 
   // Utility methods
   shouldShowBookingButton(): boolean {
-    return (
-      this.service?.category.toLowerCase() !== 'hall' &&
-      this.service?.category.toLowerCase() !== 'farm'
+    if (!this.service) return false;
+
+    // Use the new contact-only service logic
+    return !isContactOnlyService(
+      this.service.category,
+      this.service.subcategory
     );
   }
 
@@ -351,5 +382,102 @@ export class ServiceDetailComponent implements OnInit {
     return this.service?.location?.city
       ? this.translationService.getTranslatedCity(this.service.location.city)
       : '';
+  }
+
+  // Contact request methods
+  sendContactRequest() {
+    if (!this.service || !this.authService.isAuthenticated()) {
+      // Redirect to login if not authenticated
+      this.router.navigate(['/login'], {
+        queryParams: {
+          returnUrl: `/service/${this.serviceId}`,
+          action: 'contact',
+        },
+      });
+      return;
+    }
+
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      console.error('No current user found');
+      return;
+    }
+
+    const contactRequest = {
+      client: currentUser.id,
+      supplier: this.service.supplier._id,
+      service: this.service._id,
+      message: `I'm interested in your ${this.service.name} service. Please contact me for more details.`,
+    };
+
+    this.contactService.sendContactRequest(contactRequest).subscribe({
+      next: (response) => {
+        if (response.success) {
+          alert(
+            'Contact request sent successfully! The supplier will contact you soon.'
+          );
+        } else {
+          alert(response.message || 'Failed to send contact request');
+        }
+      },
+      error: (error) => {
+        console.error('Error sending contact request:', error);
+        if (error.error?.message) {
+          alert(error.error.message);
+        } else {
+          alert('Failed to send contact request. Please try again.');
+        }
+      },
+    });
+  }
+
+  // Check if user can send contact request
+  canSendContactRequest(): boolean {
+    return (
+      this.authService.isAuthenticated() &&
+      this.authService.getCurrentUser()?.role === 'client'
+    );
+  }
+
+  // Get tooltip for chat button
+  getChatButtonTooltip(): string {
+    if (this.checkingChatAccess) {
+      return 'Checking chat access...';
+    }
+
+    if (!this.authService.isAuthenticated()) {
+      return 'Please login to chat with supplier';
+    }
+
+    if (this.authService.getCurrentUser()?.role !== 'client') {
+      return 'Only clients can chat with suppliers';
+    }
+
+    if (this.chatAccess.canChat) {
+      return 'Chat with supplier (contact request approved)';
+    }
+
+    return this.chatAccess.reason || 'Contact request required to chat';
+  }
+
+  // Check if user can chat with this supplier
+  checkChatAccess() {
+    if (!this.service?.supplier?._id) return;
+
+    this.checkingChatAccess = true;
+    this.contactChatService
+      .checkChatAccess(this.service.supplier._id)
+      .subscribe({
+        next: (access) => {
+          this.chatAccess = access;
+          this.checkingChatAccess = false;
+          console.log('Chat access checked:', access);
+        },
+        error: (error) => {
+          console.error('Error checking chat access:', error);
+          this.checkingChatAccess = false;
+          this.chatAccess = { canChat: false, reason: 'Error checking access' };
+        },
+      });
   }
 }

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { io } from 'socket.io-client';
 import { Message, ActiveChat } from '../models/chat.model';
+import { RateLimiterService } from './rate-limiter.service';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -24,7 +26,11 @@ export class ChatService {
   // Public observable for new messages
   public newMessage$ = this.messageSubject.asObservable();
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private rateLimiter: RateLimiterService
+  ) {
     if (this.authService.isAuthenticated()) {
       this.initializeSocket();
     }
@@ -242,18 +248,56 @@ export class ChatService {
 
   // Get conversation history
   getConversation(userId: string): Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.baseUrl}/chat/${userId}`, {
-      headers: { Authorization: `Bearer ${this.authService.getToken()}` },
-    });
+    const endpoint = `/chat/conversation/${userId}`;
+
+    if (!this.rateLimiter.canMakeCall(endpoint)) {
+      return throwError(
+        () =>
+          new Error(
+            'Rate limit exceeded. Please wait before making more requests.'
+          )
+      );
+    }
+
+    this.rateLimiter.recordCall(endpoint);
+
+    return this.http
+      .get<Message[]>(`${this.baseUrl}/chat/conversation/${userId}`)
+      .pipe(
+        catchError((error) => {
+          if (error.status === 429) {
+            this.rateLimiter.recordFailedCall(endpoint);
+          }
+          return throwError(() => error);
+        })
+      );
   }
 
   // Send message through HTTP
   sendMessage(to: string, text: string): Observable<Message> {
-    return this.http.post<Message>(
-      `${this.baseUrl}/chat`,
-      { to, text },
-      { headers: { Authorization: `Bearer ${this.authService.getToken()}` } }
-    );
+    const endpoint = '/chat/send';
+
+    if (!this.rateLimiter.canMakeCall(endpoint)) {
+      return throwError(
+        () =>
+          new Error(
+            'Rate limit exceeded. Please wait before making more requests.'
+          )
+      );
+    }
+
+    this.rateLimiter.recordCall(endpoint);
+
+    return this.http
+      .post<Message>(`${this.baseUrl}/chat/send`, { to, text })
+      .pipe(
+        catchError((error) => {
+          if (error.status === 429) {
+            this.rateLimiter.recordFailedCall(endpoint);
+          }
+          return throwError(() => error);
+        })
+      );
   }
 
   // Send message through socket
@@ -302,8 +346,26 @@ export class ChatService {
 
   // Get active chats
   getActiveChats(): Observable<ActiveChat[]> {
-    return this.http.get<ActiveChat[]>(`${this.baseUrl}/chat/active`, {
-      headers: { Authorization: `Bearer ${this.authService.getToken()}` },
-    });
+    const endpoint = '/chat/active';
+
+    if (!this.rateLimiter.canMakeCall(endpoint)) {
+      return throwError(
+        () =>
+          new Error(
+            'Rate limit exceeded. Please wait before making more requests.'
+          )
+      );
+    }
+
+    this.rateLimiter.recordCall(endpoint);
+
+    return this.http.get<ActiveChat[]>(`${this.baseUrl}/chat/active`).pipe(
+      catchError((error) => {
+        if (error.status === 429) {
+          this.rateLimiter.recordFailedCall(endpoint);
+        }
+        return throwError(() => error);
+      })
+    );
   }
 }

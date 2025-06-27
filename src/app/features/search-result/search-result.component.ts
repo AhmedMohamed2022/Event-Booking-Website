@@ -10,6 +10,7 @@ import { TranslationService } from '../../core/services/translation.service';
 import {
   EVENT_CATEGORIES,
   CategoryConfig,
+  isContactOnlyService,
 } from '../../core/models/constants/categories.const';
 
 @Component({
@@ -194,5 +195,10 @@ export class SearchResultComponent implements OnInit {
   // Helper method to check if current language is RTL
   isRTL(): boolean {
     return this.languageService.isRTL();
+  }
+
+  // Helper method to check if a service should be contact-only
+  isContactOnly(service: EventItem): boolean {
+    return isContactOnlyService(service.category, service.subcategory);
   }
 }

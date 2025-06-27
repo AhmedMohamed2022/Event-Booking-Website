@@ -74,7 +74,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   peopleRanges: PeopleRange[] = [];
 
   // Popular categories for quick access
-  popularCategories = ['wedding', 'engagement', 'conference', 'birthday'];
+  popularCategories = [
+    'wedding',
+    'engagement',
+    'conference',
+    'birthday',
+    'farm',
+  ];
 
   isAuthenticated = false;
   currentUser: any = null;
@@ -243,6 +249,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       corporate: 'fas fa-briefcase',
       graduation: 'fas fa-graduation-cap',
       funeral: 'fas fa-dove',
+      farm: 'fas fa-seedling',
     };
 
     return iconMap[categoryValue] || 'fas fa-calendar-alt';

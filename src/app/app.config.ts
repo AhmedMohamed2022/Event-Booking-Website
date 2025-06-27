@@ -29,6 +29,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { authInterceptorFn } from './core/interceptors/auth.interceptor';
 import { languageInterceptorFn } from './core/interceptors/language.interceptor';
+import { rateLimitInterceptorFn } from './core/interceptors/rate-limit.interceptor';
 
 registerLocaleData(localeAr);
 
@@ -42,7 +43,11 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withEnabledBlockingInitialNavigation()),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(
-      withInterceptors([authInterceptorFn, languageInterceptorFn])
+      withInterceptors([
+        authInterceptorFn,
+        languageInterceptorFn,
+        // rateLimitInterceptorFn, // Temporarily disabled - causing translation issues
+      ])
     ),
     provideAnimations(),
     importProvidersFrom(FormsModule, ReactiveFormsModule),

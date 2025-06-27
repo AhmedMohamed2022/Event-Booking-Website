@@ -137,7 +137,12 @@
     "funeral-flowers": "Funeral Flowers & Wreaths",
     "seating": "Seating Arrangements",
     "tents": "Memorial Tents",
-    "transport": "Transportation Services"
+    "transport": "Transportation Services",
+    "farm-venues": "Farm Venues",
+    "outdoor-events": "Outdoor Events",
+    "farm-catering": "Farm Catering",
+    "farm-decoration": "Farm Decoration",
+    "farm-photography": "Farm Photography"
   },
   "serviceDetails": {
     "loading": {
@@ -190,6 +195,7 @@
       "title": "Ready to book?",
       "bookNow": "Book Now",
       "contactSupplier": "Contact Supplier",
+      "sendContactRequest": "Send Contact Request",
       "hallFarmNote": "Hall and Farm bookings require direct contact with supplier"
     },
     "related": {
@@ -602,6 +608,32 @@
       "loadBookings": "Failed to load your bookings. Please try again.",
       "cancelBooking": "Failed to cancel booking. Please try again.",
       "loginRequired": "Please login to chat with supplier"
+    },
+    "contactRequests": {
+      "title": "Contact Requests",
+      "subtitle": "Track your contact requests to suppliers",
+      "table": {
+        "supplier": "Supplier",
+        "service": "Service",
+        "message": "Message",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "actions": {
+        "chat": "Chat",
+        "waiting": "Waiting for response",
+        "rejected": "Request rejected"
+      },
+      "empty": {
+        "title": "No Contact Requests",
+        "description": "You haven't sent any contact requests yet."
+      }
     }
   },
   "supplierDashboard": {
@@ -900,5 +932,12 @@
         "renew": "Renew Subscription"
       }
     }
+  },
+  "rateLimit": {
+    "active": "Rate Limit Active",
+    "message": "API calls are being limited to prevent server overload. Please wait before making more requests.",
+    "refreshDisabled": "Rate limit active - refresh disabled",
+    "rateLimited": "Rate Limited",
+    "tooManyRequests": "Too many requests. Please wait a moment before refreshing."
   }
 }

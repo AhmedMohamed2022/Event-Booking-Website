@@ -1,15 +1,16 @@
 // Should update frontend model to match backend
 export interface SupplierSubscription {
   _id: string;
-  supplier: string; // Missing
-  plan: 'basic' | 'premium'; // Named 'type' in frontend
+  supplier: string;
+  type: 'basic' | 'premium' | 'enterprise'; // Changed from 'plan' to 'type' to match backend
   startDate: string;
-  endDate: string; // Named 'expiryDate' in frontend
-  status: 'active' | 'expired' | 'cancelled'; // Different enum values
-  paymentId?: string; // Missing
-  amount?: number; // Missing
-  createdAt?: string; // Missing
-  updatedAt?: string; // Missing
+  expiryDate: string; // Changed from 'endDate' to 'expiryDate' to match backend
+  status: 'active' | 'expired' | 'cancelled';
+  paymentId?: string;
+  amount?: number;
+  autoRenew: boolean; // Added to match backend
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SubscriptionStats {
@@ -20,4 +21,25 @@ export interface SubscriptionStats {
   daysUntilExpiry: number;
   hasWarning: boolean;
   warningType?: 'near-limit' | 'expiring' | 'locked';
+  currentContacts: number; // Added to match backend
+  maxContacts: number; // Added to match backend
+}
+
+// New interfaces for subscription management
+export interface SubscriptionPlan {
+  type: 'basic' | 'premium' | 'enterprise';
+  name: string;
+  price: number;
+  contactLimit: number;
+  features: string[];
+}
+
+export interface RenewSubscriptionRequest {
+  planType: 'basic' | 'premium' | 'enterprise';
+}
+
+export interface RenewSubscriptionResponse {
+  success: boolean;
+  message: string;
+  subscription?: SupplierSubscription;
 }

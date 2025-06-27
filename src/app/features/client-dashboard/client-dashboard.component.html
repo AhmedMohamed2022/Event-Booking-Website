@@ -151,6 +151,126 @@
         </div>
       </div>
 
+      <!-- Contact Requests Section -->
+      <div class="contact-requests-section mt-5" *ngIf="!loading && !error">
+        <div class="section-header">
+          <h2>
+            <i class="fas fa-address-book me-2"></i>
+            {{ 'clientDashboard.contactRequests.title' | translate }}
+            <button class="btn btn-sm btn-outline-primary ms-2" (click)="toggleContactRequests()">
+              <i class="fas fa-sync-alt me-1"></i>
+              {{ showContactRequests ? 'Hide' : 'Show' }}
+            </button>
+          </h2>
+          <p class="text-muted">{{ 'clientDashboard.contactRequests.subtitle' | translate }}</p>
+
+          <!-- Rate Limit Status -->
+          <div *ngIf="rateLimitStatus.isLimited" class="alert alert-warning alert-sm mt-2">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>{{ 'rateLimit.active' | translate }}:</strong> {{ rateLimitStatus.message }}
+            <small class="d-block mt-1">
+              {{ 'rateLimit.message' | translate }}
+            </small>
+          </div>
+
+          <div *ngIf="showContactRequests && lastContactUpdate" class="text-muted small">
+            <i class="fas fa-clock me-1"></i>
+            Last updated: {{ lastContactUpdate | date:'short' }}
+            <button class="btn btn-sm btn-outline-secondary ms-2" (click)="refreshContactRequests()"
+              [disabled]="loadingContactRequests || isRefreshing || rateLimitStatus.isLimited"
+              [title]="loadingContactRequests ? 'Refreshing...' : isRefreshing ? 'Please wait...' : rateLimitStatus.isLimited ? ('rateLimit.active' | translate) : 'Click to refresh contact requests'">
+              <i class="fas fa-sync-alt me-1" [class.fa-spin]="loadingContactRequests"></i>
+              {{ loadingContactRequests ? 'Refreshing...' : isRefreshing ? 'Please wait...' : rateLimitStatus.isLimited
+              ? ('rateLimit.rateLimited' | translate) : 'Refresh' }}
+            </button>
+            <small *ngIf="loadingContactRequests" class="text-muted ms-2">
+              (Please wait, avoiding rate limits...)
+            </small>
+            <small *ngIf="isRefreshing && !loadingContactRequests" class="text-muted ms-2">
+              (Debouncing to prevent rate limits...)
+            </small>
+            <small *ngIf="rateLimitStatus.isLimited" class="text-muted ms-2">
+              ({{ 'rateLimit.refreshDisabled' | translate }})
+            </small>
+          </div>
+        </div>
+
+        <!-- Contact Requests Table -->
+        <div *ngIf="showContactRequests" class="contact-requests-table-wrapper">
+          <div *ngIf="loadingContactRequests" class="text-center py-3">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Loading contact requests...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!loadingContactRequests && contactRequests.length === 0" class="empty-state">
+            <div class="empty-icon">
+              <i class="fas fa-address-book"></i>
+            </div>
+            <h3>{{ 'clientDashboard.contactRequests.empty.title' | translate }}</h3>
+            <p>{{ 'clientDashboard.contactRequests.empty.description' | translate }}</p>
+          </div>
+
+          <div *ngIf="!loadingContactRequests && contactRequests.length > 0" class="table-responsive">
+            <table class="table contact-requests-table">
+              <thead>
+                <tr>
+                  <th>{{ 'clientDashboard.contactRequests.table.supplier' | translate }}</th>
+                  <th>{{ 'clientDashboard.contactRequests.table.service' | translate }}</th>
+                  <th>{{ 'clientDashboard.contactRequests.table.message' | translate }}</th>
+                  <th>{{ 'clientDashboard.contactRequests.table.status' | translate }}</th>
+                  <th>{{ 'clientDashboard.contactRequests.table.date' | translate }}</th>
+                  <th>{{ 'clientDashboard.contactRequests.table.actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let request of contactRequests" class="contact-request-row">
+                  <td>
+                    <div class="supplier-info">
+                      <strong>{{ getContactSupplierName(request) }}</strong>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="service-info">
+                      <strong>{{ getContactServiceName(request) }}</strong>
+                      <small class="d-block text-muted">{{ getContactServiceCategory(request) }}</small>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="message-info">
+                      <p class="mb-0">{{ request.message }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <span [class]="getContactStatusClass(request.status)">
+                      {{ 'clientDashboard.contactRequests.status.' + request.status | translate }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="request-date">{{ formatDate(request.createdAt || '') }}</span>
+                  </td>
+                  <td>
+                    <div class="request-actions">
+                      <button *ngIf="canChatWithContactSupplier(request)" class="btn btn-sm btn-success"
+                        (click)="startChatWithContactSupplier(request)">
+                        <i class="fas fa-comments me-1"></i>
+                        {{ 'clientDashboard.contactRequests.actions.chat' | translate }}
+                      </button>
+                      <span *ngIf="request.status === 'pending'" class="text-muted small">
+                        {{ 'clientDashboard.contactRequests.actions.waiting' | translate }}
+                      </span>
+                      <span *ngIf="request.status === 'rejected'" class="text-danger small">
+                        {{ 'clientDashboard.contactRequests.actions.rejected' | translate }}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Chats Section -->
       <div class="chat-section mt-4" *ngIf="showChats">
         <div class="d-flex justify-content-between align-items-center mb-4">
