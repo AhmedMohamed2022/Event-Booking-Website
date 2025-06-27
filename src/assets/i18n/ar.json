@@ -30,15 +30,7 @@
     "selectCategory": "اختر",
     "services": "خدمات",
     "popularCategories": "الفئات الأكثر شهرة",
-    "popularCategoriesSubtitle": "تصفح أشهر أنواع المناسبات",
-    "testimonials": {
-      "first": "إيفنت بوك جعل تخطيط زفافي سهلاً للغاية! أنصح به بشدة.",
-      "firstAuthor": "سارة أ.",
-      "second": "تنوع رائع في القاعات وخدمة احترافية.",
-      "secondAuthor": "محمد ك.",
-      "third": "وجدت المكان المثالي لحفلة عيد ميلاد ابني!",
-      "thirdAuthor": "لينا م."
-    }
+    "popularCategoriesSubtitle": "تصفح أشهر أنواع المناسبات"
   },
   "footer": {
     "brandName": "إيفنت بوك",

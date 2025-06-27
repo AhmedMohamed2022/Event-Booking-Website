@@ -30,15 +30,7 @@
     "selectCategory": "Select",
     "services": "services",
     "popularCategories": "Popular Categories",
-    "popularCategoriesSubtitle": "Browse the most popular event types",
-    "testimonials": {
-      "first": "EventBook made planning my wedding so easy! Highly recommended.",
-      "firstAuthor": "Sara A.",
-      "second": "Great variety of venues and professional service.",
-      "secondAuthor": "Mohammad K.",
-      "third": "I found the perfect birthday party place for my son!",
-      "thirdAuthor": "Lina M."
-    }
+    "popularCategoriesSubtitle": "Browse the most popular event types"
   },
   "footer": {
     "brandName": "EventBook",

@@ -46,7 +46,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   searchForm = {
     city: '',
     eventType: '',
-    subcategory: '',
     people: '',
     date: '',
   };
@@ -72,32 +71,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Event categories with translations
   eventCategories: CategoryConfig[] = [];
 
-  // Available subcategories based on selected category
-  availableSubcategories: { value: string; label: string }[] = [];
-
   peopleRanges: PeopleRange[] = [];
 
   // Popular categories for quick access
   popularCategories = ['wedding', 'engagement', 'conference', 'birthday'];
-
-  // Testimonials for social proof
-  testimonials = [
-    {
-      text: 'testimonials.first',
-      author: 'testimonials.firstAuthor',
-      rating: 5,
-    },
-    {
-      text: 'testimonials.second',
-      author: 'testimonials.secondAuthor',
-      rating: 5,
-    },
-    {
-      text: 'testimonials.third',
-      author: 'testimonials.thirdAuthor',
-      rating: 5,
-    },
-  ];
 
   isAuthenticated = false;
   currentUser: any = null;
@@ -184,23 +161,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Category selection handling
   onCategoryChange() {
-    const selectedCategory = this.eventCategories.find(
-      (cat) => cat.value === this.searchForm.eventType
-    );
-
-    if (selectedCategory) {
-      this.availableSubcategories = selectedCategory.subcategories;
-      this.searchForm.subcategory = ''; // Reset subcategory when category changes
-    } else {
-      this.availableSubcategories = [];
-      this.searchForm.subcategory = '';
-    }
+    // Remove subcategory logic, just keep category selection logic if needed
   }
 
   // Quick category selection
   selectCategory(categoryValue: string) {
     this.searchForm.eventType = categoryValue;
-    this.onCategoryChange();
     this.openSearchModal();
   }
 
@@ -230,11 +196,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       minCapacity: selectedRange?.min,
       maxCapacity: selectedRange?.max,
     };
-
-    // Add subcategory if selected
-    if (this.searchForm.subcategory) {
-      queryParams.subcategory = this.searchForm.subcategory;
-    }
 
     // Remove undefined values
     Object.keys(queryParams).forEach(
@@ -285,11 +246,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
 
     return iconMap[categoryValue] || 'fas fa-calendar-alt';
-  }
-
-  // Get star rating array for testimonials
-  getStarArray(rating: number): number[] {
-    return Array(rating).fill(0);
   }
 
   // Scroll to section

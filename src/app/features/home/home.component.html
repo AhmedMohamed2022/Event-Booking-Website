@@ -83,27 +83,6 @@
   </div>
 </section>
 
-<!-- Testimonials Section -->
-<!-- <section class="testimonials-section py-5">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="section-title text-white">{{ 'home.testimonials' | translate }}</h2>
-      <p class="section-subtitle text-white-50">{{ 'home.testimonialsSubtitle' | translate }}</p>
-    </div>
-
-    <div class="row g-4">
-      <div class="col-md-4" *ngFor="let testimonial of testimonials">
-        <div class="testimonial-card">
-          <div class="testimonial-stars">
-            <i class="fas fa-star" *ngFor="let star of getStarArray(testimonial.rating)"></i>
-          </div>
-          <p class="testimonial-text">{{ testimonial.text | translate }}</p>
-          <div class="testimonial-author">{{ testimonial.author | translate }}</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
 
 <!-- CTA Section -->
 <section class="cta-section py-5">
@@ -171,19 +150,6 @@
             </select>
           </div>
 
-          <!-- Subcategory -->
-          <!-- <div class="col-md-6" *ngIf="availableSubcategories.length > 0">
-            <label class="form-label">
-              <i class="fas fa-list me-2"></i>
-              {{ 'home.subcategoryLabel' | translate }}
-            </label>
-            <select class="form-select" [(ngModel)]="searchForm.subcategory" name="subcategory">
-              <option value="">{{ 'home.selectSubcategory' | translate }}</option>
-              <option *ngFor="let sub of availableSubcategories" [value]="sub.value">
-                {{ sub.label }}
-              </option>
-            </select>
-          </div> -->
 
           <!-- People -->
           <div class="col-md-6">

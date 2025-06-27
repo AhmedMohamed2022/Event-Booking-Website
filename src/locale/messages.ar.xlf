@@ -1,139 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-US" target-language="ar" datatype="plaintext" original="ng2.template">
-    <body>
-      <trans-unit id="brandName" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span"/>✨<x id="CLOSE_TAG_SPAN" ctype="x-span"/> EventBook </source>
-        <target><x id="START_TAG_SPAN" ctype="x-span"/>✨<x id="CLOSE_TAG_SPAN" ctype="x-span"/> حجز المناسبات </target>
-      </trans-unit>
-      <trans-unit id="heroTitle" datatype="html">
-        <source> Find Perfect Event Services </source>
-        <target>اعثر على خدمات المناسبات المثالية</target>
-      </trans-unit>
-      <trans-unit id="heroSubtitle" datatype="html">
-        <source> Discover and book the best venues, decorations, and services for your special events </source>
-        <target>اكتشف واحجز أفضل القاعات والديكورات والخدمات لمناسباتك الخاصة</target>
-      </trans-unit>
-      <trans-unit id="cityLabel" datatype="html">
-        <source>City *</source>
-        <target>المدينة *</target>
-      </trans-unit>
-      <trans-unit id="selectCity" datatype="html">
-        <source>Select City</source>
-        <target>اختر المدينة</target>
-      </trans-unit>
-      <trans-unit id="cityName" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="{{city}}"/> </source>
-        <target> <x id="INTERPOLATION" equiv-text="{{city}}"/> </target>
-      </trans-unit>
-      <trans-unit id="signInButton" datatype="html">
-        <source><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/>Sign In</source>
-        <target><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/>تسجيل الدخول</target>
-      </trans-unit>
-      <trans-unit id="userMenuButton" datatype="html">
-        <source><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/><x id="INTERPOLATION"/></source>
-        <target><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/><x id="INTERPOLATION"/></target>
-      </trans-unit>
-      <trans-unit id="dashboardLink" datatype="html">
-        <source><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/>Dashboard</source>
-        <target><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/>لوحة التحكم</target>
-      </trans-unit>
-      <trans-unit id="logoutButton" datatype="html">
-        <source><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/>Logout</source>
-        <target><x id="START_ITALIC_TEXT" ctype="x-i"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i"/>تسجيل الخروج</target>
-      </trans-unit>
-      <trans-unit id="eventTypeLabel" datatype="html">
-        <source>Event Type *</source>
-        <target>نوع المناسبة *</target>
-      </trans-unit>
-      <trans-unit id="selectEventType" datatype="html">
-        <source>Select Event Type</source>
-        <target>اختر نوع المناسبة</target>
-      </trans-unit>
-      <trans-unit id="peopleLabel" datatype="html">
-        <source>People</source>
-        <target>عدد الأشخاص</target>
-      </trans-unit>
-      <trans-unit id="selectPeople" datatype="html">
-        <source>Select number of people</source>
-        <target>اختر عدد الأشخاص</target>
-      </trans-unit>
-      <trans-unit id="dateLabel" datatype="html">
-        <source>Date *</source>
-        <target>التاريخ *</target>
-      </trans-unit>
-      <trans-unit id="searchButton" datatype="html">
-        <source>Search Services</source>
-        <target>البحث عن الخدمات</target>
-      </trans-unit>
-      <trans-unit id="servicesTitle" datatype="html">
-        <source>Our Services</source>
-        <target>خدماتنا</target>
-      </trans-unit>
-      <trans-unit id="servicesSubtitle" datatype="html">
-        <source>Everything you need for your perfect event</source>
-        <target>كل ما تحتاجه لمناسبتك المثالية</target>
-      </trans-unit>
-      <trans-unit id="vendorCTATitle" datatype="html">
-        <source>Are you a vendor?</source>
-        <target>هل أنت مقدم خدمة؟</target>
-      </trans-unit>
-      <trans-unit id="vendorCTAText" datatype="html">
-        <source>Join our platform and reach thousands of customers looking for event services</source>
-        <target>انضم إلى منصتنا وتواصل مع آلاف العملاء الباحثين عن خدمات المناسبات</target>
-      </trans-unit>
-      <trans-unit id="joinButton" datatype="html">
-        <source>Join Us Today</source>
-        <target>انضم إلينا اليوم</target>
-      </trans-unit>
-      <trans-unit id="quickLinksTitle" datatype="html">
-        <source>Quick Links</source>
-        <target>روابط سريعة</target>
-      </trans-unit>
-      <trans-unit id="aboutLink" datatype="html">
-        <source>About Us</source>
-        <target>من نحن</target>
-      </trans-unit>
-      <trans-unit id="servicesLink" datatype="html">
-        <source>Services</source>
-        <target>الخدمات</target>
-      </trans-unit>
-      <trans-unit id="contactLink" datatype="html">
-        <source>Contact</source>
-        <target>اتصل بنا</target>
-      </trans-unit>
-      <trans-unit id="termsLink" datatype="html">
-        <source>Terms</source>
-        <target>الشروط والأحكام</target>
-      </trans-unit>
-      <trans-unit id="contactInfoTitle" datatype="html">
-        <source>Contact Info</source>
-        <target>معلومات التواصل</target>
-      </trans-unit>
-      <trans-unit id="copyright" datatype="html">
-        <source>© 2024 EventBook. All rights reserved.</source>
-        <target>© 2024 حجز المناسبات. جميع الحقوق محفوظة.</target>
-      </trans-unit>
-      <trans-unit id="footerBrandName" datatype="html">
-        <source>EventBook</source>
-        <target>حجز المناسبات</target>
-      </trans-unit>
-      <trans-unit id="footerDescription" datatype="html">
-        <source> Your trusted partner for finding the perfect event services and venues. </source>
-        <target>شريكك الموثوق به للعثور على أفضل خدمات ومواقع المناسبات.</target>
-      </trans-unit>
-      <trans-unit id="emailInfo" datatype="html">
-        <source>📧 info@eventbook.com</source>
-        <target>📧 info@eventbook.com</target>
-      </trans-unit>
-      <trans-unit id="phoneInfo" datatype="html">
-        <source>📞 +962 6 123 4567</source>
-        <target>📞 ٤٥٦٧ ١٢٣ ٦ ٩٦٢+</target>
-      </trans-unit>
-      <trans-unit id="addressInfo" datatype="html">
-        <source>📍 Amman, Jordan</source>
-        <target>📍 عمان، الأردن</target>
-      </trans-unit>
-    </body>
-  </file>
-</xliff>
