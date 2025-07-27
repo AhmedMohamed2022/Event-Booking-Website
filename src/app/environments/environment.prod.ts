@@ -2,7 +2,8 @@
 export const environmentProd = {
   production: true,
   apiUrl:
-    'https://https://event-booking-backend-production-0d69.up.railway.app/api',
+    'https://37484aa9-9060-4a7d-985b-fdc8099f1d8c-00-3joc8gi3d72c5.spock.replit.dev/',
+  // 'https://https://event-booking-backend-production-0d69.up.railway.app/api',
   appName: 'Event Booking Platform',
   version: '1.0.0',
 
