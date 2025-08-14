@@ -6,7 +6,7 @@ import { Booking } from '../../core/models/booking.model';
 import { BookingService } from '../../core/services/booking.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatService } from '../../core/services/chat.service';
-import { ChatDialogService } from '../../core/services/chat-dialog.service';
+
 import { ContactService } from '../../core/services/contact.service';
 import { Router } from '@angular/router';
 import { Message } from '../../core/models/chat.model';
@@ -73,7 +73,7 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private authService: AuthService,
     private chatService: ChatService,
-    private chatDialog: ChatDialogService,
+
     private router: Router,
     private translate: TranslateService,
     private contactService: ContactService,
@@ -319,7 +319,10 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     if (chat) {
       // Reset unread count when opening chat
       chat.unreadCount = 0;
-      this.chatDialog.openChat(userId, chat.userName);
+      // Navigate to the dedicated chat page
+      this.router.navigate(['/chat', userId], {
+        queryParams: { userName: chat.userName },
+      });
     }
   }
 
@@ -459,10 +462,10 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     }
 
     if (booking.supplier?._id) {
-      this.chatDialog.openChat(
-        booking.supplier._id,
-        booking.supplier.name || 'Supplier'
-      );
+      // Navigate to the dedicated chat page
+      this.router.navigate(['/chat', booking.supplier._id], {
+        queryParams: { userName: booking.supplier.name || 'Supplier' },
+      });
     }
   }
 
@@ -625,7 +628,9 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
     // Check rate limit status
     if (this.rateLimitStatus.isLimited) {
       console.warn('Rate limit active, skipping refresh');
-      this.error = this.rateLimitStatus.message || this.translate.instant('rateLimit.tooManyRequests');
+      this.error =
+        this.rateLimitStatus.message ||
+        this.translate.instant('rateLimit.tooManyRequests');
       return;
     }
 
@@ -715,7 +720,10 @@ export class ClientDashboardComponent implements OnInit, OnDestroy {
           ? request.supplier
           : (request.supplier as any)._id;
       const supplierName = this.getContactSupplierName(request);
-      this.chatDialog.openChat(supplierId, supplierName);
+      // Navigate to the dedicated chat page
+      this.router.navigate(['/chat', supplierId], {
+        queryParams: { userName: supplierName },
+      });
     }
   }
 

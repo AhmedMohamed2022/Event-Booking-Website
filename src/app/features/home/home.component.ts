@@ -18,6 +18,11 @@ import {
   EVENT_CATEGORIES,
   CategoryConfig,
 } from '../../core/models/constants/categories.const';
+import { CATEGORY_TO_SUBCATEGORY_FALLBACK } from '../../core/models/constants/categories.const';
+import { CLIENT_MAIN_CATEGORIES } from '../../core/models/constants/categories.const';
+import { getServiceIconClass } from '../../core/models/constants/categories.const';
+import { SearchService } from '../../core/services/search-result.service';
+import { forkJoin } from 'rxjs';
 
 interface TranslatedCity {
   original: string;
@@ -44,7 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Search form data
   searchForm = {
-    city: '',
+    city: 'ALL',
     eventType: '',
     people: '',
     date: '',
@@ -74,13 +79,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   peopleRanges: PeopleRange[] = [];
 
   // Popular categories for quick access
-  popularCategories = [
-    'wedding',
-    'engagement',
-    'conference',
-    'birthday',
-    'farm',
-  ];
+  popularCategories = ['wedding', 'farm'];
 
   isAuthenticated = false;
   currentUser: any = null;
@@ -89,8 +88,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private translationService: TranslationService,
-    private languageService: LanguageService,
-    private translate: TranslateService
+    public languageService: LanguageService,
+    private translate: TranslateService,
+    private searchService: SearchService
   ) {}
 
   ngOnInit() {
@@ -139,6 +139,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Update people ranges with translations
     this.peopleRanges = this.translationService.getTranslatedPeopleRanges();
+
+    // Refresh top categories dynamically
+    this.refreshTopCategories();
   }
 
   // Modal methods
@@ -172,41 +175,36 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Quick category selection
   selectCategory(categoryValue: string) {
-    this.searchForm.eventType = categoryValue;
-    this.openSearchModal();
+    const fallbackSub = CATEGORY_TO_SUBCATEGORY_FALLBACK[categoryValue];
+    const queryParams = fallbackSub
+      ? { subcategory: fallbackSub }
+      : { category: categoryValue };
+    this.router.navigate(['/search-results'], { queryParams });
   }
 
   onSearchSubmit() {
-    if (
-      !this.searchForm.city ||
-      !this.searchForm.eventType ||
-      !this.searchForm.date
-    ) {
-      // Use translated alert message
-      const alertMessage =
-        this.languageService.getCurrentLanguage() === 'ar'
-          ? 'يرجى ملء الحقول المطلوبة: المدينة، نوع المناسبة، والتاريخ'
-          : 'Please fill in required fields: City, Event Type, and Date';
-      alert(alertMessage);
-      return;
-    }
-
     const selectedRange = this.peopleRanges.find(
       (range) => range.label === this.searchForm.people
     );
 
-    const queryParams: any = {
-      city: this.searchForm.city,
-      category: this.searchForm.eventType,
-      date: this.searchForm.date,
-      minCapacity: selectedRange?.min,
-      maxCapacity: selectedRange?.max,
-    };
+    const queryParams: any = {};
 
-    // Remove undefined values
-    Object.keys(queryParams).forEach(
-      (key) => queryParams[key] === undefined && delete queryParams[key]
-    );
+    if (this.searchForm.city && this.searchForm.city !== 'ALL') {
+      queryParams.city = this.searchForm.city;
+    }
+
+    if (this.searchForm.eventType) {
+      queryParams.category = this.searchForm.eventType;
+    }
+
+    if (this.searchForm.date) {
+      queryParams.date = this.searchForm.date;
+    }
+
+    if (selectedRange) {
+      queryParams.minCapacity = selectedRange.min;
+      queryParams.maxCapacity = selectedRange.max;
+    }
 
     this.closeSearchModal();
     this.router.navigate(['/search-results'], { queryParams });
@@ -241,18 +239,54 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getCategoryIcon(categoryValue: string): string {
-    const iconMap: { [key: string]: string } = {
-      wedding: 'fas fa-ring',
-      engagement: 'fas fa-heart',
-      conference: 'fas fa-microphone',
-      birthday: 'fas fa-birthday-cake',
-      corporate: 'fas fa-briefcase',
-      graduation: 'fas fa-graduation-cap',
-      funeral: 'fas fa-dove',
-      farm: 'fas fa-seedling',
-    };
+    return getServiceIconClass(categoryValue);
+  }
 
-    return iconMap[categoryValue] || 'fas fa-calendar-alt';
+  // Compute dynamic top categories based on available services
+  private refreshTopCategories() {
+    const candidates = CLIENT_MAIN_CATEGORIES;
+    const counts: { [key: string]: number } = {};
+
+    // Query count by trying category first; if none, try mapped subcategory
+    candidates.forEach((cat) => (counts[cat] = 0));
+
+    const requests = candidates.map((cat) => {
+      const fallbackSub = CATEGORY_TO_SUBCATEGORY_FALLBACK[cat];
+      const params: any = fallbackSub
+        ? { subcategory: fallbackSub }
+        : { category: cat };
+      return this.searchService.searchEvents(params);
+    });
+
+    // Fire all requests and update once they return
+    forkJoin(requests).subscribe({
+      next: (results) => {
+        results.forEach((arr: any[], idx) => {
+          const cat = candidates[idx];
+          counts[cat] = Array.isArray(arr) ? arr.length : 0;
+        });
+        // Threshold logic: include categories with any results; fallback to first few if none
+        const sorted = Object.entries(counts)
+          .sort((a, b) => b[1] - a[1])
+          .map(([k]) => k);
+        const nonZero = sorted.filter((k) => counts[k] > 0);
+        this.popularCategories = (nonZero.length > 0 ? nonZero : sorted).slice(
+          0,
+          6
+        );
+      },
+      error: () => {
+        // On failure, fall back to default shortlist
+        this.popularCategories = [
+          'halls',
+          'photographers',
+          'hospitality',
+          'chairs',
+          'tables',
+          'flowers',
+        ];
+      },
+    });
   }
 
   // Scroll to section

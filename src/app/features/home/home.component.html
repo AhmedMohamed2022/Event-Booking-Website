@@ -130,6 +130,8 @@
               </label>
               <select class="form-select" [(ngModel)]="searchForm.city" name="city" required>
                 <option value="">{{ 'home.selectCity' | translate }}</option>
+                <option value="ALL">{{ languageService.getCurrentLanguage() === 'ar' ? 'كل المدن' : 'All Cities' }}
+                </option>
                 <option *ngFor="let city of translatedCities" [value]="city.original">
                   {{ city.translated }}
                 </option>
@@ -140,10 +142,10 @@
             <div class="col-md-6">
               <label class="form-label">
                 <i class="fas fa-calendar me-2"></i>
-                {{ 'home.eventTypeLabel' | translate }} *
+                {{ 'home.eventTypeLabel' | translate }}
               </label>
               <select class="form-select" [(ngModel)]="searchForm.eventType" name="eventType"
-                (change)="onCategoryChange()" required>
+                (change)="onCategoryChange()">
                 <option value="">{{ 'home.selectEventType' | translate }}</option>
                 <option *ngFor="let category of eventCategories" [value]="category.value">
                   {{ category.label }}
@@ -170,9 +172,9 @@
             <div class="col-md-6">
               <label class="form-label">
                 <i class="fas fa-calendar-day me-2"></i>
-                {{ 'home.dateLabel' | translate }} *
+                {{ 'home.dateLabel' | translate }}
               </label>
-              <input type="date" class="form-control" [(ngModel)]="searchForm.date" name="date" required>
+              <input type="date" class="form-control" [(ngModel)]="searchForm.date" name="date">
             </div>
           </div>
 

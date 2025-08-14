@@ -16,8 +16,9 @@ import {
 } from '../../core/models/contact.model';
 import { Subscription } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-import { ChatComponent } from '../chat/chat.component';
+
 import { SubscriptionOverviewComponent } from '../subscription-overview/subscription-overview.component';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-supplier-dashboard',
@@ -26,7 +27,6 @@ import { SubscriptionOverviewComponent } from '../subscription-overview/subscrip
     CommonModule,
     RouterModule,
     TranslateModule,
-    ChatComponent,
     SubscriptionOverviewComponent,
   ],
   templateUrl: './supplier-dashboard.component.html',
@@ -41,9 +41,7 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
   // Chat related properties
   activeChats: ChatPreview[] = []; // Changed from ActiveChat to ChatPreview
   unreadMessages: { [userId: string]: number } = {};
-  showChatWindow = false;
-  currentChatUserId: string | null = null;
-  currentChatUserName: string | null = null;
+
   private messageSubscription!: Subscription;
   private currentUserId: string | null = null;
   private processedMessageIds = new Set<string>(); // Add this to track message IDs
@@ -72,7 +70,8 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     private contactService: ContactService,
     private rateLimiterService: RateLimiterService,
     private router: Router,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
@@ -100,9 +99,6 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     this.supplierService.getSupplierDashboard().subscribe({
       next: (data) => {
         if (data && data.supplier) {
-          console.log('Raw dashboard data:', data); // Debug raw data
-          console.log('Revenue before:', data.supplier.totalRevenue); // Debug revenue before processing
-
           // Ensure data is properly structured
           this.dashboardData = {
             supplier: {
@@ -124,11 +120,6 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
               this.dashboardData.supplier.totalRevenue = calculatedRevenue;
             }
           }
-
-          console.log(
-            'Revenue after:',
-            this.dashboardData.supplier.totalRevenue
-          ); // Debug final revenue
         } else {
           console.error('Invalid dashboard data structure:', data);
           this.error = this.translate.instant(
@@ -157,12 +148,10 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
 
     // Initialize socket if not already connected
     if (!this.chatService.isSocketConnected()) {
-      console.log('Socket not connected, initializing for notifications...');
       this.chatService.reinitializeSocket();
     }
 
     // Join the room with current user ID
-    console.log('Joining room with supplier ID:', this.currentUserId);
     this.chatService.joinRoom(this.currentUserId);
 
     // Update message subscription to handle duplicates
@@ -171,10 +160,18 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
         if (message && message.to === this.currentUserId) {
           // Only process new messages
           if (!this.processedMessageIds.has(message._id)) {
-            console.log('New message received in supplier dashboard:', message);
             this.processedMessageIds.add(message._id);
 
-            // Update unread count for this sender
+            // Update unread count for this sender using notification service
+            const currentCount = this.notificationService.getUnreadCount(
+              `supplier_${message.from}`
+            );
+            this.notificationService.setUnreadCount(
+              `supplier_${message.from}`,
+              currentCount + 1
+            );
+
+            // Also update local unread messages for backward compatibility
             if (!this.unreadMessages[message.from]) {
               this.unreadMessages[message.from] = 0;
             }
@@ -185,6 +182,28 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
 
             // Play notification sound
             this.playNotificationSound();
+
+            // Show toast notification with quick action to open chat
+            const previewContent = (message.content || '').toString();
+            const truncated =
+              previewContent.length > 80
+                ? previewContent.slice(0, 80) + '…'
+                : previewContent;
+            const title =
+              this.translate.instant('supplierDashboard.chat.newMessage') ||
+              'New message';
+            const actionLabel =
+              this.translate.instant('supplierDashboard.chat.chat') ||
+              'Open chat';
+            this.notificationService.showWithAction(
+              'info',
+              title,
+              truncated ||
+                this.translate.instant('supplierDashboard.chat.messages') ||
+                'You have a new message',
+              actionLabel,
+              () => this.openChat(message.from, message.fromName || '')
+            );
           }
         }
       },
@@ -198,9 +217,8 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadActiveChats() {
-    this.chatService.getActiveChats().subscribe(
-      (chats) => {
-        console.log('Active chats loaded:', chats);
+    this.chatService.getActiveChats().subscribe({
+      next: (chats) => {
         // Convert ActiveChat to ChatPreview format
         this.activeChats = chats.map((chat) => ({
           userId: chat.otherUser._id,
@@ -214,44 +232,46 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
         this.activeChats.forEach((chat) => {
           if (chat.unreadCount > 0) {
             this.unreadMessages[chat.userId] = chat.unreadCount;
+            // Also update notification service
+            this.notificationService.setUnreadCount(
+              `supplier_${chat.userId}`,
+              chat.unreadCount
+            );
           }
         });
       },
-      (error) => {
+      error: (error) => {
         console.error('Error loading active chats:', error);
-      }
-    );
+      },
+    });
   }
 
   openChat(userId: string, userName: string) {
-    this.currentChatUserId = userId;
-    this.currentChatUserName = userName;
-    this.showChatWindow = true;
+    // Navigate to the dedicated chat page
+    this.router.navigate(['/chat', userId], {
+      queryParams: { userName: userName },
+    });
 
-    // Reset unread count for this user
+    // Reset unread count for this user using notification service
+    this.notificationService.resetUnreadCount(`supplier_${userId}`);
+
+    // Also reset local unread messages for backward compatibility
     this.unreadMessages[userId] = 0;
   }
 
-  closeChat = () => {
-    console.log('Closing chat window');
-    this.showChatWindow = false;
-    this.currentChatUserId = null;
-    this.currentChatUserName = null;
-  };
-
   getTotalUnreadMessages(): number {
-    return Object.values(this.unreadMessages).reduce(
-      (total, count) => total + count,
-      0
-    );
+    // Use notification service for persistent unread count
+    return this.notificationService.getTotalUnreadCount();
   }
 
   playNotificationSound() {
     try {
       const audio = new Audio('assets/sounds/notification.mp3');
-      audio.play();
+      audio.play().catch(() => {
+        // Silently fail if audio cannot be played
+      });
     } catch (error) {
-      console.error('Error playing notification sound:', error);
+      // Silently fail if audio cannot be created
     }
   }
 
@@ -281,8 +301,6 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     if (this.rateLimitSubscription) {
       this.rateLimitSubscription.unsubscribe();
     }
-    // Clear any open chat windows
-    this.closeChat();
   }
 
   formatDate(date: string | Date): string {
@@ -323,32 +341,68 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
 
   confirmBooking(bookingId: string) {
     this.processingBooking = bookingId;
-    this.bookingService.updateBookingStatus(bookingId, 'confirmed').subscribe(
-      () => {
+    this.bookingService.updateBookingStatus(bookingId, 'confirmed').subscribe({
+      next: () => {
         // Update local data
         this.updateBookingStatus(bookingId, 'confirmed');
         this.processingBooking = null;
+        this.notificationService.show(
+          'success',
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.success.confirmed'
+          ),
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.success.confirmed'
+          )
+        );
       },
-      (error) => {
+      error: (error) => {
         console.error('Error confirming booking:', error);
         this.processingBooking = null;
-      }
-    );
+        this.notificationService.show(
+          'error',
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.error.confirmed'
+          ),
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.error.confirmed'
+          )
+        );
+      },
+    });
   }
 
   rejectBooking(bookingId: string) {
     this.processingBooking = bookingId;
-    this.bookingService.updateBookingStatus(bookingId, 'cancelled').subscribe(
-      () => {
+    this.bookingService.updateBookingStatus(bookingId, 'cancelled').subscribe({
+      next: () => {
         // Update local data
         this.updateBookingStatus(bookingId, 'cancelled');
         this.processingBooking = null;
+        this.notificationService.show(
+          'success',
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.success.rejected'
+          ),
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.success.rejected'
+          )
+        );
       },
-      (error) => {
+      error: (error) => {
         console.error('Error rejecting booking:', error);
         this.processingBooking = null;
-      }
-    );
+        this.notificationService.show(
+          'error',
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.error.rejected'
+          ),
+          this.translate.instant(
+            'supplierDashboard.bookings.actions.error.rejected'
+          )
+        );
+      },
+    });
   }
 
   private updateBookingStatus(
@@ -373,20 +427,27 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
       this.contactCache.length > 0 &&
       now - this.lastContactLoad < this.cacheTimeout
     ) {
-      console.log('Using cached contact requests data');
       this.contactRequests = this.contactCache;
       return;
     }
 
     this.contactService.getContactRequests().subscribe({
       next: (requests: ContactRequest[]) => {
-        console.log('Contact requests loaded:', requests);
         this.contactRequests = requests;
         this.contactCache = requests; // Cache the results
         this.lastContactLoad = now;
       },
       error: (error: any) => {
         console.error('Error loading contact requests:', error);
+        this.notificationService.show(
+          'error',
+          this.translate.instant(
+            'supplierDashboard.contactRequests.actions.error.update'
+          ),
+          this.translate.instant(
+            'supplierDashboard.contactRequests.actions.error.update'
+          )
+        );
       },
     });
   }
@@ -395,14 +456,12 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
     // Check cache first
     const now = Date.now();
     if (this.limitCache && now - this.lastLimitLoad < this.cacheTimeout) {
-      console.log('Using cached contact limit info');
       this.contactLimitInfo = this.limitCache;
       return;
     }
 
     this.contactService.getContactLimitInfo().subscribe({
       next: (limitInfo: ContactLimitInfo) => {
-        console.log('Contact limit info loaded:', limitInfo);
         this.contactLimitInfo = limitInfo;
         this.limitCache = limitInfo; // Cache the results
         this.lastLimitLoad = now;
@@ -425,14 +484,42 @@ export class SupplierDashboardComponent implements OnInit, OnDestroy {
             // Reload contact requests and limit info
             this.loadContactRequests();
             this.loadContactLimitInfo();
-            alert(`Contact request ${status} successfully`);
+            this.notificationService.show(
+              'success',
+              this.translate.instant(
+                'supplierDashboard.contactRequests.actions.success',
+                { status }
+              ),
+              this.translate.instant(
+                'supplierDashboard.contactRequests.actions.success',
+                { status }
+              )
+            );
           } else {
-            alert(response.message || 'Failed to update contact request');
+            this.notificationService.show(
+              'error',
+              response.message ||
+                this.translate.instant(
+                  'supplierDashboard.contactRequests.actions.error.update'
+                ),
+              response.message ||
+                this.translate.instant(
+                  'supplierDashboard.contactRequests.actions.error.update'
+                )
+            );
           }
         },
         error: (error) => {
           console.error('Error updating contact request status:', error);
-          alert('Failed to update contact request status');
+          this.notificationService.show(
+            'error',
+            this.translate.instant(
+              'supplierDashboard.contactRequests.actions.error.update'
+            ),
+            this.translate.instant(
+              'supplierDashboard.contactRequests.actions.error.update'
+            )
+          );
         },
       });
   }

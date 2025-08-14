@@ -143,16 +143,14 @@
               </span>
             </button>
           </li>
-          <!-- Add to nav tabs -->
           <li class="nav-item">
             <button class="nav-link" [class.active]="selectedTab === 'messages'" (click)="selectTab('messages')">
               {{ 'adminDashboard.tabs.contactMessages' | translate }}
-              <span *ngIf="contactMessages?.length" class="badge bg-danger ms-2">
-                {{ contactMessages.length }}
+              <span *ngIf="getUnreadContactMessagesCount() > 0" class="badge bg-danger ms-2">
+                {{ getUnreadContactMessagesCount() }}
               </span>
             </button>
           </li>
-          <!-- Add to admin-dashboard.component.html nav tabs -->
           <li class="nav-item">
             <button class="nav-link" [class.active]="selectedTab === 'locked'" (click)="selectTab('locked')">
               {{ 'adminDashboard.tabs.lockedSuppliers' | translate }}
@@ -161,57 +159,6 @@
               </span>
             </button>
           </li>
-
-          <!-- Add new tab content -->
-          <div *ngIf="selectedTab === 'locked'">
-            <h5 class="text-primary-dark mb-3">
-              <i class="bi bi-lock me-2"></i>
-              {{ 'adminDashboard.locked.title' | translate }}
-            </h5>
-
-            <!-- Locked Suppliers Table -->
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>{{ 'adminDashboard.locked.table.name' | translate }}</th>
-                    <th>{{ 'adminDashboard.locked.table.phone' | translate }}</th>
-                    <th>{{ 'adminDashboard.locked.table.category' | translate }}</th>
-                    <th>{{ 'adminDashboard.locked.table.contacts' | translate }}</th>
-                    <th>{{ 'adminDashboard.locked.table.lockDate' | translate }}</th>
-                    <th>{{ 'adminDashboard.locked.table.actions' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let supplier of stats?.lockedSuppliers">
-                    <td>{{ supplier.name }}</td>
-                    <td>{{ supplier.phone }}</td>
-                    <td>{{ supplier.category }}</td>
-                    <td>
-                      <span class="badge bg-warning">
-                        {{ supplier.contactCount }}/50
-                      </span>
-                    </td>
-                    <td>{{ supplier.lockDate | date:'short' }}</td>
-                    <td>
-                      <button class="btn btn-sm btn-success" (click)="unlockSupplier(supplier._id)"
-                        [disabled]="unlockingSupplier === supplier._id">
-                        <i class="bi bi-unlock me-1"></i>
-                        {{ 'adminDashboard.locked.actions.unlock' | translate }}
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- No Locked Suppliers State -->
-            <div *ngIf="!stats?.lockedSuppliers?.length" class="text-center py-5">
-              <i class="bi bi-shield-check display-1 text-muted"></i>
-              <h5 class="text-muted mt-3">{{ 'adminDashboard.locked.empty.title' | translate }}</h5>
-              <p class="text-muted">{{ 'adminDashboard.locked.empty.message' | translate }}</p>
-            </div>
-          </div>
         </ul>
       </div>
 
@@ -279,7 +226,7 @@
                   </p>
 
                   <!-- Action Buttons -->
-                  <div class="d-flex gap-2">
+                  <div class="d-flex gap-2 flex-wrap">
                     <button class="btn btn-success btn-sm" (click)="approveRequest(request)">
                       <i class="bi bi-check-lg me-1"></i>
                       {{ 'adminDashboard.requests.actions.approve' | translate }}
@@ -339,51 +286,111 @@
             <p class="text-muted">{{ 'adminDashboard.requests.history.empty.message' | translate }}</p>
           </div>
         </div>
-        <!-- Add inside card-body after existing tabs -->
-        <!-- Contact Messages Tab -->
-        <div *ngIf="selectedTab === 'messages'" class="tab-pane">
-          <h5 class="text-primary-dark mb-3">
-            <i class="bi bi-envelope me-2"></i>
-            {{ 'adminDashboard.messages.title' | translate }}
-          </h5>
 
-          <!-- Messages List -->
-          <div class="table-responsive" *ngIf="contactMessages.length > 0">
+        <!-- Contact Messages Tab -->
+        <div class="tab-pane fade" [class.show]="selectedTab === 'messages'"
+          [class.active]="selectedTab === 'messages'">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">{{ 'adminDashboard.tabs.contactMessages' | translate }}</h5>
+            <button *ngIf="getUnreadContactMessagesCount() > 0" class="btn btn-sm btn-outline-success"
+              (click)="markAllContactMessagesAsRead()">
+              <i class="bi bi-check-all me-1"></i>
+              {{ 'adminDashboard.contactMessages.markAllRead' | translate }}
+            </button>
+          </div>
+
+          <div *ngIf="contactMessages.length === 0" class="text-center p-4">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted mt-2">{{ 'adminDashboard.contactMessages.noMessages' | translate }}</p>
+          </div>
+
+          <div *ngIf="contactMessages.length > 0" class="table-responsive contact-messages-table">
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>{{ 'adminDashboard.messages.table.date' | translate }}</th>
-                  <th>{{ 'adminDashboard.messages.table.name' | translate }}</th>
-                  <th>{{ 'adminDashboard.messages.table.email' | translate }}</th>
-                  <th>{{ 'adminDashboard.messages.table.message' | translate }}</th>
-                  <th>{{ 'adminDashboard.messages.table.status' | translate }}</th>
-                  <th>{{ 'adminDashboard.messages.table.actions' | translate }}</th>
+                  <th>{{ 'adminDashboard.contactMessages.table.name' | translate }}</th>
+                  <th>{{ 'adminDashboard.contactMessages.table.email' | translate }}</th>
+                  <th>{{ 'adminDashboard.contactMessages.table.message' | translate }}</th>
+                  <th>{{ 'adminDashboard.contactMessages.table.date' | translate }}</th>
+                  <th>{{ 'adminDashboard.contactMessages.table.status' | translate }}</th>
+                  <th>{{ 'adminDashboard.contactMessages.table.actions' | translate }}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let message of contactMessages">
+                <tr *ngFor="let message of contactMessages" [class.table-light]="message.status === 'read'"
+                  (click)="markContactMessageAsRead(message._id)">
+                  <td>
+                    <strong>{{ message.name }}</strong>
+                  </td>
+                  <td>{{ message.email }}</td>
+                  <td>
+                    <div class="message-preview">
+                      {{ message.message.length > 100 ? (message.message | slice:0:100) + '...' : message.message }}
+                    </div>
+                  </td>
                   <td>{{ message.createdAt | date:'short' }}</td>
-                  <td>{{ message.name }}</td>
                   <td>
-                    <a [href]="'mailto:' + message.email">{{ message.email }}</a>
-                  </td>
-                  <td>
-                    <button class="btn btn-link p-0" (click)="viewMessageDetails(message)">
-                      {{ message.message | slice:0:50 }}{{ message.message.length > 50 ? '...' : '' }}
-                    </button>
-                  </td>
-                  <td>
-                    <span [class]="getMessageStatusBadge(message.status)">
-                      {{ 'adminDashboard.messages.status.' + message.status | translate }}
+                    <span [class]="message.status === 'pending' ? 'badge bg-warning' : 'badge bg-success'">
+                      {{ message.status === 'pending' ? ('adminDashboard.contactMessages.status.pending' | translate) :
+                      ('adminDashboard.contactMessages.status.read' | translate) }}
                     </span>
                   </td>
                   <td>
-                    <button class="btn btn-sm btn-outline-primary me-2" (click)="markMessageAsRead(message)"
+                    <button class="btn btn-sm btn-outline-primary"
+                      (click)="$event.stopPropagation(); markContactMessageAsRead(message._id)"
                       *ngIf="message.status === 'pending'">
-                      <i class="bi bi-check2-all"></i>
+                      <i class="bi bi-check me-1"></i>
+                      {{ 'adminDashboard.contactMessages.actions.markRead' | translate }}
                     </button>
-                    <button class="btn btn-sm btn-outline-info" (click)="viewMessageDetails(message)">
-                      <i class="bi bi-eye"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Locked Suppliers Tab -->
+        <div *ngIf="selectedTab === 'locked'">
+          <h5 class="text-primary-dark mb-3">
+            <i class="bi bi-lock me-2"></i>
+            {{ 'adminDashboard.locked.title' | translate }}
+          </h5>
+
+          <!-- Locked Suppliers Table -->
+          <div class="table-responsive" *ngIf="stats?.lockedSuppliers?.length">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>{{ 'adminDashboard.locked.table.name' | translate }}</th>
+                  <th>{{ 'adminDashboard.locked.table.phone' | translate }}</th>
+                  <th>{{ 'adminDashboard.locked.table.category' | translate }}</th>
+                  <th>{{ 'adminDashboard.locked.table.contacts' | translate }}</th>
+                  <th>{{ 'adminDashboard.locked.table.lockDate' | translate }}</th>
+                  <th>{{ 'adminDashboard.locked.table.actions' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let supplier of stats.lockedSuppliers">
+                  <td>{{ supplier.name }}</td>
+                  <td>{{ supplier.phone }}</td>
+                  <td>{{ supplier.category }}</td>
+                  <td>
+                    <span class="badge bg-warning">
+                      {{ supplier.contactCount }}/50
+                    </span>
+                  </td>
+                  <td>{{ supplier.lockDate | date:'short' }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-success" (click)="unlockSupplier(supplier._id)"
+                      [disabled]="unlockingSupplier === supplier._id">
+                      <i class="bi bi-unlock me-1"></i>
+                      <span *ngIf="unlockingSupplier === supplier._id">
+                        <i class="spinner-border spinner-border-sm me-1"></i>
+                        {{ 'common.processing' | translate }}
+                      </span>
+                      <span *ngIf="unlockingSupplier !== supplier._id">
+                        {{ 'adminDashboard.locked.actions.unlock' | translate }}
+                      </span>
                     </button>
                   </td>
                 </tr>
@@ -391,22 +398,11 @@
             </table>
           </div>
 
-          <!-- No Messages State -->
-          <div *ngIf="contactMessages.length === 0" class="text-center py-5">
-            <i class="bi bi-envelope-open display-1 text-muted"></i>
-            <h5 class="text-muted mt-3">{{ 'adminDashboard.messages.empty.title' | translate }}</h5>
-            <p class="text-muted">{{ 'adminDashboard.messages.empty.message' | translate }}</p>
-          </div>
-        </div>
-
-        <!-- Contact Info Row -->
-        <div *ngIf="selectedTab === 'messages'" class="row mb-4">
-          <div class="col-md-4" *ngFor="let info of contactInfoArray">
-            <div class="text-center">
-              <i [class]="info.icon + ' fs-2 text-warning mb-3'"></i>
-              <h6>{{ 'adminDashboard.contact.info.' + info.type + '.title' | translate }}</h6>
-              <p class="text-muted">{{ 'adminDashboard.contact.info.' + info.type + '.value' | translate }}</p>
-            </div>
+          <!-- No Locked Suppliers State -->
+          <div *ngIf="!stats?.lockedSuppliers?.length" class="text-center py-5">
+            <i class="bi bi-shield-check display-1 text-muted"></i>
+            <h5 class="text-muted mt-3">{{ 'adminDashboard.locked.empty.title' | translate }}</h5>
+            <p class="text-muted">{{ 'adminDashboard.locked.empty.message' | translate }}</p>
           </div>
         </div>
       </div>

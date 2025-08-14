@@ -1,31 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventItem } from '../../core/models/event-item.model';
 import { ServiceDetailService } from '../../core/services/ServiceDetails.service';
-import { ChatDialogService } from '../../core/services/chat-dialog.service';
+
 import { ChatService } from '../../core/services/chat.service';
-import { ChatComponent } from '../chat/chat.component';
 import { AuthService } from '../../core/services/auth.service';
 import { ContactService } from '../../core/services/contact.service';
 import {
   ContactChatService,
   ContactChatAccess,
 } from '../../core/services/contact-chat.service';
-// Add translation imports
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { isContactOnlyService } from '../../core/models/constants/categories.const';
+import { NotificationService } from '../../core/services/notification.service';
+import { PhoneUtils } from '../../core/utils/phone.utils';
+import { Subject, takeUntil } from 'rxjs';
+import { NotificationToastComponent } from '../../shared/components/notification-toast/notification-toast.component';
 
 @Component({
   selector: 'app-service-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule], // Add TranslateModule
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    NotificationToastComponent,
+  ],
   templateUrl: './service-details.component.html',
   styleUrls: ['./service-details.component.css'],
 })
-export class ServiceDetailComponent implements OnInit {
+export class ServiceDetailComponent implements OnInit, OnDestroy {
   service: any = null;
   relatedServices: EventItem[] = [];
   loading = false;
@@ -50,19 +57,27 @@ export class ServiceDetailComponent implements OnInit {
   chatAccess: ContactChatAccess = { canChat: false };
   checkingChatAccess = false;
 
+  // Contact request state
+  contactRequestSent = false;
+  contactRequestLoading = false;
+  contactRequestStatus: 'pending' | 'accepted' | 'rejected' | null = null;
+  checkingContactStatus = false;
+
+  private destroy$ = new Subject<void>();
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private serviceDetailService: ServiceDetailService,
-    private chatDialog: ChatDialogService,
+
     private chatService: ChatService,
     private authService: AuthService,
     private contactService: ContactService,
     private contactChatService: ContactChatService,
-    // Add translation services
     private translate: TranslateService,
     private languageService: LanguageService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
@@ -72,16 +87,18 @@ export class ServiceDetailComponent implements OnInit {
     });
 
     // Subscribe to language changes
-    this.translate.onLangChange.subscribe(() => {
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.updateTranslations();
     });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private updateTranslations() {
-    // Update any dynamic translations if needed
-    // This method will be called when language changes
     if (this.service) {
-      // Update translated category and location if needed
       this.service.translatedCategory =
         this.translationService.getTranslatedCategory(this.service.category);
       this.service.translatedLocation =
@@ -97,29 +114,25 @@ export class ServiceDetailComponent implements OnInit {
       next: (data: any) => {
         console.log('Service detail fetched:', data);
         this.service = data;
-        // Generate rating once when data is loaded
         this.serviceRating = this.generateStarRating();
-        // Backend returns googleMapUrl and directionUrl from the controller
         this.googleMapUrl = data.googleMapUrl || '';
         this.directionUrl = data.directionUrl || '';
 
-        // Update translations for the loaded service
         this.updateTranslations();
 
         // Check chat access if user is authenticated
         if (this.authService.isAuthenticated() && this.service?.supplier?._id) {
           this.checkChatAccess();
+          this.checkContactRequestStatus();
         }
 
         this.loadRelatedServices();
         this.loading = false;
       },
       error: (error) => {
-        console.error(this.serviceId);
-        console.error('Error fetching service details:');
+        console.error('Error fetching service details:', error);
         this.error = 'Failed to load service details. Please try again.';
         this.loading = false;
-        console.error('Service detail fetch failed:', error);
       },
     });
   }
@@ -134,7 +147,6 @@ export class ServiceDetailComponent implements OnInit {
 
       this.serviceDetailService.getRelatedServices(searchParams).subscribe({
         next: (data: EventItem[]) => {
-          // Filter out current service and limit to 6 results
           this.relatedServices = data
             .filter((item) => item._id !== this.service?._id)
             .slice(0, 6);
@@ -238,65 +250,68 @@ export class ServiceDetailComponent implements OnInit {
     }
   }
 
-  // Chat method
+  // Chat method - simplified
   openChat() {
-    console.log('Opening chat...');
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], {
+        queryParams: {
+          returnUrl: `/service/${this.serviceId}`,
+          action: 'chat',
+        },
+      });
+      return;
+    }
 
-    // Check authentication using AuthService
-    this.authService.currentUser$.subscribe((user) => {
-      if (!user) {
-        console.log('User not authenticated, redirecting to login');
-        this.router.navigate(['/login'], {
-          queryParams: {
-            returnUrl: `/service/${this.serviceId}`,
-            action: 'chat',
-          },
+    if (!this.service?.supplier) {
+      this.notificationService.show('error', 'Error', 'No supplier information found');
+      return;
+    }
+
+    // For bookable services, allow direct chat
+    if (this.shouldShowBookingButton()) {
+      try {
+        this.chatService.connectSocket();
+        // Navigate to the dedicated chat page
+        this.router.navigate(['/chat', this.service.supplier._id], {
+          queryParams: { userName: this.service.supplier.name || 'Supplier' },
         });
         return;
-      }
-
-      // Verify supplier exists
-      if (!this.service?.supplier) {
-        console.error('No supplier information found');
-        return;
-      }
-
-      // Check if user can chat (has approved contact request)
-      if (!this.chatAccess.canChat) {
-        console.log('User cannot chat - no approved contact request');
-        alert(
-          this.chatAccess.reason ||
-            'You need an approved contact request to chat with this supplier.'
-        );
-        return;
-      }
-
-      console.log('User authenticated and can chat:', user);
-      console.log('Initializing chat with supplier:', {
-        supplierId: this.service.supplier._id,
-        supplierName: this.service.supplier.name,
-      });
-
-      try {
-        // Initialize chat service connection
-        this.chatService.connectSocket();
-
-        // Open chat dialog with supplier info
-        this.chatDialog.openChat(
-          this.service.supplier._id,
-          this.service.supplier.name || 'Supplier'
-        );
-
-        console.log('Chat dialog opened successfully');
       } catch (error) {
         console.error('Error opening chat:', error);
+        this.notificationService.show('error', 'Error', 'Failed to open chat. Please try again.');
+        return;
       }
-    });
+    }
+
+    // For contact-only services, check contact request approval
+    if (!this.chatAccess.canChat) {
+      this.notificationService.show('warning', 'Chat Not Available', this.chatAccess.reason || 'You need an approved contact request to chat with this supplier.');
+      return;
+    }
+
+    try {
+      this.chatService.connectSocket();
+      // Navigate to the dedicated chat page
+      this.router.navigate(['/chat', this.service.supplier._id], {
+        queryParams: { userName: this.service.supplier.name || 'Supplier' },
+      });
+    } catch (error) {
+      console.error('Error opening chat:', error);
+      this.notificationService.show('error', 'Error', 'Failed to open chat. Please try again.');
+    }
   }
 
-  // Update the canChat method to check contact request approval
+  // Simplified chat access check
   canChat(): boolean {
-    // User must be authenticated, be a client, and have approved contact request
+    // For bookable services, allow chat if user is authenticated and is a client
+    if (this.shouldShowBookingButton()) {
+      return (
+        this.authService.isAuthenticated() &&
+        this.authService.getCurrentUser()?.role === 'client'
+      );
+    }
+
+    // For contact-only services, require contact request approval
     return (
       this.authService.isAuthenticated() &&
       this.authService.getCurrentUser()?.role === 'client' &&
@@ -304,32 +319,86 @@ export class ServiceDetailComponent implements OnInit {
     );
   }
 
-  // Initialize chat connection
-  initializeChat() {
-    // First check if user is authenticated
-    if (!this.authService.isAuthenticated()) {
-      console.log('User not authenticated, skipping chat initialization');
+  // Check if user can chat with this supplier
+  checkChatAccess() {
+    if (!this.service?.supplier?._id) return;
+
+    this.checkingChatAccess = true;
+    
+    // For bookable services, allow direct chat access
+    if (this.shouldShowBookingButton()) {
+      this.chatAccess = { canChat: true };
+      this.checkingChatAccess = false;
       return;
     }
 
-    const token = this.authService.getToken();
-    if (!token) {
-      console.log('No token available, skipping chat initialization');
+    // For contact-only services, check contact request approval
+    this.contactChatService
+      .checkChatAccess(this.service.supplier._id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (access) => {
+          this.chatAccess = access;
+          this.checkingChatAccess = false;
+        },
+        error: (error) => {
+          console.error('Error checking chat access:', error);
+          this.checkingChatAccess = false;
+          this.chatAccess = { canChat: false, reason: 'Error checking access' };
+        },
+      });
+  }
+
+  // Check contact request status for current user and service
+  checkContactRequestStatus() {
+    // Skip contact request checking for bookable services
+    if (this.shouldShowBookingButton()) {
       return;
     }
 
-    // Initialize chat only if authenticated and token exists
-    if (!this.chatService.isSocketConnected()) {
-      console.log('Initializing chat connection...');
-      this.chatService.reinitializeSocket();
+    if (
+      !this.authService.isAuthenticated() ||
+      !this.service?.supplier?._id ||
+      !this.service?._id
+    ) {
+      return;
     }
+
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return;
+
+    this.checkingContactStatus = true;
+
+    this.contactService
+      .checkContactRequestStatus(
+        currentUser.id,
+        this.service.supplier._id,
+        this.service._id
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          this.checkingContactStatus = false;
+          if (response.status !== 'none') {
+            this.contactRequestStatus = response.status;
+            this.contactRequestSent = true;
+
+            // If accepted, update chat access
+            if (response.status === 'accepted') {
+              this.chatAccess = { canChat: true };
+            }
+          }
+        },
+        error: (error: any) => {
+          console.error('Error checking contact request status:', error);
+          this.checkingContactStatus = false;
+        },
+      });
   }
 
   // Utility methods
   shouldShowBookingButton(): boolean {
     if (!this.service) return false;
-
-    // Use the new contact-only service logic
     return !isContactOnlyService(
       this.service.category,
       this.service.subcategory
@@ -355,7 +424,6 @@ export class ServiceDetailComponent implements OnInit {
     }
   }
 
-  // Update the generateStarRating method to be private
   private generateStarRating(): string {
     const rating = Math.floor(Math.random() * 2) + 4;
     return '⭐'.repeat(rating);
@@ -384,10 +452,20 @@ export class ServiceDetailComponent implements OnInit {
       : '';
   }
 
-  // Contact request methods
+  // Phone masking utility
+  maskPhoneNumber(phone: string): string {
+    return PhoneUtils.maskPhoneNumber(phone);
+  }
+
+  // Contact request methods - simplified
   sendContactRequest() {
+    // Prevent contact requests for bookable services
+    if (this.shouldShowBookingButton()) {
+      this.notificationService.show('warning', 'Not Available', 'Contact requests are not available for bookable services. Please use the booking form instead.');
+      return;
+    }
+
     if (!this.service || !this.authService.isAuthenticated()) {
-      // Redirect to login if not authenticated
       this.router.navigate(['/login'], {
         queryParams: {
           returnUrl: `/service/${this.serviceId}`,
@@ -399,9 +477,11 @@ export class ServiceDetailComponent implements OnInit {
 
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
-      console.error('No current user found');
+      this.notificationService.error('Error', 'No current user found');
       return;
     }
+
+    this.contactRequestLoading = true;
 
     const contactRequest = {
       client: currentUser.id,
@@ -410,32 +490,62 @@ export class ServiceDetailComponent implements OnInit {
       message: `I'm interested in your ${this.service.name} service. Please contact me for more details.`,
     };
 
-    this.contactService.sendContactRequest(contactRequest).subscribe({
-      next: (response) => {
-        if (response.success) {
-          alert(
-            'Contact request sent successfully! The supplier will contact you soon.'
-          );
-        } else {
-          alert(response.message || 'Failed to send contact request');
-        }
-      },
-      error: (error) => {
-        console.error('Error sending contact request:', error);
-        if (error.error?.message) {
-          alert(error.error.message);
-        } else {
-          alert('Failed to send contact request. Please try again.');
-        }
-      },
-    });
+    this.contactService
+      .sendContactRequest(contactRequest)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.contactRequestLoading = false;
+          if (response.success) {
+            this.contactRequestSent = true;
+            this.contactRequestStatus = 'pending';
+
+            // Show success notification
+            this.notificationService.show(
+              'success',
+              'Contact Request Sent!',
+              'The supplier will contact you soon.'
+            );
+
+            // Update chat access to show pending state
+            this.chatAccess = {
+              canChat: false,
+              reason: 'Contact request pending approval',
+            };
+          } else {
+            this.notificationService.show(
+              'error',
+              'Failed',
+              response.message || 'Failed to send contact request'
+            );
+          }
+        },
+        error: (error) => {
+          this.contactRequestLoading = false;
+          console.error('Error sending contact request:', error);
+
+          let errorMessage =
+            'Failed to send contact request. Please try again.';
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          }
+
+          this.notificationService.show('error', 'Error', errorMessage);
+        },
+      });
   }
 
   // Check if user can send contact request
   canSendContactRequest(): boolean {
+    // Only allow contact requests for contact-only services
+    if (this.shouldShowBookingButton()) {
+      return false;
+    }
+
     return (
       this.authService.isAuthenticated() &&
-      this.authService.getCurrentUser()?.role === 'client'
+      this.authService.getCurrentUser()?.role === 'client' &&
+      !this.contactRequestSent
     );
   }
 
@@ -453,31 +563,17 @@ export class ServiceDetailComponent implements OnInit {
       return 'Only clients can chat with suppliers';
     }
 
+    // For bookable services, provide direct chat tooltip
+    if (this.shouldShowBookingButton()) {
+      return 'Chat with supplier (direct access available)';
+    }
+
+    // For contact-only services, check contact request status
     if (this.chatAccess.canChat) {
       return 'Chat with supplier (contact request approved)';
     }
 
     return this.chatAccess.reason || 'Contact request required to chat';
   }
-
-  // Check if user can chat with this supplier
-  checkChatAccess() {
-    if (!this.service?.supplier?._id) return;
-
-    this.checkingChatAccess = true;
-    this.contactChatService
-      .checkChatAccess(this.service.supplier._id)
-      .subscribe({
-        next: (access) => {
-          this.chatAccess = access;
-          this.checkingChatAccess = false;
-          console.log('Chat access checked:', access);
-        },
-        error: (error) => {
-          console.error('Error checking chat access:', error);
-          this.checkingChatAccess = false;
-          this.chatAccess = { canChat: false, reason: 'Error checking access' };
-        },
-      });
-  }
 }
+

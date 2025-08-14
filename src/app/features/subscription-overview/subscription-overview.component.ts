@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubscriptionService } from '../../core/services/subscription.service';
+import { NotificationService } from '../../core/services/notification.service';
 import {
   SupplierSubscription,
   SubscriptionStats,
 } from '../../core/models/subscription.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface SubscriptionOverviewViewModel {
   contactsUsed: number;
@@ -30,7 +31,11 @@ export class SubscriptionOverviewComponent implements OnInit {
 
   overviewModel?: SubscriptionOverviewViewModel;
 
-  constructor(private subscriptionService: SubscriptionService) {}
+  constructor(
+    private subscriptionService: SubscriptionService,
+    private notificationService: NotificationService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.loadSubscriptionData();
@@ -89,41 +94,89 @@ export class SubscriptionOverviewComponent implements OnInit {
   }
 
   handleRenewClick(): void {
-    if (confirm('Are you sure you want to renew your subscription?')) {
+    if (
+      confirm(this.translate.instant('supplier.subscription.confirm.renew'))
+    ) {
       const planType = this.subscription?.type || 'basic';
       this.subscriptionService.renewSubscription(planType).subscribe({
         next: (response) => {
           if (response.success && response.subscription) {
             this.subscription = response.subscription;
             this.tryBuildOverviewModel();
-            alert('Subscription renewed successfully!');
+            this.notificationService.success(
+              this.translate.instant('supplier.subscription.success.renewed'),
+              this.translate.instant('supplier.subscription.success.renewed')
+            );
           } else {
-            alert(response.message || 'Failed to renew subscription');
+            this.notificationService.error(
+              response.message ||
+                this.translate.instant(
+                  'supplier.subscription.error.renewFailed'
+                ),
+              response.message ||
+                this.translate.instant(
+                  'supplier.subscription.error.renewFailed'
+                )
+            );
           }
         },
         error: (err) => {
           console.error('Renewal error:', err);
-          alert('Failed to renew subscription. Please try again.');
+          this.notificationService.error(
+            this.translate.instant('supplier.subscription.error.renewFailed'),
+            this.translate.instant('supplier.subscription.error.renewFailed')
+          );
         },
       });
     }
   }
 
   handlePlanChange(newPlanType: 'basic' | 'premium' | 'enterprise'): void {
-    if (confirm(`Are you sure you want to change to ${newPlanType} plan?`)) {
+    if (
+      confirm(
+        this.translate.instant('supplier.subscription.confirm.changePlan', {
+          plan: newPlanType,
+        })
+      )
+    ) {
       this.subscriptionService.renewSubscription(newPlanType).subscribe({
         next: (response) => {
           if (response.success && response.subscription) {
             this.subscription = response.subscription;
             this.tryBuildOverviewModel();
-            alert(`Successfully changed to ${newPlanType} plan!`);
+            this.notificationService.success(
+              this.translate.instant(
+                'supplier.subscription.success.planChanged',
+                { plan: newPlanType }
+              ),
+              this.translate.instant(
+                'supplier.subscription.success.planChanged',
+                { plan: newPlanType }
+              )
+            );
           } else {
-            alert(response.message || 'Failed to change plan');
+            this.notificationService.error(
+              response.message ||
+                this.translate.instant(
+                  'supplier.subscription.error.changePlanFailed'
+                ),
+              response.message ||
+                this.translate.instant(
+                  'supplier.subscription.error.changePlanFailed'
+                )
+            );
           }
         },
         error: (err) => {
           console.error('Plan change error:', err);
-          alert('Failed to change plan. Please try again.');
+          this.notificationService.error(
+            this.translate.instant(
+              'supplier.subscription.error.changePlanFailed'
+            ),
+            this.translate.instant(
+              'supplier.subscription.error.changePlanFailed'
+            )
+          );
         },
       });
     }

@@ -1,9 +1,9 @@
 // src/app/environments/environment.prod.ts
-export const environmentProd = {
+export const environment = {
   production: true,
   apiUrl:
     'https://37484aa9-9060-4a7d-985b-fdc8099f1d8c-00-3joc8gi3d72c5.spock.replit.dev/',
-  // 'https://https://event-booking-backend-production-0d69.up.railway.app/api',
+  // apiUrl: 'https://event-booking-backend-production-0d69.up.railway.app/api',
   appName: 'Event Booking Platform',
   version: '1.0.0',
 
@@ -23,8 +23,8 @@ export const environmentProd = {
   whatsapp: {
     enabled: true,
     provider: 'twilio', // or '360dialog'
-    apiKey: process.env['WHATSAPP_API_KEY'] || '',
-    fromNumber: process.env['WHATSAPP_FROM_NUMBER'] || '',
+    apiKey: '', // Will be set via environment variables during deployment
+    fromNumber: '', // Will be set via environment variables during deployment
   },
 
   storage: {

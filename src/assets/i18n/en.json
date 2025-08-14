@@ -8,7 +8,8 @@
     "home": "Home"
   },
   "common": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "apply": "Apply"
   },
   "home": {
     "heroTitle": "Find Perfect Event Services",
@@ -94,24 +95,25 @@
   },
   "categories": {
     "wedding": "Wedding",
+    "engagement": "Engagement",
+    "conference": "Conference",
     "birthday": "Birthday",
     "corporate": "Corporate",
     "graduation": "Graduation",
-    "baby-shower": "Baby Shower",
-    "engagement": "Engagement",
-    "conference": "Conference",
     "funeral": "Funeral",
-    "venues": "Venues",
-    "photography": "Photography",
-    "dj": "DJ Services",
-    "decoration": "Decoration",
-    "hall": " Halls & Venues",
-    "catering": "Catering",
-    "sound": "Sound & Lighting",
-    "farm": "Farm & Outdoor",
+    "chairs": "Chairs",
+    "tables": "Tables",
+    "cars": "Cars",
+    "farm": "Farms",
+    "halls": "Halls",
+    "photographers": "Photographers",
+    "hospitality": "Hospitality",
+    "matbaqeat": "Matbaqeat",
+    "flowers": "Flowers",
     "other": "Other Service"
   },
   "subcategories": {
+    "general": "General",
     "wedding-halls": "Wedding Halls",
     "catering": "Catering Services",
     "decoration": "Decoration",
@@ -138,6 +140,7 @@
     "seating": "Seating Arrangements",
     "tents": "Memorial Tents",
     "transport": "Transportation Services",
+    "matbaqeat": "Matbaqeat",
     "farm-venues": "Farm Venues",
     "outdoor-events": "Outdoor Events",
     "farm-catering": "Farm Catering",
@@ -147,10 +150,10 @@
   "serviceDetails": {
     "loading": {
       "text": "Loading...",
-      "message": "Loading service details..."
+      "message": "Please wait while we load the service details"
     },
     "error": {
-      "title": "Oops! Something went wrong",
+      "title": "Error Loading Service",
       "goBack": "Go Back"
     },
     "breadcrumb": {
@@ -163,15 +166,11 @@
     "videos": {
       "title": "Videos"
     },
-    "price": {
-      "currency": "JOD",
-      "perBooking": "per booking"
-    },
     "location": {
       "title": "Location",
       "details": "Location Details",
       "coordinates": "Coordinates",
-      "viewOnMap": "View on Map",
+      "viewOnMap": "View on Google Maps",
       "getDirections": "Get Directions"
     },
     "description": {
@@ -187,16 +186,25 @@
     },
     "supplier": {
       "title": "Supplier Information",
-      "call": "Call",
+      "call": "Call Supplier",
       "chatWithSupplier": "Chat with Supplier",
       "loginToChat": "Login to Chat"
     },
+    "price": {
+      "currency": "JOD",
+      "perBooking": "per booking"
+    },
     "booking": {
-      "title": "Ready to book?",
+      "title": "Book This Service",
       "bookNow": "Book Now",
-      "contactSupplier": "Contact Supplier",
       "sendContactRequest": "Send Contact Request",
-      "hallFarmNote": "Hall and Farm bookings require direct contact with supplier"
+      "contactSupplier": "Call Supplier",
+      "contactRequestSent": "Contact request sent successfully!",
+      "contactRequestPending": "Contact request sent! Waiting for supplier response.",
+      "contactRequestAccepted": "Contact request accepted! You can now chat with the supplier.",
+      "contactRequestRejected": "Contact request was rejected by the supplier.",
+      "sending": "Sending...",
+      "hallFarmNote": "This service requires direct contact with the supplier. Please send a contact request or call them directly."
     },
     "related": {
       "title": "Related Services"
@@ -338,7 +346,8 @@
       "title": "Admin Dashboard",
       "subtitle": "Manage your platform and monitor performance",
       "logout": "Logout",
-      "home": "Home"
+      "home": "Home",
+      "logoutConfirm": "Are you sure you want to logout?"
     },
     "loading": {
       "text": "Loading...",
@@ -470,6 +479,26 @@
         "success": "Message marked as read",
         "error": "Failed to mark message as read"
       }
+    },
+    "contactMessages": {
+      "title": "Contact Messages",
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "date": "Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "read": "Read"
+      },
+      "actions": {
+        "markRead": "Mark Read"
+      },
+      "markAllRead": "Mark All as Read",
+      "noMessages": "No contact messages found"
     },
     "contact": {
       "info": {
@@ -676,6 +705,7 @@
     "bookings": {
       "title": "Recent Bookings",
       "subtitle": "Manage your latest booking requests",
+      "paid": "Paid",
       "empty": {
         "title": "No Bookings Yet",
         "description": "Start by adding your services to receive booking requests",
@@ -707,6 +737,44 @@
         }
       }
     },
+    "contactRequests": {
+      "title": "Contact Requests",
+      "subtitle": "Manage contact requests from potential clients",
+      "show": "Show",
+      "hide": "Hide",
+      "limitInfo": {
+        "usage": "Contact Usage",
+        "warning": "Warning"
+      },
+      "empty": {
+        "title": "No Contact Requests",
+        "description": "You haven't received any contact requests yet."
+      },
+      "table": {
+        "client": "Client",
+        "service": "Service",
+        "message": "Message",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "accept": "Accept",
+        "reject": "Reject",
+        "success": "Contact request {{status}} successfully",
+        "error": {
+          "update": "Failed to update contact request"
+        }
+      }
+    },
+    "chat": {
+      "messages": "Messages",
+      "unreadMessages": "unread messages",
+      "chat": "Chat",
+      "activeConversations": "Active Conversations",
+      "noConversations": "No active conversations yet.",
+      "close": "Close"
+    },
     "services": {
       "title": "Your Services",
       "subtitle": "Manage your service offerings",
@@ -724,7 +792,8 @@
       "dashboard": "Loading dashboard..."
     },
     "errors": {
-      "loadDashboard": "Failed to load dashboard data"
+      "loadDashboard": "Failed to load dashboard data",
+      "invalidData": "Invalid dashboard data structure"
     }
   },
   "addService": {
@@ -733,11 +802,16 @@
       "backButton": "Back"
     },
     "form": {
+      "contactOnly": {
+        "notice": "Contact-Only Service",
+        "description": "This service type requires direct contact with the supplier. Customers will not be able to book directly but can send contact requests."
+      },
       "availability": {
         "title": "Available Dates",
         "datePlaceholder": "Select date",
         "addButton": "Add Date",
-        "noDateSelected": "No dates selected yet"
+        "noDateSelected": "No dates selected yet",
+        "dateExists": "This date is already added"
       },
       "basicInfo": {
         "serviceName": {
@@ -810,7 +884,9 @@
         "videos": {
           "label": "Videos (up to 3 videos)",
           "preview": "Video Preview"
-        }
+        },
+        "imageSizeError": "File {{fileName}} exceeds the 5MB size limit",
+        "videoSizeError": "File {{fileName}} exceeds the 50MB size limit"
       },
       "buttons": {
         "cancel": "Cancel",
@@ -826,7 +902,84 @@
         "selectEventType": "Please select an event type",
         "selectServiceType": "Please select a service type",
         "invalidValue": "Invalid value"
+      },
+      "success": {
+        "serviceCreated": "Service created successfully"
+      },
+      "error": {
+        "createFailed": "Failed to create service. Please try again.",
+        "uploadFailed": "Failed to upload media files. Please try again."
       }
+    }
+  },
+  "editService": {
+    "header": {
+      "title": "Edit Service",
+      "backButton": "Back"
+    },
+    "form": {
+      "contactOnly": {
+        "notice": "Contact-Only Service",
+        "description": "This service type requires direct contact with the supplier. Customers will not be able to book directly but can send contact requests."
+      },
+      "media": {
+        "maxImagesError": "You can upload a maximum of 5 images",
+        "maxVideosError": "You can upload a maximum of 3 videos"
+      },
+      "success": {
+        "serviceUpdated": "Service updated successfully"
+      },
+      "error": {
+        "loadFailed": "Failed to load service data",
+        "updateFailed": "Failed to update service. Please try again."
+      },
+      "warning": {
+        "uploadFailed": "Service updated but failed to upload new media files"
+      }
+    }
+  },
+  "viewService": {
+    "header": {
+      "title": "Service Details",
+      "backButton": "Back to Dashboard"
+    },
+    "contactOnly": {
+      "notice": "Contact-Only Service",
+      "description": "This service requires direct contact with the supplier. Customers cannot book directly but can send contact requests."
+    },
+    "details": {
+      "name": "Service Name",
+      "description": "Description",
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "price": "Price",
+      "location": "Location",
+      "city": "City",
+      "area": "Area",
+      "coordinates": "Coordinates",
+      "capacity": "Capacity",
+      "minCapacity": "Minimum Capacity",
+      "maxCapacity": "Maximum Capacity",
+      "availableDates": "Available Dates",
+      "noDates": "No available dates set",
+      "media": "Media",
+      "images": "Images",
+      "videos": "Videos",
+      "noImages": "No images uploaded",
+      "noVideos": "No videos uploaded"
+    },
+    "actions": {
+      "edit": "Edit Service",
+      "delete": "Delete Service",
+      "back": "Back to Dashboard"
+    },
+    "delete": {
+      "confirmation": "Are you sure you want to delete this service? This action cannot be undone.",
+      "success": "Service deleted successfully",
+      "error": "Failed to delete service"
+    },
+    "error": {
+      "loadFailed": "Failed to load service details"
     }
   },
   "about": {
@@ -908,6 +1061,9 @@
   "supplier": {
     "subscription": {
       "title": "Subscription Overview",
+      "currentPlan": "Current Plan",
+      "availablePlans": "Available Plans",
+      "autoRenew": "Auto Renewal",
       "status": {
         "active": "Active",
         "expired": "Expired",
@@ -925,11 +1081,28 @@
       "types": {
         "basic": "Basic",
         "premium": "Premium",
+        "enterprise": "Enterprise",
         "undefined": "Unknown"
       },
       "expiry": "Expiry Date",
       "actions": {
-        "renew": "Renew Subscription"
+        "renew": "Renew Subscription",
+        "changePlan": "Change Plan",
+        "upgrade": "Upgrade"
+      },
+      "selectPlan": "Select Plan",
+      "confirm": {
+        "renew": "Are you sure you want to renew your subscription?",
+        "changePlan": "Are you sure you want to change to {{plan}} plan?"
+      },
+      "success": {
+        "renewed": "Subscription renewed successfully!",
+        "planChanged": "Successfully changed to {{plan}} plan!"
+      },
+      "error": {
+        "noSubscription": "No active subscription found",
+        "renewFailed": "Failed to renew subscription. Please try again.",
+        "changePlanFailed": "Failed to change plan. Please try again."
       }
     }
   },

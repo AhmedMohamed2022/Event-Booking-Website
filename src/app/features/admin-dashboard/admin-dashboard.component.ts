@@ -10,6 +10,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/services/language.service';
 import { ContactMessage } from '../../core/models/contact.model';
 import { forkJoin } from 'rxjs';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -25,10 +26,10 @@ export class AdminDashboardComponent implements OnInit {
   error = '';
   selectedTab = 'overview';
 
-  // Update the contact messages property to be an array
-  contactMessages: any[] = [];
+  // Contact messages property
+  contactMessages: ContactMessage[] = [];
 
-  // Update the contactInfoArray structure
+  // Contact info array
   contactInfoArray = [
     {
       icon: 'bi bi-geo-alt',
@@ -44,32 +45,20 @@ export class AdminDashboardComponent implements OnInit {
     },
   ];
 
+  // Property to track unlocking state
+  unlockingSupplier: string | null = null;
+
   constructor(
     private adminService: AdminService,
     private authService: AuthService,
     private router: Router,
     private translate: TranslateService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
-    this.loadContactMessages();
-  }
-
-  // Load contact messages
-  loadContactMessages() {
-    this.adminService.getContactMessages().subscribe({
-      next: (response: any) => {
-        // Ensure we're getting an array of messages
-        this.contactMessages = Array.isArray(response.messages)
-          ? response.messages
-          : [];
-      },
-      error: (error) => {
-        console.error('Error loading contact messages:', error);
-      },
-    });
   }
 
   loadDashboardData(): void {
@@ -89,6 +78,10 @@ export class AdminDashboardComponent implements OnInit {
         this.contactMessages = Array.isArray(data.messages.messages)
           ? data.messages.messages
           : [];
+
+        // Update unread count in notification service
+        this.updateUnreadContactMessagesCount();
+
         this.loading = false;
       },
       error: (err) => {
@@ -97,6 +90,44 @@ export class AdminDashboardComponent implements OnInit {
         console.error('Dashboard error:', err);
       },
     });
+  }
+
+  // Get unread contact messages count for badge
+  getUnreadContactMessagesCount(): number {
+    return this.contactMessages.filter(
+      (message) => message.status === 'pending'
+    ).length;
+  }
+
+  // Update unread count in notification service
+  private updateUnreadContactMessagesCount(): void {
+    const unreadCount = this.getUnreadContactMessagesCount();
+    this.notificationService.setUnreadCount(
+      'adminContactMessages',
+      unreadCount
+    );
+  }
+
+  // Mark contact message as read
+  markContactMessageAsRead(messageId: string): void {
+    // Find the message and mark it as read
+    const message = this.contactMessages.find((msg) => msg._id === messageId);
+    if (message && message.status === 'pending') {
+      message.status = 'read';
+      // Update unread count
+      this.updateUnreadContactMessagesCount();
+    }
+  }
+
+  // Mark all contact messages as read
+  markAllContactMessagesAsRead(): void {
+    this.contactMessages.forEach((message) => {
+      if (message.status === 'pending') {
+        message.status = 'read';
+      }
+    });
+    // Update unread count
+    this.updateUnreadContactMessagesCount();
   }
 
   selectTab(tab: string): void {
@@ -120,6 +151,7 @@ export class AdminDashboardComponent implements OnInit {
                 });
             },
             error: (err) => {
+              console.error('Approve error:', err);
               this.translate
                 .get('adminDashboard.requests.confirmation.error.approve')
                 .subscribe((errorMsg: string) => {
@@ -132,27 +164,49 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   rejectRequest(request: JoinRequest): void {
-    this.adminService.rejectJoinRequest(request._id).subscribe({
-      next: (response) => {
-        request.status = 'rejected';
-        alert('Request rejected successfully');
-      },
-      error: (err) => {
-        alert('Failed to reject request');
-        console.error('Reject error:', err);
-      },
-    });
+    this.translate
+      .get('adminDashboard.requests.confirmation.reject')
+      .subscribe((msg: string) => {
+        if (confirm(msg)) {
+          this.adminService.rejectJoinRequest(request._id).subscribe({
+            next: (response) => {
+              request.status = 'rejected';
+              this.translate
+                .get('adminDashboard.requests.confirmation.success.rejected')
+                .subscribe((successMsg: string) => {
+                  this.showSuccessMessage(successMsg);
+                });
+            },
+            error: (err) => {
+              console.error('Reject error:', err);
+              this.translate
+                .get('adminDashboard.requests.confirmation.error.reject')
+                .subscribe((errorMsg: string) => {
+                  this.showErrorMessage(errorMsg);
+                });
+            },
+          });
+        }
+      });
   }
 
   markAsReviewed(request: JoinRequest): void {
     this.adminService.markAsReviewed(request._id).subscribe({
       next: (response) => {
         request.status = 'reviewed';
-        alert('Request marked as reviewed');
+        this.translate
+          .get('adminDashboard.requests.confirmation.success.reviewed')
+          .subscribe((successMsg: string) => {
+            this.showSuccessMessage(successMsg);
+          });
       },
       error: (err) => {
-        alert('Failed to update request');
         console.error('Review error:', err);
+        this.translate
+          .get('adminDashboard.requests.confirmation.error.review')
+          .subscribe((errorMsg: string) => {
+            this.showErrorMessage(errorMsg);
+          });
       },
     });
   }
@@ -191,38 +245,7 @@ export class AdminDashboardComponent implements OnInit {
       });
   }
 
-  private showSuccessMessage(message: string): void {
-    // Replace plain alerts with proper UI notifications
-    const notification = document.createElement('div');
-    notification.className = 'alert alert-success';
-    notification.textContent = message;
-    // Add to DOM and remove after timeout
-  }
-
-  private showErrorMessage(message: string): void {
-    // Replace plain alerts with proper UI notifications
-    const notification = document.createElement('div');
-    notification.className = 'alert alert-danger';
-    notification.textContent = message;
-    // Add to DOM and remove after timeout
-  }
-
-  // Add method to unlock suppliers
-  // unlockSupplier(supplierId: string): void {
-  //   this.adminService.unlockSupplier(supplierId).subscribe({
-  //     next: () => {
-  //       this.loadDashboardData(); // Refresh data
-  //       this.showSuccessMessage('Supplier unlocked successfully');
-  //     },
-  //     error: (err) => {
-  //       this.showErrorMessage('Failed to unlock supplier');
-  //     },
-  //   });
-  // }
-  // Add property to track unlocking state
-  unlockingSupplier: string | null = null;
-
-  // Update unlockSupplier method
+  // Unlock supplier method
   unlockSupplier(supplierId: string): void {
     if (this.unlockingSupplier) return;
 
@@ -235,21 +258,26 @@ export class AdminDashboardComponent implements OnInit {
             (s) => s._id !== supplierId
           );
         }
-        this.showSuccessMessage(
-          this.translate.instant('adminDashboard.locked.success')
-        );
+        this.translate
+          .get('adminDashboard.locked.success')
+          .subscribe((msg: string) => {
+            this.showSuccessMessage(msg);
+          });
         this.unlockingSupplier = null;
       },
       error: (err) => {
         console.error('Unlock error:', err);
-        this.showErrorMessage(
-          this.translate.instant('adminDashboard.locked.error')
-        );
+        this.translate
+          .get('adminDashboard.locked.error')
+          .subscribe((msg: string) => {
+            this.showErrorMessage(msg);
+          });
         this.unlockingSupplier = null;
       },
     });
   }
-  // Add new methods
+
+  // Message management methods
   getMessageStatusBadge(status: string): string {
     return `badge ${
       status === 'pending' ? 'bg-warning text-dark' : 'bg-success'
@@ -272,19 +300,70 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   markMessageAsRead(message: ContactMessage): void {
-    // You'll need to add this method to your AdminService
     this.adminService.markContactMessageAsRead(message._id).subscribe({
       next: () => {
         message.status = 'read';
-        this.showSuccessMessage(
-          this.translate.instant('adminDashboard.messages.marked.success')
-        );
+        this.translate
+          .get('adminDashboard.messages.marked.success')
+          .subscribe((msg: string) => {
+            this.showSuccessMessage(msg);
+          });
       },
       error: (err) => {
-        this.showErrorMessage(
-          this.translate.instant('adminDashboard.messages.marked.error')
-        );
+        console.error('Mark as read error:', err);
+        this.translate
+          .get('adminDashboard.messages.marked.error')
+          .subscribe((msg: string) => {
+            this.showErrorMessage(msg);
+          });
       },
     });
+  }
+
+  // Private helper methods
+  private showSuccessMessage(message: string): void {
+    // Create a temporary success notification
+    const notification = document.createElement('div');
+    notification.className =
+      'alert alert-success alert-dismissible fade show position-fixed';
+    notification.style.cssText =
+      'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+      <i class="bi bi-check-circle me-2"></i>
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 5000);
+  }
+
+  private showErrorMessage(message: string): void {
+    // Create a temporary error notification
+    const notification = document.createElement('div');
+    notification.className =
+      'alert alert-danger alert-dismissible fade show position-fixed';
+    notification.style.cssText =
+      'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto-remove after 8 seconds
+    setTimeout(() => {
+      if (document.body.contains(notification)) {
+        document.body.removeChild(notification);
+      }
+    }, 8000);
   }
 }

@@ -1,0 +1,162 @@
+<div class="subscription-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center p-4">
+        <div class="spinner-border text-primary">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="!isLoading && !subscription" class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ 'supplier.subscription.error.noSubscription' | translate }}
+    </div>
+
+    <!-- Subscription Content -->
+    <div *ngIf="subscription && !isLoading" class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ 'supplier.subscription.title' | translate }}</h5>
+            <span [class]="'badge ' + getStatusClass(subscription.status)">
+                {{ 'supplier.subscription.status.' + subscription.status | translate }}
+            </span>
+        </div>
+
+        <div class="card-body">
+            <!-- Current Plan Info -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">{{ 'supplier.subscription.currentPlan' | translate }}</label>
+                    <p class="mb-0 fs-5">{{ 'supplier.subscription.types.' + subscription.type | translate }}</p>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">{{ 'supplier.subscription.expiry' | translate }}</label>
+                    <p class="mb-0">{{ formatDate(subscription.expiryDate) }}</p>
+                </div>
+            </div>
+
+            <!-- Usage Progress -->
+            <div class="mb-4" *ngIf="stats">
+                <label class="form-label fw-semibold">{{ 'supplier.subscription.usage' | translate }}</label>
+                <div class="progress mb-2" style="height: 25px;">
+                    <div class="progress-bar" [ngClass]="getProgressBarClass()" [style.width.%]="getUsagePercentage()"
+                        role="progressbar">
+                        {{ stats.currentContacts }}/{{ stats.maxContacts }}
+                    </div>
+                </div>
+                <small class="text-muted">
+                    {{ stats.currentContacts }}/{{ stats.maxContacts }} {{ 'supplier.subscription.contacts' | translate
+                    }}
+                    ({{ getUsagePercentage() | number:'1.0-0' }}%)
+                </small>
+            </div>
+
+            <!-- Warning Messages -->
+            <div *ngIf="stats?.hasWarning" class="alert mb-4" [ngClass]="getWarningClass(stats?.warningType)">
+                <i class="bi me-2" [ngClass]="getWarningIcon(stats?.warningType)"></i>
+                {{ 'supplier.subscription.warnings.' + (stats?.warningType || '') | translate }}
+            </div>
+
+            <!-- Auto Renew Toggle -->
+            <div class="mb-4" *ngIf="subscription">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" [checked]="subscription.autoRenew"
+                        (change)="toggleAutoRenew()" id="autoRenewSwitch">
+                    <label class="form-check-label" for="autoRenewSwitch">
+                        {{ 'supplier.subscription.autoRenew' | translate }}
+                    </label>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" (click)="showPlanSelectionModal()">
+                    <i class="fas fa-sync-alt me-2"></i>
+                    {{ 'supplier.subscription.actions.changePlan' | translate }}
+                </button>
+                <button class="btn btn-outline-primary" (click)="showPlanSelectionModal()">
+                    <i class="fas fa-plus me-2"></i>
+                    {{ 'supplier.subscription.actions.upgrade' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Plans Section -->
+    <div class="card mt-4" *ngIf="availablePlans.length > 0">
+        <div class="card-header">
+            <h5 class="mb-0">{{ 'supplier.subscription.availablePlans' | translate }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div *ngFor="let plan of availablePlans" class="col-md-4">
+                    <div class="card h-100" [ngClass]="{'border-primary': selectedPlan === plan.type}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ plan.name }}</h5>
+                            <h3 class="text-primary mb-3">{{ formatCurrency(plan.price) }}</h3>
+                            <ul class="list-unstyled">
+                                <li *ngFor="let feature of plan.features" class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    {{ feature }}
+                                </li>
+                            </ul>
+                            <button class="btn btn-outline-primary w-100" (click)="selectPlan(plan.type)"
+                                [disabled]="subscription?.type === plan.type">
+                                {{ subscription?.type === plan.type ?
+                                ('supplier.subscription.currentPlan' | translate) :
+                                ('supplier.subscription.selectPlan' | translate) }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Plan Selection Modal -->
+<div class="modal fade" id="planSelectionModal" tabindex="-1" *ngIf="showPlanSelection">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'supplier.subscription.selectPlan' | translate }}</h5>
+                <button type="button" class="btn-close" (click)="hidePlanSelectionModal()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div *ngFor="let plan of availablePlans" class="col-md-6">
+                        <div class="card h-100" [ngClass]="{'border-primary': selectedPlan === plan.type}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ plan.name }}</h5>
+                                <h3 class="text-primary mb-3">{{ formatCurrency(plan.price) }}</h3>
+                                <ul class="list-unstyled">
+                                    <li *ngFor="let feature of plan.features" class="mb-2">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        {{ feature }}
+                                    </li>
+                                </ul>
+                                <button class="btn btn-outline-primary w-100" (click)="selectPlan(plan.type)"
+                                    [disabled]="subscription?.type === plan.type">
+                                    {{ subscription?.type === plan.type ?
+                                    ('supplier.subscription.currentPlan' | translate) :
+                                    ('supplier.subscription.selectPlan' | translate) }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="hidePlanSelectionModal()">
+                    {{ 'common.cancel' | translate }}
+                </button>
+                <button type="button" class="btn btn-primary" (click)="renewSubscription()"
+                    [disabled]="!selectedPlan || isRenewing">
+                    <span *ngIf="isRenewing" class="spinner-border spinner-border-sm me-2"></span>
+                    {{ 'supplier.subscription.actions.renew' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Toast handled globally in app.component -->

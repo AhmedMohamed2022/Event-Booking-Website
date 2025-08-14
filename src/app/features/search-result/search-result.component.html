@@ -4,7 +4,7 @@
     <h2 class="mb-3">{{ 'search.title' | translate }}</h2>
     <div class="search-info" *ngIf="!loading">
       <p class="text-muted">
-        {{ 'search.foundServices' | translate: {count: filteredResults.length} }}
+        {{ getSearchSummary() }}
         <span *ngIf="currentParams.city"> {{ 'search.in' | translate }} {{ getCityLabel(currentParams.city) }}</span>
         <span *ngIf="currentParams.category"> {{ 'search.for' | translate }} {{ getCategoryLabel(currentParams.category)
           }}</span>
@@ -17,7 +17,7 @@
 <div class="breadcrumb-section py-2 bg-light">
   <div class="container">
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb mb-0">
+      <ol class="breadcrumb mb-0" [ngClass]="{ 'rtl-breadcrumb': isRTL() }">
         <li class="breadcrumb-item">
           <a [routerLink]="['/']" class="text-muted">{{ 'search.breadcrumb.home' | translate }}</a>
         </li>
@@ -29,13 +29,147 @@
         </li>
       </ol>
     </nav>
+
+    <!-- Mobile filters toolbar under breadcrumb: only Filters + City -->
+    <div class="filters-toolbar d-md-none">
+      <button class="toolbar-btn" (click)="openFilters('all')">
+        <i class="fas fa-sliders-h"></i>
+        <span>{{ 'search.filters.title' | translate }}</span>
+      </button>
+      <button class="toolbar-btn" (click)="openFilters('city')">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>{{ currentParams.city ? getCityLabel(currentParams.city) : ( 'home.cityLabel' | translate) }}</span>
+      </button>
+    </div>
+
+    <!-- Active Filter Chips -->
+    <div class="filter-chips" *ngIf="hasAnyFilters()">
+      <!-- Category/Subcategory -->
+      <span class="chip" *ngIf="currentParams.category">
+        {{ getCategoryLabel(currentParams.category) }}
+        <button type="button" class="chip-close" (click)="clearCategory()">×</button>
+      </span>
+      <span class="chip" *ngIf="currentParams.subcategory">
+        {{ getSubcategoryLabel(currentParams.subcategory) }}
+        <button type="button" class="chip-close" (click)="clearSubcategory()">×</button>
+      </span>
+      <!-- City -->
+      <span class="chip" *ngIf="currentParams.city">
+        {{ getCityLabel(currentParams.city) }}
+        <button type="button" class="chip-close" (click)="clearCity()">×</button>
+      </span>
+      <!-- Date -->
+      <span class="chip" *ngIf="currentParams.date">
+        {{ currentParams.date }}
+        <button type="button" class="chip-close" (click)="clearDate()">×</button>
+      </span>
+      <!-- People -->
+      <span class="chip" *ngIf="currentParams.minCapacity || currentParams.maxCapacity">
+        {{ getSelectedPeopleLabel() }}
+        <button type="button" class="chip-close" (click)="clearPeople()">×</button>
+      </span>
+      <!-- Nearby -->
+      <span class="chip" *ngIf="currentParams.nearby === 'true'">
+        {{ 'search.filters.showNearby' | translate }}
+        <button type="button" class="chip-close" (click)="clearNearby()">×</button>
+      </span>
+      <!-- Availability date -->
+      <span class="chip" *ngIf="currentParams.availableOnDate">
+        {{ currentParams.availableOnDate }}
+        <button type="button" class="chip-close" (click)="clearAvailableOnDate()">×</button>
+      </span>
+      <!-- Price range (when changed) -->
+      <span class="chip" *ngIf="isPriceRangeChanged()">
+        JOD {{ filters.priceRange.min }} - {{ filters.priceRange.max }}
+        <button type="button" class="chip-close" (click)="clearPriceRange()">×</button>
+      </span>
+
+      <button class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFilters()">
+        {{ 'search.filters.clearAll' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile bottom sheet filters -->
+<div class="filters-sheet" [class.show]="showFilters" (click)="closeFilters()">
+  <div class="filters-sheet-body" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="mb-0">{{ 'search.filters.title' | translate }}</h6>
+      <button class="btn btn-sm btn-outline-secondary" (click)="closeFilters()">✕</button>
+    </div>
+
+    <!-- City-only mode -->
+    <ng-container *ngIf="filtersSheetMode === 'city'; else allFilters">
+      <div class="mb-3" id="fs-city">
+        <label class="form-label small">{{ 'home.cityLabel' | translate }}</label>
+        <select class="form-select form-select-sm" [ngModel]="currentParams.city"
+          (ngModelChange)="onCityChange($event)">
+          <option value="">{{ 'home.selectCity' | translate }}</option>
+          <option *ngFor="let city of translatedCities" [value]="city.original">{{ city.translated }}</option>
+        </select>
+      </div>
+      <div class="text-end">
+        <button class="btn btn-warning" (click)="closeFilters()">{{ 'common.apply' | translate }}</button>
+      </div>
+    </ng-container>
+
+    <!-- Full filters mode -->
+    <ng-template #allFilters>
+      <div class="mb-3" id="fs-category">
+        <label class="form-label small">{{ 'home.eventTypeLabel' | translate }}</label>
+        <select class="form-select form-select-sm" [ngModel]="currentParams.category"
+          (ngModelChange)="onCategoryChange($event)">
+          <option value="">{{ 'home.selectEventType' | translate }}</option>
+          <option *ngFor="let c of eventCategories" [value]="c.value">{{ c.label }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3" *ngIf="selectedCategory" id="fs-subcategory">
+        <label class="form-label small">{{ 'search.filters.serviceTypes' | translate }}</label>
+        <select class="form-select form-select-sm" [ngModel]="currentParams.subcategory"
+          (ngModelChange)="onSubcategoryChange($event)">
+          <option value="">{{ 'search.filters.clearAll' | translate }}</option>
+          <option *ngFor="let sub of selectedCategory?.subcategories" [value]="sub.value">{{
+            getSubcategoryLabel(sub.value) }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3" id="fs-city">
+        <label class="form-label small">{{ 'home.cityLabel' | translate }}</label>
+        <select class="form-select form-select-sm" [ngModel]="currentParams.city"
+          (ngModelChange)="onCityChange($event)">
+          <option value="">{{ 'home.selectCity' | translate }}</option>
+          <option *ngFor="let city of translatedCities" [value]="city.original">{{ city.translated }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3" id="fs-date">
+        <label class="form-label small">{{ 'home.dateLabel' | translate }}</label>
+        <input type="date" class="form-control form-control-sm" [ngModel]="currentParams.date"
+          (ngModelChange)="onDateChange($event)">
+      </div>
+
+      <div class="mb-3" id="fs-people">
+        <label class="form-label small">{{ 'home.peopleLabel' | translate }}</label>
+        <select class="form-select form-select-sm" [ngModel]="getSelectedPeopleLabel()"
+          (ngModelChange)="onPeopleChange($event)">
+          <option value="">{{ 'home.selectPeople' | translate }}</option>
+          <option *ngFor="let range of peopleRanges" [value]="range.label">{{ range.label }}</option>
+        </select>
+      </div>
+
+      <div class="text-end">
+        <button class="btn btn-warning" (click)="closeFilters()">{{ 'search.filters.title' | translate }}</button>
+      </div>
+    </ng-template>
   </div>
 </div>
 
 <div class="container-fluid">
   <div class="row">
-    <!-- Filters Sidebar -->
-    <div class="col-lg-3 col-md-4">
+    <!-- Filters Sidebar (hidden on mobile) -->
+    <div class="col-lg-3 col-md-4 d-none d-md-block">
       <div class="filters-sidebar">
         <div class="filters-header d-flex justify-content-between align-items-center">
           <h5 class="mb-0">{{ 'search.filters.title' | translate }}</h5>
@@ -44,64 +178,98 @@
           </button>
         </div>
 
-        <!-- Service Types Filter -->
+        <!-- Generic Filters -->
         <div class="filter-section">
+          <h6 class="filter-title">{{ 'home.eventTypeLabel' | translate }}</h6>
+          <select class="form-select form-select-sm" [ngModel]="currentParams.category"
+            (ngModelChange)="onCategoryChange($event)">
+            <option value="">{{ 'home.selectEventType' | translate }}</option>
+            <option *ngFor="let c of eventCategories" [value]="c.value">{{ c.label }}</option>
+          </select>
+        </div>
+
+        <div class="filter-section" *ngIf="selectedCategory">
           <h6 class="filter-title">{{ 'search.filters.serviceTypes' | translate }}</h6>
-          <div class="category-filters">
-            <div class="form-check" *ngFor="let sub of selectedCategory?.subcategories">
-              <input class="form-check-input" type="checkbox" [id]="'sub-' + sub.value"
-                [checked]="filters.selectedSubcategories.includes(sub.value)"
-                (change)="onSubcategoryFilterChange(sub.value, $event)">
-              <label class="form-check-label" [for]="'sub-' + sub.value">
-                {{ getSubcategoryLabel(sub.value) }}
-              </label>
-            </div>
-          </div>
+          <select class="form-select form-select-sm" [ngModel]="currentParams.subcategory"
+            (ngModelChange)="onSubcategoryChange($event)">
+            <option value="">{{ 'search.filters.clearAll' | translate }}</option>
+            <option *ngFor="let sub of selectedCategory?.subcategories" [value]="sub.value">{{
+              getSubcategoryLabel(sub.value) }}</option>
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <h6 class="filter-title">{{ 'home.cityLabel' | translate }}</h6>
+          <select class="form-select form-select-sm" [ngModel]="currentParams.city"
+            (ngModelChange)="onCityChange($event)">
+            <option value="">{{ 'home.selectCity' | translate }}</option>
+            <option *ngFor="let city of translatedCities" [value]="city.original">{{ city.translated }}</option>
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <h6 class="filter-title">{{ 'home.dateLabel' | translate }}</h6>
+          <input type="date" class="form-control form-control-sm" [ngModel]="currentParams.date"
+            (ngModelChange)="onDateChange($event)">
+        </div>
+
+        <div class="filter-section">
+          <h6 class="filter-title">{{ 'home.peopleLabel' | translate }}</h6>
+          <select class="form-select form-select-sm" [ngModel]="getSelectedPeopleLabel()"
+            (ngModelChange)="onPeopleChange($event)">
+            <option value="">{{ 'home.selectPeople' | translate }}</option>
+            <option *ngFor="let range of peopleRanges" [value]="range.label">{{ range.label }}</option>
+          </select>
         </div>
 
         <!-- Price Range Filter -->
         <div class="filter-section">
-          <h6 class="filter-title">{{ 'search.filters.priceRange' | translate }}</h6>
+          <h6 class="filter-title"><i class="fas fa-tags me-2"></i>{{ 'search.filters.priceRange' | translate }}</h6>
           <div class="price-range">
+            <div class="price-slider">
+              <input type="range" class="form-range" [min]="priceBounds.min" [max]="priceBounds.max"
+                [step]="priceBounds.step" [ngModel]="filters.priceRange.min" (ngModelChange)="onPriceMinChange($event)">
+              <input type="range" class="form-range" [min]="priceBounds.min" [max]="priceBounds.max"
+                [step]="priceBounds.step" [ngModel]="filters.priceRange.max" (ngModelChange)="onPriceMaxChange($event)">
+            </div>
             <div class="price-inputs">
               <div class="price-input-group">
                 <label>{{ 'search.filters.minPrice' | translate }}</label>
-                <input type="number" class="form-control form-control-sm" [(ngModel)]="filters.priceRange.min"
-                  [min]="filters.minPrice" [max]="filters.maxPrice" (input)="onPriceRangeChange()">
+                <input type="number" class="form-control form-control-sm" [ngModel]="filters.priceRange.min"
+                  (ngModelChange)="onPriceMinChange($event)">
               </div>
               <div class="price-input-group">
                 <label>{{ 'search.filters.maxPrice' | translate }}</label>
-                <input type="number" class="form-control form-control-sm" [(ngModel)]="filters.priceRange.max"
-                  [min]="filters.minPrice" [max]="filters.maxPrice" (input)="onPriceRangeChange()">
+                <input type="number" class="form-control form-control-sm" [ngModel]="filters.priceRange.max"
+                  (ngModelChange)="onPriceMaxChange($event)">
               </div>
             </div>
             <div class="price-display">
-              <small class="text-muted">
-                JOD {{ filters.priceRange.min }} - JOD {{ filters.priceRange.max }}
-              </small>
+              <small class="text-muted">JOD {{ filters.priceRange.min }} - JOD {{ filters.priceRange.max }}</small>
             </div>
           </div>
         </div>
 
-        <!-- Additional Filters -->
+        <!-- Additional Filters (kept) -->
         <div class="filter-section">
           <h6 class="filter-title">{{ 'search.filters.location' | translate }}</h6>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="nearby">
+            <input class="form-check-input" type="checkbox" id="nearby" [checked]="filters.showNearby"
+              (change)="onNearbyChange($event)">
             <label class="form-check-label" for="nearby">
               {{ 'search.filters.showNearby' | translate }}
             </label>
           </div>
+          <small *ngIf="filters.showNearby" class="text-info">📍 Showing services with location coordinates</small>
         </div>
 
         <div class="filter-section">
           <h6 class="filter-title">{{ 'search.filters.availability' | translate }}</h6>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="available">
-            <label class="form-check-label" for="available">
-              {{ 'search.filters.availableOnDate' | translate }}
-            </label>
-          </div>
+          <input type="date" class="form-control form-control-sm" [value]="filters.availableOnDate"
+            (change)="onAvailabilityDateChange($event)" placeholder="Select date">
+          <small class="text-muted">{{ 'search.filters.availableOnDate' | translate }}</small>
+          <small *ngIf="filters.availableOnDate" class="text-info d-block">📅 Filtering by availability on {{
+            filters.availableOnDate }}</small>
         </div>
       </div>
     </div>
@@ -130,54 +298,68 @@
       <div class="results-section" *ngIf="!loading && !error">
         <div class="results-header d-flex justify-content-between align-items-center mb-4">
           <p class="mb-0 text-muted">
-            {{ 'search.results.showing' | translate: {filtered: filteredResults.length, total: results.length} }}
+            {{ getSearchSummary() }}
           </p>
-          <div class="sort-options">
-            <select class="form-select form-select-sm">
-              <option>{{ 'search.results.sortBy' | translate }} {{ 'search.results.sortOptions.relevance' | translate }}
-              </option>
-              <option>{{ 'search.results.sortOptions.priceLowHigh' | translate }}</option>
-              <option>{{ 'search.results.sortOptions.priceHighLow' | translate }}</option>
-              <option>{{ 'search.results.sortOptions.rating' | translate }}</option>
-            </select>
+          <div class="sort-options d-none d-md-block">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text"><i class="fas fa-sort"></i></span>
+              <select class="form-select" [ngModel]="sortKey" (ngModelChange)="onSortChange($event)">
+                <option value="relevance">{{ 'search.results.sortOptions.relevance' | translate }}</option>
+                <option value="priceAsc">{{ 'search.results.sortOptions.priceLowHigh' | translate }}</option>
+                <option value="priceDesc">{{ 'search.results.sortOptions.priceHighLow' | translate }}</option>
+                <option value="rating">{{ 'search.results.sortOptions.rating' | translate }}</option>
+              </select>
+            </div>
+          </div>
+          <!-- Mobile sort icon -->
+          <div class="d-md-none position-relative">
+            <button class="btn btn-outline-secondary btn-sm" (click)="showSort = !showSort"><i
+                class="fas fa-sort"></i></button>
+            <div class="sort-menu" *ngIf="showSort">
+              <button class="sort-item" (click)="onSortChange('relevance'); showSort=false">{{
+                'search.results.sortOptions.relevance' | translate }}</button>
+              <button class="sort-item" (click)="onSortChange('priceAsc'); showSort=false">{{
+                'search.results.sortOptions.priceLowHigh' | translate }}</button>
+              <button class="sort-item" (click)="onSortChange('priceDesc'); showSort=false">{{
+                'search.results.sortOptions.priceHighLow' | translate }}</button>
+              <button class="sort-item" (click)="onSortChange('rating'); showSort=false">{{
+                'search.results.sortOptions.rating' | translate }}</button>
+            </div>
           </div>
         </div>
 
         <!-- Service Cards Grid -->
-        <div class="results-grid" *ngIf="filteredResults?.length; else noResults">
-          <div class="service-card" *ngFor="let service of filteredResults">
+        <div class="results-grid" *ngIf="!hasNoResults(); else noResults">
+          <div class="service-card clickable" *ngFor="let service of filteredResults"
+            (click)="viewServiceDetails(service._id)" [title]="'Click to view details'">
             <div class="service-image">
-              <img [src]="service.images?.[0] || '/assets/placeholder.png'" [alt]="service.name"
-                (error)="onImageError($event)">
+              <img [src]="service.images?.[0] || 'favicon.ico'" [alt]="service.name" (error)="onImageError($event)">
               <div class="image-overlay">
-                <button class="btn btn-sm btn-light">
-                  ❤️
-                </button>
+                <button class="btn btn-sm btn-light" (click)="$event.stopPropagation()">❤️</button>
               </div>
             </div>
 
             <div class="service-details">
               <div class="service-header">
-                <h5 class="service-name">{{ service.name }}</h5>
+                <h5 class="service-name">
+                  <i class="me-2" [ngClass]="getServiceIconClass(service.category, service.subcategory)"></i>
+                  {{ service.name }}
+                </h5>
                 <span class="service-category badge bg-light text-dark">
                   {{ getSubcategoryLabel(service.subcategory || '') }}
                 </span>
               </div>
 
               <div class="service-location">
-                <small class="text-muted">
-                  📍 {{ getCityLabel(service.location.city) }}<span *ngIf="service.location.area">, {{
-                    service.location.area }}</span>
-                </small>
+                <small class="text-muted">📍 {{ getCityLabel(service.location.city) }}<span
+                    *ngIf="service.location.area">, {{ service.location.area }}</span></small>
                 <div class="rating">
-                  <small>{{ generateStarRating(service._id) }}</small>
+                  <small>{{ generateStarRating(service._id) }} ({{ getRatingValue(service._id) }}/5)</small>
                 </div>
               </div>
 
               <div class="service-capacity" *ngIf="service.minCapacity && service.maxCapacity">
-                <small class="text-muted">
-                  👥 {{ service.minCapacity }} - {{ service.maxCapacity }} people
-                </small>
+                <small class="text-muted">👥 {{ service.minCapacity }} - {{ service.maxCapacity }} people</small>
               </div>
 
               <div class="service-description" *ngIf="service.description">
@@ -190,43 +372,30 @@
                   <small class="text-muted">{{ 'search.results.perBooking' | translate }}</small>
                 </div>
 
-                <!-- Show appropriate button based on service type -->
-                <button *ngIf="!isContactOnly(service)" class="btn btn-warning btn-sm"
-                  (click)="viewServiceDetails(service._id)">
-                  {{ 'search.results.viewDetails' | translate }}
-                </button>
-
-                <button *ngIf="isContactOnly(service)" class="btn btn-outline-warning btn-sm"
-                  (click)="viewServiceDetails(service._id)">
-                  📞 {{ 'serviceDetails.booking.sendContactRequest' | translate }}
-                </button>
+                <!-- Show contact-only indicator but keep card clickable -->
+                <div class="service-status" *ngIf="isContactOnly(service)">
+                  <span class="badge bg-info">📞 Contact Required</span>
+                </div>
               </div>
 
               <div class="supplier-info">
-                <small class="text-muted">
-                  {{ 'search.results.by' | translate }} {{ service.supplier.name }} • {{ service.supplier.phone }}
-                </small>
-                <!-- Show note for contact-only services -->
-                <small *ngIf="isContactOnly(service)" class="text-muted d-block">
-                  <em>{{ 'serviceDetails.booking.hallFarmNote' | translate }}</em>
-                </small>
+                <small class="text-muted">{{ 'search.results.by' | translate }} {{ service.supplier.name }} • {{
+                  maskPhoneNumber(service.supplier.phone) }}</small>
+                <small *ngIf="isContactOnly(service)" class="text-muted d-block"><em>{{
+                    'serviceDetails.booking.hallFarmNote' | translate }}</em></small>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- No Results Template -->
         <ng-template #noResults>
           <div class="no-results">
             <div class="text-center py-5">
               <div class="no-results-icon">🔍</div>
               <h4>{{ 'search.noResults.title' | translate }}</h4>
-              <p class="text-muted">
-                {{ 'search.noResults.description' | translate }}
-              </p>
-              <button class="btn btn-warning" (click)="clearFilters()">
-                {{ 'search.noResults.clearFilters' | translate }}
-              </button>
+              <p class="text-muted">{{ 'search.noResults.description' | translate }}</p>
+              <button class="btn btn-warning" (click)="clearFilters()">{{ 'search.noResults.clearFilters' | translate
+                }}</button>
             </div>
           </div>
         </ng-template>

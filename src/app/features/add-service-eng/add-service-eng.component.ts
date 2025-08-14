@@ -14,8 +14,10 @@ import { CreateEventItemRequest } from '../../core/models/event-item.model';
 import {
   EVENT_CATEGORIES,
   CategoryConfig,
+  isContactOnlyService,
 } from '../../core/models/constants/categories.const';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-add-service',
@@ -49,15 +51,59 @@ export class AddServiceComponent implements OnInit {
     'Tafilah',
   ];
 
+  // Translated data
+  translatedCategories: CategoryConfig[] = [];
+  translatedCities: { value: string; label: string }[] = [];
+
   constructor(
     private fb: FormBuilder,
     private eventItemService: EventItemService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
     this.setupCategoryListener();
+    this.updateTranslations();
+
+    // Listen for language changes
+    this.translate.onLangChange.subscribe(() => {
+      this.updateTranslations();
+    });
+  }
+
+  private updateTranslations(): void {
+    // Update categories with translations
+    this.translatedCategories = this.categories.map((category) => ({
+      ...category,
+      label: this.translate.instant(`categories.${category.value}`),
+      subcategories: category.subcategories.map((sub) => ({
+        ...sub,
+        label: this.translate.instant(`subcategories.${sub.value}`),
+      })),
+    }));
+
+    // Update cities with translations
+    this.translatedCities = this.cities.map((city) => ({
+      value: city,
+      label: this.translate.instant(`cities.${city.toLowerCase()}`),
+    }));
+
+    // Update subcategories if a category is selected
+    if (this.selectedCategory) {
+      this.updateSubcategories();
+    }
+  }
+
+  private updateSubcategories(): void {
+    if (this.selectedCategory) {
+      this.subcategories = this.selectedCategory.subcategories.map((sub) => ({
+        ...sub,
+        label: this.translate.instant(`subcategories.${sub.value}`),
+      }));
+    }
   }
 
   private initForm(): void {
@@ -85,10 +131,10 @@ export class AddServiceComponent implements OnInit {
     if (categoryControl) {
       categoryControl.valueChanges.subscribe((categoryValue: string) => {
         if (categoryValue) {
-          this.selectedCategory = this.categories.find(
+          this.selectedCategory = this.translatedCategories.find(
             (c) => c.value === categoryValue
           );
-          this.subcategories = this.selectedCategory?.subcategories || [];
+          this.updateSubcategories();
         } else {
           this.subcategories = [];
           this.selectedCategory = undefined;
@@ -111,10 +157,10 @@ export class AddServiceComponent implements OnInit {
     const categoryValue = selectElement.value;
 
     if (categoryValue) {
-      this.selectedCategory = this.categories.find(
+      this.selectedCategory = this.translatedCategories.find(
         (c) => c.value === categoryValue
       );
-      this.subcategories = this.selectedCategory?.subcategories || [];
+      this.updateSubcategories();
     } else {
       this.subcategories = [];
       this.selectedCategory = undefined;
@@ -140,7 +186,10 @@ export class AddServiceComponent implements OnInit {
     );
 
     if (exists) {
-      alert('This date is already added');
+      this.notificationService.warning(
+        this.translate.instant('addService.form.availability.dateExists'),
+        this.translate.instant('addService.form.availability.dateExists')
+      );
       return;
     }
 
@@ -176,7 +225,14 @@ export class AddServiceComponent implements OnInit {
       for (const file of validFiles) {
         // Check file size
         if (file.size > maxSize) {
-          alert(`File ${file.name} exceeds the 5MB size limit.`);
+          this.notificationService.error(
+            this.translate.instant('addService.form.media.imageSizeError', {
+              fileName: file.name,
+            }),
+            this.translate.instant('addService.form.media.imageSizeError', {
+              fileName: file.name,
+            })
+          );
           continue;
         }
 
@@ -211,7 +267,14 @@ export class AddServiceComponent implements OnInit {
       for (const file of validFiles) {
         // Check file size
         if (file.size > maxSize) {
-          alert(`File ${file.name} exceeds the 50MB size limit.`);
+          this.notificationService.error(
+            this.translate.instant('addService.form.media.videoSizeError', {
+              fileName: file.name,
+            }),
+            this.translate.instant('addService.form.media.videoSizeError', {
+              fileName: file.name,
+            })
+          );
           continue;
         }
 
@@ -250,17 +313,21 @@ export class AddServiceComponent implements OnInit {
     if (!field) return '';
 
     if (field.hasError('required')) {
-      return 'This field is required';
+      return this.translate.instant('addService.form.validation.required');
     }
     if (field.hasError('minlength')) {
       const minLength = field.getError('minlength').requiredLength;
-      return `Minimum length is ${minLength} characters`;
+      return this.translate.instant('addService.form.validation.minLength', {
+        length: minLength,
+      });
     }
     if (field.hasError('min')) {
       const min = field.getError('min').min;
-      return `Minimum value is ${min}`;
+      return this.translate.instant('addService.form.validation.minValue', {
+        value: min,
+      });
     }
-    return 'Invalid value';
+    return this.translate.instant('addService.form.validation.invalidValue');
   }
 
   // Method to submit the form
@@ -307,13 +374,20 @@ export class AddServiceComponent implements OnInit {
           this.uploadMedia(response._id);
         } else {
           this.isSubmitting = false;
+          this.notificationService.success(
+            this.translate.instant('addService.form.success.serviceCreated'),
+            this.translate.instant('addService.form.success.serviceCreated')
+          );
           this.router.navigate(['/supplier-dashboard']);
         }
       },
       error: (error) => {
         console.error('Error creating event item:', error);
         this.isSubmitting = false;
-        // Handle error (could add error message display here)
+        this.notificationService.error(
+          this.translate.instant('addService.form.error.createFailed'),
+          this.translate.instant('addService.form.error.createFailed')
+        );
       },
     });
   }
@@ -336,13 +410,27 @@ export class AddServiceComponent implements OnInit {
     this.eventItemService.uploadEventMedia(eventId, formData).subscribe({
       next: (response) => {
         this.isUploading = false;
+        this.notificationService.success(
+          this.translate.instant('addService.form.success.serviceCreated'),
+          this.translate.instant('addService.form.success.serviceCreated')
+        );
         this.router.navigate(['/supplier-dashboard']);
       },
       error: (error) => {
         console.error('Error uploading media:', error);
         this.isUploading = false;
-        // Handle error (could add error message display here)
+        this.notificationService.error(
+          this.translate.instant('addService.form.error.uploadFailed'),
+          this.translate.instant('addService.form.error.uploadFailed')
+        );
       },
     });
+  }
+
+  // Check if the selected service is contact-only
+  isContactOnlyService(): boolean {
+    const category = this.serviceForm.get('category')?.value;
+    const subcategory = this.serviceForm.get('subcategory')?.value;
+    return isContactOnlyService(category, subcategory);
   }
 }

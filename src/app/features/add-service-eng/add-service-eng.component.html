@@ -10,6 +10,13 @@
         <h2 class="mb-0 text-dark fw-bold">{{ 'addService.header.title' | translate }}</h2>
       </div>
 
+      <!-- Contact-Only Service Notice -->
+      <div *ngIf="isContactOnlyService()" class="alert alert-info mb-4">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>{{ 'addService.form.contactOnly.notice' | translate }}</strong>
+        <p class="mb-0 mt-2">{{ 'addService.form.contactOnly.description' | translate }}</p>
+      </div>
+
       <!-- Form Card -->
       <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
@@ -46,7 +53,7 @@
                   <select class="form-select form-select-lg" formControlName="category"
                     [class.is-invalid]="isFieldInvalid('category')" (change)="onCategoryChange($event)">
                     <option value="">{{ 'addService.form.basicInfo.eventType.placeholder' | translate }}</option>
-                    <option *ngFor="let cat of categories" [value]="cat.value">
+                    <option *ngFor="let cat of translatedCategories" [value]="cat.value">
                       {{cat.label}}
                     </option>
                   </select>
@@ -122,8 +129,8 @@
                   <select class="form-select form-select-lg" formControlName="city"
                     [class.is-invalid]="isFieldInvalid('city')">
                     <option value="">{{ 'addService.form.location.city.placeholder' | translate }}</option>
-                    <option *ngFor="let city of cities" [value]="city">
-                      {{city}}
+                    <option *ngFor="let city of translatedCities" [value]="city.value">
+                      {{city.label}}
                     </option>
                   </select>
                   <div class="invalid-feedback" *ngIf="isFieldInvalid('city')">
@@ -285,3 +292,5 @@
     </div>
   </div>
 </div>
+
+<!-- Notification Toast handled globally in app.component -->

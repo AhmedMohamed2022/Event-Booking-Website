@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { NotificationService } from './notification.service';
 
 interface User {
   id: string;
@@ -54,7 +55,7 @@ export class AuthService {
   private authChangeSubject = new BehaviorSubject<boolean>(false);
   public authChange = this.authChangeSubject.asObservable();
 
-  constructor() {
+  constructor(private notificationService: NotificationService) {
     // Initialize user state on service creation
     this.initializeUserState();
   }
@@ -226,6 +227,9 @@ export class AuthService {
     this.currentUserSubject.next(null);
     this.tokenSubject.next(null);
     this.authChangeSubject.next(false); // Emit authentication change
+
+    // Clear all unread message counts
+    this.notificationService.clearAllUnreadMessages();
 
     // Clear any stored redirect URLs
     this.clearRedirectUrl();

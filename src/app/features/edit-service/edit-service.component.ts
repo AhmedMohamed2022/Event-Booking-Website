@@ -13,14 +13,16 @@ import {
   EventItem,
   UpdateEventItemRequest,
 } from '../../core/models/event-item.model';
-import { EVENT_CATEGORIES } from '../../core/models/constants/categories.const';
+import { EVENT_CATEGORIES, isContactOnlyService } from '../../core/models/constants/categories.const';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslationService } from '../../core/services/translation.service';
+import { NotificationService } from '../../core/services/notification.service';
+import { NotificationToastComponent } from '../../shared/components/notification-toast/notification-toast.component';
 
 @Component({
   selector: 'app-edit-service',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, NotificationToastComponent],
   templateUrl: './edit-service.component.html',
   styleUrls: ['./edit-service.component.css'],
 })
@@ -45,7 +47,8 @@ export class EditServiceComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private translate: TranslateService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private notificationService: NotificationService
   ) {
     this.serviceForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -79,7 +82,10 @@ export class EditServiceComponent implements OnInit {
       }
     } catch (error) {
       console.error('Error loading service data:', error);
-      alert('حدث خطأ في تحميل بيانات الخدمة');
+      this.notificationService.error(
+        this.translate.instant('editService.form.error.loadFailed'),
+        this.translate.instant('editService.form.error.loadFailed')
+      );
       this.goBack();
     } finally {
       this.isLoadingData = false;
@@ -146,7 +152,10 @@ export class EditServiceComponent implements OnInit {
       this.existingImages.length + this.selectedImages.length + files.length;
 
     if (totalImages > 5) {
-      alert('يمكنك رفع 5 صور كحد أقصى');
+      this.notificationService.warning(
+        this.translate.instant('editService.form.media.maxImagesError'),
+        this.translate.instant('editService.form.media.maxImagesError')
+      );
       return;
     }
     this.selectedImages = [...this.selectedImages, ...files];
@@ -158,7 +167,10 @@ export class EditServiceComponent implements OnInit {
       this.existingVideos.length + this.selectedVideos.length + files.length;
 
     if (totalVideos > 3) {
-      alert('يمكنك رفع 3 فيديوهات كحد أقصى');
+      this.notificationService.warning(
+        this.translate.instant('editService.form.media.maxVideosError'),
+        this.translate.instant('editService.form.media.maxVideosError')
+      );
       return;
     }
     this.selectedVideos = [...this.selectedVideos, ...files];
@@ -238,11 +250,17 @@ export class EditServiceComponent implements OnInit {
         await this.uploadNewMedia();
       }
 
-      alert('تم تحديث الخدمة بنجاح');
+      this.notificationService.success(
+        this.translate.instant('editService.form.success.serviceUpdated'),
+        this.translate.instant('editService.form.success.serviceUpdated')
+      );
       this.router.navigate(['/supplier-dashboard']);
     } catch (error: any) {
       console.error('Error updating service:', error);
-      alert('حدث خطأ أثناء تحديث الخدمة. يرجى المحاولة مرة أخرى.');
+      this.notificationService.error(
+        this.translate.instant('editService.form.error.updateFailed'),
+        this.translate.instant('editService.form.error.updateFailed')
+      );
     } finally {
       this.isLoading = false;
     }
@@ -271,7 +289,10 @@ export class EditServiceComponent implements OnInit {
         .toPromise();
     } catch (error) {
       console.error('Error uploading media:', error);
-      alert('تم تحديث الخدمة ولكن حدث خطأ في رفع الملفات الجديدة');
+      this.notificationService.warning(
+        this.translate.instant('editService.form.warning.uploadFailed'),
+        this.translate.instant('editService.form.warning.uploadFailed')
+      );
     } finally {
       this.isUploading = false;
     }
@@ -329,5 +350,12 @@ export class EditServiceComponent implements OnInit {
 
   getVideoName(url: string): string {
     return url.split('/').pop()?.split('?')[0] || 'فيديو';
+  }
+
+  // Check if the selected service is contact-only
+  isContactOnlyService(): boolean {
+    const category = this.serviceForm.get('category')?.value;
+    const subcategory = this.serviceForm.get('subcategory')?.value;
+    return isContactOnlyService(category, subcategory);
   }
 }

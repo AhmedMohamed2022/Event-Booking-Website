@@ -460,7 +460,7 @@ a.text-warning:focus {
 
 [dir="rtl"] .navbar-brand {
   margin-left: 0;
-  margin-right: auto;
+  /* margin-right: auto; */
 }
 
 [dir="rtl"] .ms-auto {

@@ -25,6 +25,7 @@
   align-items: center;
   gap: 1rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
 }
 
 .stats-card:hover {
@@ -41,6 +42,12 @@
   justify-content: center;
   color: white;
   font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.stats-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .stats-content h3 {
@@ -48,6 +55,7 @@
   font-weight: 700;
   margin: 0;
   color: var(--primary-dark);
+  line-height: 1.2;
 }
 
 .stats-content p {
@@ -55,6 +63,7 @@
   color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 500;
+  line-height: 1.3;
 }
 
 /* Detail Cards */
@@ -94,6 +103,15 @@
 }
 
 /* Navigation Tabs */
+.nav-tabs {
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.nav-tabs .nav-item {
+  margin-bottom: 0;
+}
+
 .nav-tabs .nav-link {
   color: var(--text-muted);
   border: none;
@@ -101,6 +119,8 @@
   font-weight: 500;
   padding: 1rem 1.5rem;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  position: relative;
 }
 
 .nav-tabs .nav-link:hover {
@@ -115,6 +135,11 @@
   font-weight: 600;
 }
 
+.nav-tabs .nav-link .badge {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+}
+
 /* Request Cards */
 .request-card {
   background: var(--primary-white);
@@ -123,6 +148,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 2px solid;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
 }
 
 .request-card:hover {
@@ -137,11 +163,17 @@
 .request-card h6 {
   color: var(--primary-dark);
   font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
 .request-card p {
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.request-card .btn {
+  margin-bottom: 0.25rem;
 }
 
 /* Overview Items */
@@ -150,6 +182,7 @@
   border-radius: 8px;
   background: var(--light-gray);
   margin-bottom: 1rem;
+  height: 100%;
 }
 
 .overview-item h6 {
@@ -176,10 +209,16 @@
 }
 
 /* Table Styling */
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 .table {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 0;
 }
 
 .table thead th {
@@ -188,12 +227,16 @@
   font-weight: 600;
   border: none;
   padding: 1rem 0.75rem;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .table tbody td {
   padding: 1rem 0.75rem;
   border-color: var(--border-color);
   vertical-align: middle;
+  word-wrap: break-word;
+  max-width: 200px;
 }
 
 .table tbody tr:hover {
@@ -236,8 +279,160 @@
   height: 3rem;
 }
 
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Tab Content */
+.tab-pane {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Contact Info Section */
+.contact-info-section {
+  background: var(--light-gray);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+/* Message Preview Styling */
+.message-preview {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Contact Messages Table */
+.contact-messages-table {
+  background: var(--primary-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-messages-table .table {
+  margin-bottom: 0;
+}
+
+.contact-messages-table .table th {
+  background: var(--light-gray);
+  border-bottom: 2px solid var(--border-color);
+  font-weight: 600;
+  color: var(--primary-dark);
+  padding: 1rem;
+}
+
+.contact-messages-table .table td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.contact-messages-table .table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.contact-messages-table .table tbody tr:hover {
+  background-color: var(--light-gray);
+}
+
+.contact-messages-table .table tbody tr.table-light {
+  background-color: #f8f9fa;
+  opacity: 0.8;
+}
+
+.contact-messages-table .table tbody tr.table-light:hover {
+  background-color: #e9ecef;
+}
+
+/* Badge Styling */
+.badge.bg-warning {
+  background-color: var(--accent-gold) !important;
+  color: var(--primary-dark) !important;
+}
+
+.badge.bg-success {
+  background-color: #28a745 !important;
+  color: white !important;
+}
+
+/* Mark All Read Button */
+.btn-outline-success {
+  border-color: #28a745;
+  color: #28a745;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-success:hover {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+/* Empty State Styling */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state .empty-icon {
+  font-size: 4rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+  .stats-card {
+    padding: 1.25rem;
+  }
+
+  .stats-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+
+  .stats-content h3 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
   .stats-card {
     flex-direction: column;
     text-align: center;
@@ -248,6 +443,7 @@
     width: 50px;
     height: 50px;
     font-size: 1.2rem;
+    margin-bottom: 0.5rem;
   }
 
   .stats-content h3 {
@@ -256,6 +452,12 @@
 
   .detail-card,
   .request-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-fluid {
     padding: 1rem;
   }
 
@@ -263,15 +465,52 @@
     padding: 1rem;
   }
 
-  .nav-tabs .nav-link {
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .container-fluid {
+  .stats-card {
     padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .stats-content h3 {
+    font-size: 1.25rem;
+  }
+
+  .stats-content p {
+    font-size: 0.8rem;
+  }
+
+  .detail-card,
+  .request-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .nav-tabs {
+    flex-direction: column;
+  }
+
+  .nav-tabs .nav-item {
+    width: 100%;
+  }
+
+  .nav-tabs .nav-link {
+    text-align: center;
+    border-bottom: none;
+    border-right: 3px solid transparent;
+    border-radius: 0;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-right-color: var(--accent-gold);
+    border-bottom: none;
+  }
+
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.75rem 0.5rem;
   }
 
   .btn-sm {
@@ -279,11 +518,148 @@
     padding: 0.25rem 0.5rem;
   }
 
+  .request-card .d-flex {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .request-card .btn {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container-fluid {
+    padding: 0.75rem;
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  .stats-card {
+    padding: 0.75rem;
+  }
+
+  .stats-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
   .stats-content h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+  }
+
+  .stats-content p {
+    font-size: 0.75rem;
+  }
+
+  .detail-card,
+  .request-card {
+    padding: 0.75rem;
   }
 
   .table-responsive {
+    font-size: 0.75rem;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .btn-sm {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
+  }
+
+  .card-header {
+    padding: 0;
+  }
+
+  .overview-item {
+    padding: 0.75rem;
+  }
+
+  .overview-item h6 {
+    font-size: 0.9rem;
+  }
+
+  .overview-item p {
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 480px) {
+  .container-fluid {
+    padding: 0.5rem;
+  }
+
+  .stats-card {
+    padding: 0.5rem;
+  }
+
+  .stats-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+
+  .stats-content h3 {
+    font-size: 1rem;
+  }
+
+  .stats-content p {
+    font-size: 0.7rem;
+  }
+
+  .detail-card,
+  .request-card {
+    padding: 0.5rem;
+  }
+
+  .table-responsive {
+    font-size: 0.7rem;
+  }
+
+  .btn-sm {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .btn,
+  .nav-tabs,
+  .card-header {
+    display: none !important;
+  }
+
+  .card {
+    border: none;
+    box-shadow: none;
+  }
+
+  .card-body {
+    padding: 0;
+  }
+
+  .stats-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
   }
 }

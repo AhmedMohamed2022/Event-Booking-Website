@@ -25,6 +25,8 @@
 
 <!-- Service Details -->
 <div *ngIf="service && !loading && !error" class="service-detail-container">
+  <!-- Notification Toast handled globally in app.component -->
+
   <!-- Breadcrumb -->
   <div class="breadcrumb-section">
     <div class="container">
@@ -170,7 +172,7 @@
             <div class="supplier-card">
               <div class="supplier-info">
                 <h4 class="supplier-name">{{service.supplier.name}}</h4>
-                <p class="supplier-phone">📞 {{service.supplier.phone}}</p>
+                <p class="supplier-phone">📞 {{maskPhoneNumber(service.supplier.phone)}}</p>
               </div>
               <div class="supplier-actions">
                 <button class="btn btn-outline-warning me-2" (click)="contactSupplier()">
@@ -208,33 +210,58 @@
             </div>
 
             <div class="booking-actions">
-              <button *ngIf="shouldShowBookingButton()" class="btn btn-warning btn-lg w-100 mb-3" (click)="bookNow()">
-                📅 {{ 'serviceDetails.booking.bookNow' | translate }}
-              </button>
+              <!-- Primary Action Button -->
+              <div *ngIf="shouldShowBookingButton()" class="primary-action">
+                <!-- Book Now Button for Bookable Services -->
+                <button class="btn btn-warning btn-lg w-100 mb-3" (click)="bookNow()">
+                  📅 {{ 'serviceDetails.booking.bookNow' | translate }}
+                </button>
+              </div>
 
-              <!-- Contact Request Button for Halls and Farms -->
-              <button *ngIf="!shouldShowBookingButton() && canSendContactRequest()"
-                class="btn btn-warning btn-lg w-100 mb-3" (click)="sendContactRequest()">
-                📞 {{ 'serviceDetails.booking.sendContactRequest' | translate }}
-              </button>
+              <!-- Contact-Only Services -->
+              <div *ngIf="!shouldShowBookingButton()" class="contact-only-action">
+                <!-- Loading indicator for contact status check -->
+                <div *ngIf="checkingContactStatus" class="text-center mb-3">
+                  <div class="spinner-border spinner-border-sm text-warning" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <small class="text-muted d-block mt-2">Checking contact status...</small>
+                </div>
 
-              <!-- Contact Request Button for other services -->
-              <button *ngIf="shouldShowBookingButton() && canSendContactRequest()"
-                class="btn btn-outline-warning w-100 mb-2" (click)="sendContactRequest()">
-                📞 {{ 'serviceDetails.booking.sendContactRequest' | translate }}
-              </button>
+                <!-- Contact Request Button for Contact-Only Services (Primary) -->
+                <button *ngIf="canSendContactRequest() && !contactRequestSent" class="btn btn-warning btn-lg w-100 mb-3"
+                  (click)="sendContactRequest()" [disabled]="contactRequestLoading">
+                  <span *ngIf="!contactRequestLoading">📞 {{ 'serviceDetails.booking.sendContactRequest' | translate
+                    }}</span>
+                  <span *ngIf="contactRequestLoading">⏳ {{ 'serviceDetails.booking.sending' | translate }}</span>
+                </button>
 
-              <!-- Phone call button as fallback -->
+                <!-- Contact Request Status for Contact-Only Services -->
+                <div *ngIf="contactRequestSent" class="contact-request-status mb-3">
+                  <div *ngIf="contactRequestStatus === 'pending'" class="alert alert-info">
+                    ⏳ {{ 'serviceDetails.booking.contactRequestPending' | translate }}
+                  </div>
+                  <div *ngIf="contactRequestStatus === 'accepted'" class="alert alert-success">
+                    ✅ {{ 'serviceDetails.booking.contactRequestAccepted' | translate }}
+                  </div>
+                  <div *ngIf="contactRequestStatus === 'rejected'" class="alert alert-warning">
+                    ❌ {{ 'serviceDetails.booking.contactRequestRejected' | translate }}
+                  </div>
+                </div>
+
+                <!-- Note for Contact-Only Services -->
+                <div class="contact-only-note">
+                  <small class="text-muted">
+                    <em>{{ 'serviceDetails.booking.hallFarmNote' | translate }}</em>
+                  </small>
+                </div>
+              </div>
+
+              <!-- Fallback Phone Call Button -->
               <button class="btn btn-outline-warning w-100"
                 [class.btn-lg]="!shouldShowBookingButton() && !canSendContactRequest()" (click)="contactSupplier()">
                 📞 {{ 'serviceDetails.booking.contactSupplier' | translate }}
               </button>
-            </div>
-
-            <div class="booking-note" *ngIf="!shouldShowBookingButton()">
-              <small class="text-muted">
-                <em>{{ 'serviceDetails.booking.hallFarmNote' | translate }}</em>
-              </small>
             </div>
           </div>
 

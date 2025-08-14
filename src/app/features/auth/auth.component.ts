@@ -119,46 +119,6 @@ export class AuthComponent implements OnInit {
       this.isLoading = false;
     }
   }
-  // async sendOTP() {
-  //   // Name validation with translation
-  //   if (!this.name.trim() || this.name.trim().length < 2) {
-  //     this.error = this.translate.instant('auth.validation.nameMinLength');
-  //     return;
-  //   }
-
-  //   if (!this.phone.trim()) {
-  //     this.error = this.translate.instant('auth.validation.phoneRequired');
-  //     return;
-  //   }
-
-  //   // Updated Jordan phone number validation
-  //   const jordanPhoneRegex = /^(\+962|962|0)?7[789]\d{7}$/;
-  //   if (!jordanPhoneRegex.test(this.phone.replace(/[\s\-\(\)]/g, ''))) {
-  //     this.error = this.translate.instant('auth.validation.phoneInvalid');
-  //     return;
-  //   }
-
-  //   this.isLoading = true;
-  //   this.error = '';
-  //   this.success = '';
-
-  //   try {
-  //     // Clean phone number before sending to API
-  //     const cleanPhone = this.phone.replace(/[\s\-\(\)]/g, '');
-  //     await this.authService.sendOTP(cleanPhone, this.name.trim());
-  //     this.success = this.translate.instant('auth.messages.otpSent');
-  //     this.currentStep = 'otp';
-
-  //     setTimeout(() => {
-  //       this.success = '';
-  //     }, 3000);
-  //   } catch (error: any) {
-  //     this.error =
-  //       error.message || this.translate.instant('auth.messages.otpSendFailed');
-  //   } finally {
-  //     this.isLoading = false;
-  //   }
-  // }
 
   async verifyOTP() {
     if (!this.otp.trim()) {

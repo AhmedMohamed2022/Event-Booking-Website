@@ -22,7 +22,7 @@
     <!-- Header Section -->
     <div class="dashboard-header">
       <div class="row align-items-center mb-4">
-        <div class="col-md-8 d-flex align-items-center gap-3">
+        <div class="col-lg-8 col-md-7 col-sm-12 d-flex align-items-center gap-3 mb-3 mb-md-0">
           <!-- Add Home button -->
           <button class="btn btn-outline-primary" routerLink="/">
             <i class="bi bi-house-door me-2"></i>{{ 'header.home' | translate }}
@@ -36,19 +36,19 @@
               dashboardData.supplier.name }}</p>
           </div>
         </div>
-        <div class="col-md-4 text-end">
+        <div class="col-lg-4 col-md-5 col-sm-12 text-end">
           <!-- Chat Notification Button -->
-          <button class="btn btn-outline-info me-2 position-relative" (click)="loadActiveChats()" data-bs-toggle="modal"
-            data-bs-target="#chatListModal">
-            <i class="fas fa-comments me-2"></i>Messages
+          <button class="btn btn-outline-info me-2 position-relative mb-2 mb-md-0" (click)="loadActiveChats()"
+            data-bs-toggle="modal" data-bs-target="#chatListModal">
+            <i class="fas fa-comments me-2"></i>{{ 'supplierDashboard.chat.messages' | translate }}
             <span *ngIf="getTotalUnreadMessages() > 0"
               class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               {{ getTotalUnreadMessages() }}
-              <span class="visually-hidden">unread messages</span>
+              <span class="visually-hidden">{{ 'supplierDashboard.chat.unreadMessages' | translate }}</span>
             </span>
           </button>
 
-          <button class="btn btn-primary me-2" [routerLink]="['/supplier/add-service-eng']">
+          <button class="btn btn-primary me-2 mb-2 mb-md-0" [routerLink]="['/supplier/add-service-eng']">
             <i class="fas fa-plus me-2"></i>{{ 'supplierDashboard.buttons.addService' | translate }}
           </button>
           <button class="btn btn-outline-danger" (click)="logout()">
@@ -61,7 +61,7 @@
     <!-- Stats Overview -->
     <div class="stats-section mb-5" *ngIf="dashboardData?.supplier">
       <div class="row g-3">
-        <div class="col-md-3 col-sm-6">
+        <div class="col-lg-3 col-md-6 col-sm-6">
           <div class="stat-card">
             <div class="stat-icon services">
               <i class="fas fa-concierge-bell"></i>
@@ -73,7 +73,7 @@
           </div>
         </div>
 
-        <div class="col-md-3 col-sm-6">
+        <div class="col-lg-3 col-md-6 col-sm-6">
           <div class="stat-card">
             <div class="stat-icon bookings">
               <i class="fas fa-calendar-check"></i>
@@ -85,7 +85,7 @@
           </div>
         </div>
 
-        <div class="col-md-3 col-sm-6">
+        <div class="col-lg-3 col-md-6 col-sm-6">
           <div class="stat-card">
             <div class="stat-icon pending">
               <i class="fas fa-clock"></i>
@@ -98,7 +98,7 @@
         </div>
 
         <!-- Revenue Card -->
-        <div class="col-md-3 col-sm-6">
+        <div class="col-lg-3 col-md-6 col-sm-6">
           <div class="stat-card">
             <div class="stat-icon revenue">
               <i class="fas fa-money-bill-wave"></i>
@@ -117,22 +117,22 @@
     <!-- Quick Stats Row -->
     <div class="quick-stats mb-4">
       <div class="row g-3">
-        <div class="col-md-4">
+        <div class="col-md-4 col-sm-6">
           <div class="quick-stat confirmed">
             <span class="count">{{ dashboardData.supplier.confirmedBookings }}</span>
-            <span class="label">Confirmed</span>
+            <span class="label">{{ 'supplierDashboard.stats.quickStats.confirmed' | translate }}</span>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-sm-6">
           <div class="quick-stat pending">
             <span class="count">{{ dashboardData.supplier.pendingBookings }}</span>
-            <span class="label">Pending</span>
+            <span class="label">{{ 'supplierDashboard.stats.quickStats.pending' | translate }}</span>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-sm-6">
           <div class="quick-stat cancelled">
             <span class="count">{{ dashboardData.supplier.cancelledBookings }}</span>
-            <span class="label">Cancelled</span>
+            <span class="label">{{ 'supplierDashboard.stats.quickStats.cancelled' | translate }}</span>
           </div>
         </div>
       </div>
@@ -177,7 +177,6 @@
               </tr>
             </thead>
             <tbody>
-              <!-- <tr *ngFor="let booking of dashboardData.bookings; trackBy: trackByBookingId" class="booking-row"> -->
               <tr *ngFor="let booking of dashboardData.bookings; " class="booking-row">
                 <td>
                   <div class="service-info">
@@ -192,7 +191,7 @@
                     <button class="btn btn-sm btn-outline-info mt-1"
                       (click)="openChat(booking.client._id, booking.client.name)">
                       <i class="fas fa-comment me-1"></i>
-                      Chat
+                      {{ 'supplierDashboard.chat.chat' | translate }}
                       <span *ngIf="unreadMessages[booking.client._id]" class="badge bg-danger ms-1">
                         {{ unreadMessages[booking.client._id] }}
                       </span>
@@ -214,7 +213,7 @@
                   <div class="amount-info">
                     <strong>{{ formatCurrency(booking.totalPrice) }}</strong>
                     <small *ngIf="booking.paidAmount" class="d-block text-success">
-                      Paid: {{ formatCurrency(booking.paidAmount) }}
+                      {{ 'supplierDashboard.bookings.paid' | translate }}: {{ formatCurrency(booking.paidAmount) }}
                     </small>
                   </div>
                 </td>
@@ -230,12 +229,12 @@
                         <span *ngIf="processingBooking === booking._id"
                           class="spinner-border spinner-border-sm me-1"></span>
                         <i *ngIf="processingBooking !== booking._id" class="fas fa-check me-1"></i>
-                        Accept
+                        {{ 'supplierDashboard.bookings.actions.accept' | translate }}
                       </button>
                       <button class="btn btn-sm btn-danger" (click)="rejectBooking(booking._id)"
                         [disabled]="processingBooking === booking._id">
                         <i class="fas fa-times me-1"></i>
-                        Reject
+                        {{ 'supplierDashboard.bookings.actions.reject' | translate }}
                       </button>
                     </div>
                     <!-- Show status message for non-pending bookings -->
@@ -256,13 +255,14 @@
       <div class="section-header">
         <h2>
           <i class="fas fa-address-book me-2"></i>
-          Contact Requests
+          {{ 'supplierDashboard.contactRequests.title' | translate }}
           <button class="btn btn-sm btn-outline-primary ms-2" (click)="toggleContactRequests()">
             <i class="fas fa-sync-alt me-1"></i>
-            {{ showContactRequests ? 'Hide' : 'Show' }}
+            {{ showContactRequests ? ('supplierDashboard.contactRequests.hide' | translate) :
+            ('supplierDashboard.contactRequests.show' | translate) }}
           </button>
         </h2>
-        <p class="text-muted">Manage contact requests from potential clients</p>
+        <p class="text-muted">{{ 'supplierDashboard.contactRequests.subtitle' | translate }}</p>
       </div>
 
       <!-- Contact Limit Info -->
@@ -270,15 +270,17 @@
         <div class="alert" [class.alert-warning]="contactLimitInfo.hasWarning"
           [class.alert-danger]="contactLimitInfo.isLocked"
           [class.alert-info]="!contactLimitInfo.hasWarning && !contactLimitInfo.isLocked">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <strong>Contact Usage:</strong> {{ contactLimitInfo.currentContacts }} / {{ contactLimitInfo.maxContacts
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="mb-2 mb-md-0">
+              <strong>{{ 'supplierDashboard.contactRequests.limitInfo.usage' | translate }}:</strong> {{
+              contactLimitInfo.currentContacts }} / {{ contactLimitInfo.maxContacts
               }}
               <span *ngIf="contactLimitInfo.isLocked" class="text-danger ms-2">
                 <i class="fas fa-lock me-1"></i>{{ contactLimitInfo.lockReason }}
               </span>
               <span *ngIf="contactLimitInfo.hasWarning && !contactLimitInfo.isLocked" class="text-warning ms-2">
-                <i class="fas fa-exclamation-triangle me-1"></i>Warning: {{ contactLimitInfo.warningType }}
+                <i class="fas fa-exclamation-triangle me-1"></i>{{ 'supplierDashboard.contactRequests.limitInfo.warning'
+                | translate }}: {{ contactLimitInfo.warningType }}
               </span>
             </div>
             <div class="progress" style="width: 200px;">
@@ -298,20 +300,20 @@
           <div class="empty-icon">
             <i class="fas fa-address-book"></i>
           </div>
-          <h3>No Contact Requests</h3>
-          <p>You haven't received any contact requests yet.</p>
+          <h3>{{ 'supplierDashboard.contactRequests.empty.title' | translate }}</h3>
+          <p>{{ 'supplierDashboard.contactRequests.empty.description' | translate }}</p>
         </div>
 
         <div *ngIf="contactRequests.length > 0" class="table-responsive">
           <table class="table contact-requests-table">
             <thead>
               <tr>
-                <th>Client</th>
-                <th>Service</th>
-                <th>Message</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>{{ 'supplierDashboard.contactRequests.table.client' | translate }}</th>
+                <th>{{ 'supplierDashboard.contactRequests.table.service' | translate }}</th>
+                <th>{{ 'supplierDashboard.contactRequests.table.message' | translate }}</th>
+                <th>{{ 'supplierDashboard.contactRequests.table.status' | translate }}</th>
+                <th>{{ 'supplierDashboard.contactRequests.table.date' | translate }}</th>
+                <th>{{ 'supplierDashboard.contactRequests.table.actions' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -346,12 +348,12 @@
                     <button class="btn btn-sm btn-success me-2"
                       (click)="updateContactRequestStatus(request._id!, 'accepted')">
                       <i class="fas fa-check me-1"></i>
-                      Accept
+                      {{ 'supplierDashboard.contactRequests.actions.accept' | translate }}
                     </button>
                     <button class="btn btn-sm btn-danger"
                       (click)="updateContactRequestStatus(request._id!, 'rejected')">
                       <i class="fas fa-times me-1"></i>
-                      Reject
+                      {{ 'supplierDashboard.contactRequests.actions.reject' | translate }}
                     </button>
                   </div>
                   <span *ngIf="request.status !== 'pending'" [class]="getStatusClass(request.status)">
@@ -377,7 +379,7 @@
 
       <div class="services-grid">
         <div class="row g-3">
-          <div class="col-md-4 col-sm-6" *ngFor="let service of dashboardData.services">
+          <div class="col-lg-4 col-md-6 col-sm-6" *ngFor="let service of dashboardData.services">
             <div class="service-card">
               <div class="service-header">
                 <h5>{{ service.name }}</h5>
@@ -385,11 +387,11 @@
               <div class="service-actions">
                 <button class="btn btn-sm btn-outline-primary" [routerLink]="['/supplier/edit-service', service._id]">
                   <i class="fas fa-edit me-1"></i>
-                  Edit
+                  {{ 'supplierDashboard.services.actions.edit' | translate }}
                 </button>
                 <button class="btn btn-sm btn-outline-secondary" [routerLink]="['/supplier/view-service', service._id]">
                   <i class="fas fa-eye me-1"></i>
-                  View
+                  {{ 'supplierDashboard.services.actions.view' | translate }}
                 </button>
               </div>
             </div>
@@ -412,13 +414,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="chatListModalLabel">Active Conversations</h5>
+        <h5 class="modal-title" id="chatListModalLabel">{{ 'supplierDashboard.chat.activeConversations' | translate }}
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div *ngIf="activeChats.length === 0" class="text-center p-4">
           <i class="fas fa-comments fa-3x text-muted mb-3"></i>
-          <p>No active conversations yet.</p>
+          <p>{{ 'supplierDashboard.chat.noConversations' | translate }}</p>
         </div>
         <ul class="list-group" *ngIf="activeChats.length > 0">
           <li *ngFor="let chat of activeChats"
@@ -431,7 +434,7 @@
               <button class="btn btn-sm btn-primary" (click)="openChat(chat.userId, chat.userName)"
                 data-bs-dismiss="modal">
                 <i class="fas fa-comment me-1"></i>
-                Chat
+                {{ 'supplierDashboard.chat.chat' | translate }}
                 <span *ngIf="unreadMessages[chat.userId]" class="badge bg-danger ms-1">
                   {{ unreadMessages[chat.userId] }}
                 </span>
@@ -441,14 +444,13 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'supplierDashboard.chat.close' |
+          translate }}</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Chat Window -->
-<div *ngIf="showChatWindow && currentChatUserId && currentChatUserName" class="chat-window-container">
-  <app-chat [otherUserId]="currentChatUserId" [otherUserName]="currentChatUserName" [onClose]="closeChat.bind(this)">
-  </app-chat>
-</div>
+
+
+<!-- Notification Toast handled globally in app.component -->

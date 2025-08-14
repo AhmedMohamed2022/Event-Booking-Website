@@ -182,4 +182,37 @@ export class ContactService {
         })
       );
   }
+
+  // Check contact request status between client and supplier
+  checkContactRequestStatus(
+    clientId: string,
+    supplierId: string,
+    serviceId: string
+  ): Observable<any> {
+    const endpoint = '/contact-request/check-status';
+
+    if (!this.rateLimiter.canMakeCall(endpoint)) {
+      return throwError(
+        () =>
+          new Error(
+            'Rate limit exceeded. Please wait before making more requests.'
+          )
+      );
+    }
+
+    this.rateLimiter.recordCall(endpoint);
+
+    return this.http
+      .get<any>(`${this.apiUrl}/check-status`, {
+        params: { clientId, supplierId, serviceId },
+      })
+      .pipe(
+        catchError((error) => {
+          if (error.status === 429) {
+            this.rateLimiter.recordFailedCall(endpoint);
+          }
+          return throwError(() => error);
+        })
+      );
+  }
 }

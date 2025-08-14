@@ -116,7 +116,9 @@ export const routes: Routes = [
       {
         path: 'chat/:userId',
         loadComponent: () =>
-          import('./features/chat/chat.component').then((c) => c.ChatComponent),
+          import('./features/chat-page/chat-page.component').then(
+            (c) => c.ChatPageComponent
+          ),
       },
       {
         path: '',
