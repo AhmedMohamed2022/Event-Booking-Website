@@ -1,5 +1,5 @@
 /* Optimized CSS - Under 8KB */
-* {
+/* * {
   --primary-white: #fff;
   --primary-dark: #2c2c2c;
   --accent-gold: #cba135;
@@ -18,7 +18,7 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --border-radius: 12px;
   --focus-ring: 0 0 0 3px rgba(203, 161, 53, 0.3);
-}
+} */
 
 /* Join Container */
 .join-container {

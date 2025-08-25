@@ -18,6 +18,8 @@
     "selectCity": "Select City",
     "eventTypeLabel": "Event Type",
     "selectEventType": "Select Event Type",
+    "eventType": "Event Type",
+    "eventTypeSubtitle": "Browse event types for your next occasion",
     "peopleLabel": "People",
     "selectPeople": "Select number of people",
     "dateLabel": "Date",
@@ -42,9 +44,9 @@
     "contactLink": "Contact Us",
     "termsLink": "Terms & Conditions",
     "contactInfoTitle": "Contact Info",
-    "emailInfo": "📧 info@eventbook.com",
-    "phoneInfo": "📞 +962 6 123 4567",
-    "addressInfo": "📍 Amman, Jordan",
+    "emailInfo": "info@eventbook.com",
+    "phoneInfo": "+962 6 123 4567",
+    "addressInfo": "Amman, Jordan",
     "copyright": "© 2024 EventBook. All rights reserved."
   },
   "search": {
@@ -110,7 +112,8 @@
     "hospitality": "Hospitality",
     "matbaqeat": "Matbaqeat",
     "flowers": "Flowers",
-    "other": "Other Service"
+    "other": "Other Services",
+    "sound-dj": "Sound and DJ"
   },
   "subcategories": {
     "general": "General",

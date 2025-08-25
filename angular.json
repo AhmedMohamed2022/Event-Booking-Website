@@ -34,6 +34,11 @@
                 "glob": "**/*",
                 "input": "./node_modules/@fortawesome/fontawesome-free/webfonts",
                 "output": "/webfonts/"
+              },
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": ""
               }
             ],
             "styles": [

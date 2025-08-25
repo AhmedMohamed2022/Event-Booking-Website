@@ -58,14 +58,18 @@ import { TranslateModule } from '@ngx-translate/core';
           <!-- Contact Info -->
           <div class="col-md-4 text-center text-md-start">
             <h5 class="mb-3">{{ 'footer.contactInfoTitle' | translate }}</h5>
-            <ul class="list-unstyled">
+            <ul class="list-unstyled contact-info">
               <li>
                 <i class="fas fa-envelope me-2"></i>
-                {{ 'footer.emailInfo' | translate }}
+                <a [href]="'mailto:' + email" class="text-warning">
+                  {{ 'footer.emailInfo' | translate }}
+                </a>
               </li>
               <li>
                 <i class="fas fa-phone me-2"></i>
-                {{ 'footer.phoneInfo' | translate }}
+                <a [href]="'tel:' + phone" class=" text-warning">
+                  {{ 'footer.phoneInfo' | translate }}
+                </a>
               </li>
               <li>
                 <i class="fas fa-map-marker-alt me-2"></i>
@@ -162,6 +166,12 @@ import { TranslateModule } from '@ngx-translate/core';
       .footer .text-muted {
         color: #bdbdbd !important;
       }
+      .footer .contact-info a {
+        text-decoration: none;
+      }
+      .footer .contact-info a:hover {
+        color: var(--accent-gold, #cba135) !important;
+      }
       @media (max-width: 768px) {
         .footer .row {
           flex-direction: column;
@@ -185,4 +195,7 @@ import { TranslateModule } from '@ngx-translate/core';
     `,
   ],
 })
-export class FooterComponent {}
+export class FooterComponent {
+  public readonly email = 'info@eventbook.com';
+  public readonly phone = '+96261234567';
+}

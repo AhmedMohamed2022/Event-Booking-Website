@@ -62,7 +62,7 @@ import { CommonModule } from '@angular/common';
         background: none;
         border: none;
         font-size: 2rem;
-        color: #cba135;
+        color: var(--accent-gold);
         align-self: flex-end;
         cursor: pointer;
         margin-bottom: 1.5rem;

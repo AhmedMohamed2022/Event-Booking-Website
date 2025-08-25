@@ -1,4 +1,4 @@
-:root {
+/* * {
   --primary-white: #ffffff;
   --primary-dark: #2c2c2c;
   --accent-gold: #cba135;
@@ -9,7 +9,7 @@
   --accent-gold-secondary: #d4c078;
   --light-gray: #f8f9fa;
   --text-muted: #6c757d;
-}
+} */
 .language-toggle {
   display: flex;
   align-items: center;

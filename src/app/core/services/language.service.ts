@@ -8,7 +8,7 @@ import { Inject } from '@angular/core';
   providedIn: 'root',
 })
 export class LanguageService {
-  private currentLanguageSubject = new BehaviorSubject<string>('en');
+  private currentLanguageSubject = new BehaviorSubject<string>('ar');
   public currentLanguage$ = this.currentLanguageSubject.asObservable();
 
   private readonly STORAGE_KEY = 'language'; // Changed to match app.config.ts
@@ -21,7 +21,7 @@ export class LanguageService {
   }
 
   private initializeLanguage() {
-    const savedLanguage = localStorage.getItem(this.STORAGE_KEY) || 'en';
+    const savedLanguage = localStorage.getItem(this.STORAGE_KEY) || 'ar';
     this.setLanguage(savedLanguage);
   }
 

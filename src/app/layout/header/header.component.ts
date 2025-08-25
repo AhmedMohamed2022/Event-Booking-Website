@@ -64,6 +64,45 @@ import { AuthService } from '../../core/services/auth.service';
           <app-language-toggle
             (languageChange)="closeDrawer()"
           ></app-language-toggle>
+          <a
+            class="btn btn-outline-warning rounded-pill px-4 mb-3 join-supplier-btn"
+            routerLink="/join"
+            (click)="closeDrawer()"
+          >
+            <i class="fas fa-user-plus me-2"></i>
+            {{
+              getCurrentLanguage() === 'ar'
+                ? 'انضم كمزود خدمة'
+                : 'Join as Supplier'
+            }}
+          </a>
+          <div class="drawer-contact-info mt-2 mb-2">
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-envelope me-2 text-warning"></i>
+              <a href="mailto:info@eventbook.com" class="text-warning small"
+                >info&#64;eventbook.com</a
+              >
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-phone me-2 text-warning"></i>
+              <a href="tel:+96261234567" class="text-warning small"
+                >+962 6 123 4567</a
+              >
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-map-marker-alt me-2 text-warning"></i>
+              <span class="small">{{
+                getCurrentLanguage() === 'ar' ? 'عمان، الأردن' : 'Amman, Jordan'
+              }}</span>
+            </div>
+          </div>
+          <div class="drawer-copyright text-center small text-muted mt-3">
+            {{
+              getCurrentLanguage() === 'ar'
+                ? '© 2024 إيفنت بوك. جميع الحقوق محفوظة.'
+                : '© 2024 EventBook. All rights reserved.'
+            }}
+          </div>
         </div>
       </app-side-drawer>
 
@@ -126,7 +165,7 @@ import { AuthService } from '../../core/services/auth.service';
         border: none;
         background: transparent;
         font-size: 2rem;
-        color: #cba135;
+        color: var(--accent-gold);
         outline: none;
       }
       .navbar-toggler:focus {
@@ -142,8 +181,41 @@ import { AuthService } from '../../core/services/auth.service';
       .drawer-menu {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1.2rem;
         margin-top: 2rem;
+        align-items: stretch;
+      }
+      .join-supplier-btn {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(203, 161, 53, 0.08);
+        transition: background 0.2s, color 0.2s;
+      }
+      .join-supplier-btn:hover {
+        background: var(--accent-gold, #cba135);
+        color: #fff;
+        border-color: var(--accent-gold, #cba135);
+      }
+      .drawer-contact-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem 0.75rem;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 1px 4px rgba(44, 44, 44, 0.04);
+      }
+      .drawer-contact-info i {
+        min-width: 20px;
+        text-align: center;
+      }
+      .drawer-contact-info a {
+        text-decoration: none;
+      }
+      .drawer-contact-info a:hover {
+        color: var(--accent-gold, #cba135) !important;
+      }
+      .drawer-copyright {
+        margin-top: 0.5rem;
+        color: #bdbdbd !important;
       }
       @media (max-width: 991.98px) {
         .navbar-nav {

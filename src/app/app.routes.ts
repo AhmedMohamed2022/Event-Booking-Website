@@ -121,6 +121,10 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'all-services',
+        loadComponent: () => import('./features/all-services/all-services.component').then(m => m.AllServicesComponent),
+      },
+      {
         path: '',
         loadComponent: () =>
           import('./features/home/home.component').then((c) => c.HomeComponent),

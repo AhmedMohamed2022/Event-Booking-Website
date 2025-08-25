@@ -87,7 +87,11 @@
 
 /* Buttons */
 .btn-primary {
-  background: linear-gradient(135deg, #cba135 0%, #cba135 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-gold) 0%,
+    var(--accent-gold) 100%
+  );
   border: none;
   border-radius: 12px;
   padding: 0.875rem 1.5rem;
@@ -117,7 +121,7 @@
 }
 
 .btn-link {
-  color: #cba135;
+  color: var(--accent-gold);
   text-decoration: none;
   font-weight: 500;
 }
@@ -247,7 +251,7 @@
 /* Focus States for Accessibility */
 .btn:focus-visible,
 .form-control:focus-visible {
-  outline: 2px solid #cba135;
+  outline: 2px solid var(--accent-gold);
   outline-offset: 2px;
 }
 

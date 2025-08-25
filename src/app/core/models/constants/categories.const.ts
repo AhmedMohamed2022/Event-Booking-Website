@@ -59,6 +59,11 @@ export const EVENT_CATEGORIES: CategoryConfig[] = [
     label: 'Flowers',
     subcategories: [{ value: 'general', label: 'General' }],
   },
+  {
+    value: 'sound-dj',
+    label: 'Sound and DJ',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
   // Legacy/Existing event types kept to avoid breaking existing data
   {
     value: 'wedding',
@@ -263,6 +268,7 @@ const CATEGORY_ICON_MAP: { [key: string]: string } = {
   hospitality: 'fas fa-utensils',
   matbaqeat: 'fas fa-concierge-bell',
   flowers: 'fas fa-spa',
+  'sound-dj': 'fas fa-music',
   // legacy event types
   wedding: 'fas fa-ring',
   engagement: 'fas fa-heart',

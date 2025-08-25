@@ -333,7 +333,8 @@
           <div class="service-card clickable" *ngFor="let service of filteredResults"
             (click)="viewServiceDetails(service._id)" [title]="'Click to view details'">
             <div class="service-image">
-              <img [src]="service.images?.[0] || 'favicon.ico'" [alt]="service.name" (error)="onImageError($event)">
+              <img [src]="service.images?.[0] || 'assets/placeholder.png'" [alt]="service.name"
+                (error)="onImageError($event)">
               <div class="image-overlay">
                 <button class="btn btn-sm btn-light" (click)="$event.stopPropagation()">❤️</button>
               </div>

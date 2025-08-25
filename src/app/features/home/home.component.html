@@ -1,7 +1,7 @@
 <div class="home-fade-in">
   <!-- Hero Section -->
   <section id="hero" class="hero-section">
-    <div class="hero-background">
+    <div class="hero-background" [ngStyle]="{'background-image': 'url(' + heroImages[currentHeroImageIndex] + ')'}">
       <div class="hero-overlay"></div>
       <div class="floating-elements">
         <div class="floating-element floating-element-1"></div>
@@ -60,16 +60,15 @@
     </div>
   </section>
 
-  <!-- All Services Section -->
+  <!-- Event Type Section (was All Services) -->
   <section id="services" class="services-section py-5">
     <div class="container">
       <div class="text-center mb-5">
-        <h2 class="section-title">{{ 'home.allServices' | translate }}</h2>
-        <p class="section-subtitle text-muted">{{ 'home.allServicesSubtitle' | translate }}</p>
+        <h2 class="section-title">{{ 'home.eventType' | translate }}</h2>
+        <p class="section-subtitle text-muted">{{ 'home.eventTypeSubtitle' | translate }}</p>
       </div>
-
       <div class="row g-4">
-        <div class="col-6 col-md-4 col-lg-3" *ngFor="let category of eventCategories">
+        <div class="col-6 col-md-4 col-lg-3" *ngFor="let category of eventTypeCategories">
           <div class="service-card text-center" (click)="selectCategory(category.value)">
             <div class="service-icon">
               <i [class]="getCategoryIcon(category.value)"></i>
@@ -78,6 +77,15 @@
             <div class="service-count">
               {{ category.subcategories.length }} {{ 'home.services' | translate }}
             </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3" *ngIf="hasOthersCategory">
+          <div class="service-card text-center" (click)="onOthersClick()">
+            <div class="service-icon">
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <h6 class="service-title">{{ 'categories.other' | translate }}</h6>
+            <div class="service-count">{{ eventCategories.length - 9 }} {{ 'home.services' | translate }}</div>
           </div>
         </div>
       </div>

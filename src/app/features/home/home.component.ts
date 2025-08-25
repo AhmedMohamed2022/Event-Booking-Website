@@ -45,6 +45,17 @@ interface PeopleRange {
 export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('searchModal') searchModal!: ElementRef;
 
+  // Hero background gallery
+  heroImages = [
+    '/assets/hero-gallary1.jpg',
+    '/assets/hero-gallary2.jpg',
+    '/assets/hero-gallary3.jpg',
+    '/assets/hero-gallary4.jpg',
+    '/assets/hero-gallary5.jpg',
+  ];
+  currentHeroImageIndex = 0;
+  heroImageInterval: any;
+
   private destroy$ = new Subject<void>();
 
   // Search form data
@@ -113,12 +124,21 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Add escape key listener for modal
     document.addEventListener('keydown', this.handleEscapeKey.bind(this));
+
+    // Start hero image gallery rotation
+    this.heroImageInterval = setInterval(() => {
+      this.currentHeroImageIndex =
+        (this.currentHeroImageIndex + 1) % this.heroImages.length;
+    }, 4000); // Change image every 4 seconds
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
     document.removeEventListener('keydown', this.handleEscapeKey.bind(this));
+    if (this.heroImageInterval) {
+      clearInterval(this.heroImageInterval);
+    }
   }
 
   private handleEscapeKey(event: KeyboardEvent) {
@@ -295,5 +315,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  // For Event Type section: only show first 9, then 'Others'
+  get eventTypeCategories() {
+    if (!this.eventCategories) return [];
+    return this.eventCategories.slice(0, 9);
+  }
+  get hasOthersCategory() {
+    return this.eventCategories.length > 9;
+  }
+
+  onOthersClick() {
+    // Navigate to a new page that lists all services
+    this.router.navigate(['/all-services']);
   }
 }

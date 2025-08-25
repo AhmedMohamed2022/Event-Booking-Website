@@ -1,5 +1,5 @@
 /* Optimized CSS - Under 8KB */
-* {
+/* * {
   --primary-white: #fff;
   --primary-dark: #2c2c2c;
   --accent-gold: #cba135;
@@ -18,7 +18,7 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --border-radius: 12px;
   --focus-ring: 0 0 0 3px rgba(203, 161, 53, 0.3);
-}
+} */
 
 /* Base styles */
 * {
@@ -154,6 +154,31 @@ body.modal-open {
   display: flex;
   align-items: center;
   position: relative;
+}
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 1s ease-in-out;
+}
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(44, 44, 44, 0.35);
+  z-index: 1;
+}
+.hero-section {
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-title {
@@ -429,8 +454,8 @@ footer .social-link:hover {
     font-size: 2.5rem;
   }
   .hero-section {
-    padding: 80px 0 60px;
-    min-height: 70vh;
+    padding: 60px 0 40px;
+    min-height: 55vh;
   }
   .search-modal {
     width: 95%;
@@ -453,11 +478,14 @@ footer .social-link:hover {
     gap: 0.5rem !important;
   }
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
   }
   .hero-section {
-    padding: 60px 0 40px;
-    min-height: 60vh;
+    padding: 40px 0 20px;
+    min-height: 40vh;
   }
   .category-card,
   .service-card {
@@ -505,7 +533,14 @@ footer .social-link:hover {
     gap: 0.3rem !important;
   }
   .hero-title {
-    font-size: 1.8rem;
+    font-size: 1.1rem;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+  .hero-section {
+    padding: 24px 0 10px;
+    min-height: 28vh;
   }
   .category-icon,
   .service-icon {

@@ -1,5 +1,5 @@
 /* Earth-tone color palette variables */
-* {
+/* * {
   --primary-white: #ffffff;
   --primary-dark: #2c2c2c;
   --accent-gold: #cba135;
@@ -11,7 +11,7 @@
   --light-gray: #f8f9fa;
   --text-muted: #6c757d;
   --border-color: #e9ecef;
-}
+} */
 
 /* Search Header */
 .search-header {
