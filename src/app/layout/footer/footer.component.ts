@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
       <div class="container">
         <div class="row gy-4 align-items-start">
           <!-- Brand & Description -->
-          <div class="col-md-4 text-center text-md-start mb-4 mb-md-0">
+          <div class="col-md-4 text-center mb-4 mb-md-0">
             <a
               class="navbar-brand fw-bold text-warning mb-2 d-inline-block"
               routerLink="/"
@@ -21,9 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
               {{ 'footer.brandName' | translate }}
             </a>
             <p class="mb-3">{{ 'footer.description' | translate }}</p>
-            <div
-              class="d-flex gap-3 justify-content-center justify-content-md-start"
-            >
+            <div class="d-flex gap-3 justify-content-center">
               <a href="#" class="social-link" aria-label="Facebook"
                 ><i class="fab fa-facebook-f"></i
               ></a>
@@ -39,7 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
             </div>
           </div>
           <!-- Quick Links -->
-          <div class="col-md-4 text-center text-md-start mb-4 mb-md-0">
+          <div class="col-md-4 text-center mb-4 mb-md-0">
             <h5 class="mb-3">{{ 'footer.quickLinksTitle' | translate }}</h5>
             <ul class="list-unstyled quick-links">
               <li>
@@ -56,7 +54,7 @@ import { TranslateModule } from '@ngx-translate/core';
             </ul>
           </div>
           <!-- Contact Info -->
-          <div class="col-md-4 text-center text-md-start">
+          <div class="col-md-4 text-center ">
             <h5 class="mb-3">{{ 'footer.contactInfoTitle' | translate }}</h5>
             <ul class="list-unstyled contact-info">
               <li>

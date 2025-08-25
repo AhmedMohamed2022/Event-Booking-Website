@@ -82,6 +82,17 @@ body {
   text-align: right;
 }
 
+/* Footer h5 headings alignment for RTL */
+.footer h5 {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .footer h5 {
+    text-align: center !important;
+  }
+}
+
 /* Footer - list items for quick links and contact info */
 footer .list-unstyled {
   /* Centering handled in styles.css for both LTR and RTL */

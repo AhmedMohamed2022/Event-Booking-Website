@@ -1,3 +1,22 @@
+.footer .list-unstyled {
+  margin: 0;
+  text-align: left;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.footer .list-unstyled li {
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .footer .list-unstyled {
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+  .footer .list-unstyled li {
+    text-align: center !important;
+  }
+}
 /* Import custom theme colors */
 @import "./custom-theme.css";
 
