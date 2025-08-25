@@ -191,7 +191,7 @@ body.modal-open {
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: var(--text-secondary);
+  color: var(--text-light);
   margin-bottom: 3rem;
   max-width: 600px;
   margin-left: auto;

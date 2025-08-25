@@ -32,8 +32,13 @@
     "allServicesSubtitle": "Browse all available event service categories",
     "selectCategory": "Select",
     "services": "services",
+    "servicesSubtitle": "Browse all available event service categories",
+    "otherServices": "Other Services",
+    "viewAll": "View All",
     "popularCategories": "Popular Categories",
-    "popularCategoriesSubtitle": "Browse the most popular event types"
+    "popularCategoriesSubtitle": "Browse the most popular event types",
+    "otherEvents": "Other Events",
+    "events": "Events"
   },
   "footer": {
     "brandName": "EventBook",
@@ -113,7 +118,8 @@
     "matbaqeat": "Matbaqeat",
     "flowers": "Flowers",
     "other": "Other Services",
-    "sound-dj": "Sound and DJ"
+    "sound-dj": "Sound and DJ",
+    "wedding-planner": "Wedding Planner"
   },
   "subcategories": {
     "general": "General",

@@ -34,14 +34,13 @@
     </div>
   </section>
 
-  <!-- Popular Categories Section -->
+  <!--
   <section class="popular-categories-section py-5">
     <div class="container">
       <div class="text-center mb-5">
         <h2 class="section-title">{{ 'home.popularCategories' | translate }}</h2>
         <p class="section-subtitle text-muted">{{ 'home.popularCategoriesSubtitle' | translate }}</p>
       </div>
-
       <div class="row g-4">
         <div class="col-6 col-md-3" *ngFor="let categoryValue of popularCategories">
           <div class="category-card" (click)="selectCategory(categoryValue)" [attr.data-category]="categoryValue">
@@ -59,9 +58,47 @@
       </div>
     </div>
   </section>
+  -->
+
+  <!-- Services Section (replaces Popular Categories) -->
+  <section class="services-section py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="section-title">{{ 'home.services' | translate }}</h2>
+        <p class="section-subtitle text-muted">{{ 'home.servicesSubtitle' | translate }}</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-6 col-md-3" *ngFor="let service of servicesList">
+          <div class="category-card" (click)="selectCategory(service.value)" [attr.data-category]="service.value">
+            <div class="category-icon">
+              <i [class]="getCategoryIcon(service.value)"></i>
+            </div>
+            <h6 class="category-title">
+              {{ service.label }}
+            </h6>
+            <div class="category-overlay">
+              <span class="category-action">{{ 'home.selectCategory' | translate }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Other Services Card -->
+        <div class="col-6 col-md-3">
+          <div class="category-card other-card" (click)="onOthersClick()">
+            <div class="category-icon">
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <h6 class="category-title">{{ 'home.otherServices' | translate }}</h6>
+            <div class="category-overlay">
+              <span class="category-action">{{ 'home.viewAll' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Event Type Section (was All Services) -->
-  <section id="services" class="services-section py-5">
+  <section id="event-types" class="event-types-section py-5">
     <div class="container">
       <div class="text-center mb-5">
         <h2 class="section-title">{{ 'home.eventType' | translate }}</h2>
@@ -79,13 +116,15 @@
             </div>
           </div>
         </div>
-        <div class="col-6 col-md-4 col-lg-3" *ngIf="hasOthersCategory">
+        <!-- Other Events Card -->
+        <div class="col-6 col-md-4 col-lg-3">
           <div class="service-card text-center" (click)="onOthersClick()">
             <div class="service-icon">
               <i class="fas fa-ellipsis-h"></i>
             </div>
-            <h6 class="service-title">{{ 'categories.other' | translate }}</h6>
-            <div class="service-count">{{ eventCategories.length - 9 }} {{ 'home.services' | translate }}</div>
+            <h6 class="service-title">{{ 'home.otherEvents' | translate }}</h6>
+            <div class="service-count">{{ eventCategories.length - eventTypeCategories.length }} {{ 'home.events' |
+              translate }}</div>
           </div>
         </div>
       </div>

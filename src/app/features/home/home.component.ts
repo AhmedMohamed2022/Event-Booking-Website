@@ -95,6 +95,40 @@ export class HomeComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   currentUser: any = null;
 
+  // Remove static eventTypeCategories and servicesList properties
+  // Add dynamic getter for eventTypeCategories
+  get eventTypeCategories() {
+    return (this.eventCategories || []).filter((cat) =>
+      [
+        'wedding',
+        'engagement',
+        'conference',
+        'birthday',
+        'corporate',
+        'graduation',
+        'funeral',
+      ].includes(cat.value)
+    );
+  }
+
+  // Add dynamic getter for servicesList
+  get servicesList() {
+    return [
+      ...(this.eventCategories || []).filter(
+        (cat) =>
+          ![
+            'wedding',
+            'engagement',
+            'conference',
+            'birthday',
+            'corporate',
+            'graduation',
+            'funeral',
+          ].includes(cat.value)
+      ),
+    ];
+  }
+
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -318,10 +352,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // For Event Type section: only show first 9, then 'Others'
-  get eventTypeCategories() {
-    if (!this.eventCategories) return [];
-    return this.eventCategories.slice(0, 9);
-  }
   get hasOthersCategory() {
     return this.eventCategories.length > 9;
   }

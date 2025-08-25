@@ -32,8 +32,13 @@
     "allServicesSubtitle": "تصفح جميع فئات خدمات المناسبات المتاحة",
     "selectCategory": "اختر",
     "services": "خدمات",
+    "servicesSubtitle": "تصفح جميع فئات خدمات المناسبات المتاحة",
+    "otherServices": "خدمات أخرى",
+    "viewAll": "عرض الكل",
     "popularCategories": "الفئات الأكثر شهرة",
-    "popularCategoriesSubtitle": "تصفح أشهر أنواع المناسبات"
+    "popularCategoriesSubtitle": "تصفح أشهر أنواع المناسبات",
+    "otherEvents": "مناسبات أخري",
+    "events": "مناسبات"
   },
   "footer": {
     "brandName": "إيفنت بوك",
@@ -113,7 +118,8 @@
     "matbaqeat": "مطبقيات",
     "flowers": "زهور",
     "other": "خدمات أخرى",
-    "sound-dj": "صوتيات و DJ"
+    "sound-dj": "صوتيات و DJ",
+    "wedding-planner": "منسق زفاف"
   },
   "subcategories": {
     "general": "عام",

@@ -64,6 +64,11 @@ export const EVENT_CATEGORIES: CategoryConfig[] = [
     label: 'Sound and DJ',
     subcategories: [{ value: 'general', label: 'General' }],
   },
+  {
+    value: 'wedding-planner',
+    label: 'Wedding Planner',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
   // Legacy/Existing event types kept to avoid breaking existing data
   {
     value: 'wedding',
