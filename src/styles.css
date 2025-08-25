@@ -496,6 +496,17 @@ a.text-warning:focus {
   flex-direction: row-reverse;
 }
 
+/* Footer list centering for both LTR and RTL */
+.footer .list-unstyled {
+  margin: 0 auto !important;
+  text-align: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.footer .list-unstyled li {
+  text-align: center !important;
+}
+
 /* Button RTL adjustments */
 body.lang-ar .btn i {
   margin-left: 0.5rem;

@@ -84,13 +84,12 @@ body {
 
 /* Footer - list items for quick links and contact info */
 footer .list-unstyled {
-  padding-left: unset !important; /* Remove default padding for unordered lists in LTR */
-  padding-right: 0; /* No padding on right for RTL list */
-  text-align: right; /* Ensure list items align right */
+  /* Centering handled in styles.css for both LTR and RTL */
 }
+/* footer list unstyled for quick links and contact info for English and Arabic switching  */
 
 footer .list-unstyled li {
-  text-align: right; /* Specific alignment for list items if needed */
+  /* Centering handled in styles.css for both LTR and RTL */
 }
 
 /* Adjustments for icons or elements that have a fixed direction */
