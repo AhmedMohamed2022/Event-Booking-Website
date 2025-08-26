@@ -119,7 +119,11 @@
     "flowers": "Flowers",
     "other": "Other Services",
     "sound-dj": "Sound and DJ",
-    "wedding-planner": "Wedding Planner"
+    "event-planner": "Event Planner",
+    "musical-bands": "Musical Bands",
+    "mansaf-cooking": "Mansaf & Cooking",
+    "folk-bands": "Musical & Folk Bands",
+    "tents-canopies": "Tents & Canopies"
   },
   "subcategories": {
     "general": "General",

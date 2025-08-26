@@ -119,7 +119,11 @@
     "flowers": "زهور",
     "other": "خدمات أخرى",
     "sound-dj": "صوتيات و DJ",
-    "wedding-planner": "منسق زفاف"
+    "event-planner": "منسق حفلات",
+    "musical-bands": "فرق موسيقية",
+    "mansaf-cooking": "مناسف و طبخ",
+    "folk-bands": "فرق موسيقية وشعبية",
+    "tents-canopies": "خيام وصيوان"
   },
   "subcategories": {
     "general": "عام",

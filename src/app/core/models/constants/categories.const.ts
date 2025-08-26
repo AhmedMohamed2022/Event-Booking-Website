@@ -65,8 +65,28 @@ export const EVENT_CATEGORIES: CategoryConfig[] = [
     subcategories: [{ value: 'general', label: 'General' }],
   },
   {
-    value: 'wedding-planner',
-    label: 'Wedding Planner',
+    value: 'event-planner',
+    label: 'Event Planner',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
+  {
+    value: 'musical-bands',
+    label: 'Musical Bands',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
+  {
+    value: 'mansaf-cooking',
+    label: 'Mansaf & Cooking',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
+  {
+    value: 'folk-bands',
+    label: 'Musical & Folk Bands',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
+  {
+    value: 'tents-canopies',
+    label: 'Tents & Canopies',
     subcategories: [{ value: 'general', label: 'General' }],
   },
   // Legacy/Existing event types kept to avoid breaking existing data
@@ -274,6 +294,10 @@ const CATEGORY_ICON_MAP: { [key: string]: string } = {
   matbaqeat: 'fas fa-concierge-bell',
   flowers: 'fas fa-spa',
   'sound-dj': 'fas fa-music',
+  'musical-bands': 'fas fa-guitar',
+  'mansaf-cooking': 'fas fa-utensils',
+  'folk-bands': 'fas fa-drum',
+  'tents-canopies': 'fas fa-campground',
   // legacy event types
   wedding: 'fas fa-ring',
   engagement: 'fas fa-heart',
