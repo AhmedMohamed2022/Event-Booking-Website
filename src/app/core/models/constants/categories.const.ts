@@ -9,12 +9,26 @@ export const EVENT_CATEGORIES: CategoryConfig[] = [
   {
     value: 'chairs',
     label: 'Chairs',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-chairs', label: 'Wedding Chairs' },
+      { value: 'plastic-chairs', label: 'Plastic Chairs' },
+      { value: 'sofa-chairs', label: 'Sofa Chairs' },
+      { value: 'mansaf-chairs', label: 'Mansaf & Traditional Seating' },
+      { value: 'conference-chairs', label: 'Conference Chairs' },
+      { value: 'arab-seating', label: 'Arabic Majlis Seating' },
+    ],
   },
   {
     value: 'tables',
     label: 'Tables',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'dining-tables', label: 'Dining Tables' },
+      { value: 'buffet-tables', label: 'Buffet Tables' },
+      { value: 'conference-tables', label: 'Conference Tables' },
+      { value: 'mansaf-tables', label: 'Mansaf Tables' },
+      { value: 'arabic-tables', label: 'Traditional Arabic Tables' },
+      { value: 'coffee-tables', label: 'Coffee & Tea Tables' },
+    ],
   },
   {
     value: 'cars',
@@ -69,24 +83,39 @@ export const EVENT_CATEGORIES: CategoryConfig[] = [
     label: 'Event Planner',
     subcategories: [{ value: 'general', label: 'General' }],
   },
-  {
-    value: 'musical-bands',
-    label: 'Musical Bands',
-    subcategories: [{ value: 'general', label: 'General' }],
-  },
+  // {
+  //   value: 'musical-bands',
+  //   label: 'Musical Bands',
+  //   subcategories: [{ value: 'general', label: 'General' }],
+  // },
   {
     value: 'mansaf-cooking',
     label: 'Mansaf & Cooking',
     subcategories: [{ value: 'general', label: 'General' }],
   },
-  {
-    value: 'folk-bands',
-    label: 'Musical & Folk Bands',
-    subcategories: [{ value: 'general', label: 'General' }],
-  },
+  // {
+  //   value: 'folk-bands',
+  //   label: 'Musical & Folk Bands',
+  //   subcategories: [{ value: 'general', label: 'General' }],
+  // },
   {
     value: 'tents-canopies',
     label: 'Tents & Canopies',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
+  {
+    value: 'valet-parking',
+    label: 'Valet Parking',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
+  {
+    value: 'balloons',
+    label: 'Balloons',
+    subcategories: [{ value: 'general', label: 'General' }],
+  },
+  {
+    value: 'salon-hair',
+    label: 'Salon & Hair',
     subcategories: [{ value: 'general', label: 'General' }],
   },
   // Legacy/Existing event types kept to avoid breaking existing data
