@@ -7,6 +7,18 @@ export interface CategoryConfig {
 
 export const EVENT_CATEGORIES: CategoryConfig[] = [
   {
+    value: 'wedding',
+    label: 'Wedding',
+    subcategories: [
+      { value: 'wedding-halls', label: 'Wedding Halls', contactOnly: true },
+      { value: 'catering', label: 'Catering Services' },
+      { value: 'decoration', label: 'Decoration' },
+      { value: 'photography', label: 'Photography & Video' },
+      { value: 'entertainment', label: 'Entertainment' },
+    ],
+    contactOnly: true,
+  },
+  {
     value: 'chairs',
     label: 'Chairs',
     subcategories: [
@@ -37,107 +49,242 @@ export const EVENT_CATEGORIES: CategoryConfig[] = [
   {
     value: 'cars',
     label: 'Cars',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'luxury-wedding-cars', label: 'Luxury Wedding Cars' },
+      { value: 'classic-cars', label: 'Classic Cars' },
+      { value: 'modern-luxury-cars', label: 'Modern Luxury Cars' },
+      { value: 'suv-4x4', label: 'SUV & 4x4' },
+      { value: 'electric-cars', label: 'Electric Cars' },
+      { value: 'limousines', label: 'Limousines' },
+      { value: 'white-plate-cars', label: 'White Plate Cars' },
+    ],
   },
   {
     value: 'farm',
     label: 'Farm & Outdoor',
-    contactOnly: true, // All farm services are contact-only
+    contactOnly: true,
     subcategories: [
-      { value: 'farm-venues', label: 'Farm Venues', contactOnly: true },
-      { value: 'outdoor-events', label: 'Outdoor Events', contactOnly: true },
-      { value: 'farm-catering', label: 'Farm Catering' },
-      { value: 'farm-decoration', label: 'Farm Decoration' },
-      { value: 'farm-photography', label: 'Farm Photography' },
+      { value: 'outdoor-farms', label: 'Outdoor Farms', contactOnly: true },
+      { value: 'garden-venues', label: 'Garden Venues', contactOnly: true },
+      {
+        value: 'mountain-view-farms',
+        label: 'Mountain View Farms',
+        contactOnly: true,
+      },
+      { value: 'villa-farms', label: 'Villa Farms', contactOnly: true },
+      { value: 'pool-farms', label: 'Pool Farms', contactOnly: true },
+      { value: 'daily-rental', label: 'Daily Rental', contactOnly: true },
     ],
   },
   {
     value: 'halls',
     label: 'Halls',
     contactOnly: true,
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-halls', label: 'Wedding Halls', contactOnly: true },
+      {
+        value: 'engagement-halls',
+        label: 'Engagement Halls',
+        contactOnly: true,
+      },
+      {
+        value: 'conference-centers',
+        label: 'Conference Centers',
+        contactOnly: true,
+      },
+      {
+        value: 'multi-purpose-halls',
+        label: 'Multi-Purpose Halls',
+        contactOnly: true,
+      },
+      { value: 'hotel-ballrooms', label: 'Hotel Ballrooms', contactOnly: true },
+      {
+        value: 'guest-houses',
+        label: 'Guest Houses / Madafat',
+        contactOnly: true,
+      },
+      {
+        value: 'open-grounds',
+        label: 'Open Grounds & Yards',
+        contactOnly: true,
+      },
+    ],
   },
   {
     value: 'photographers',
     label: 'Photographers',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'video-production', label: 'Video Production' },
+      { value: 'female-videography', label: 'Female Videography' },
+      { value: 'drone-photography', label: 'Drone Photography' },
+      { value: 'studio-photography', label: 'Studio Photography' },
+      { value: 'female-photography', label: 'Female Photography' },
+      { value: 'outdoor-photography', label: 'Outdoor Photography' },
+      { value: 'outdoor-sessions', label: 'Outdoor Sessions by Hour' },
+    ],
   },
   {
     value: 'hospitality',
     label: 'Hospitality',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'coffee-tea-service', label: 'Coffee & Tea Service' },
+      { value: 'arabic-coffee-service', label: 'Arabic Coffee Pot Service' },
+      { value: 'arabic-sweets', label: 'Arabic Sweets' },
+      { value: 'knafeh', label: 'Knafeh' },
+      { value: 'hospitality-hostesses', label: 'Hospitality Hostesses' },
+      { value: 'full-catering', label: 'Full Catering Service' },
+      { value: 'wedding-catering', label: 'Wedding Catering' },
+      { value: 'corporate-catering', label: 'Corporate Catering' },
+      { value: 'water-cups', label: 'Water Cups' },
+    ],
   },
   {
     value: 'matbaqeat',
     label: 'Matbaqeat',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-favors', label: 'Wedding Favors' },
+      { value: 'baby-shower-favors', label: 'Baby Shower Favors' },
+      { value: 'graduation-favors', label: 'Graduation Favors' },
+      { value: 'birthday-favors', label: 'Birthday Favors' },
+      { value: 'religious-favors', label: 'Religious Occasion Favors' },
+      { value: 'luxury-favors', label: 'Luxury Favors (VIP)' },
+      { value: 'customized-favors', label: 'Customized Favors' },
+    ],
   },
   {
     value: 'flowers',
     label: 'Flowers',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-bouquets', label: 'Wedding Bouquets' },
+      { value: 'stage-decoration', label: 'Stage Decoration' },
+      { value: 'entrance-design', label: 'Entrance Design' },
+      { value: 'table-arrangements', label: 'Table Arrangements' },
+      { value: 'car-decoration', label: 'Car Decoration' },
+      { value: 'flower-bouquets', label: 'Flower Bouquets for Occasions' },
+    ],
   },
   {
     value: 'sound-dj',
     label: 'Sound and DJ',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-dj', label: 'Wedding DJ' },
+      { value: 'sound-systems', label: 'Sound Systems' },
+      { value: 'lighting-systems', label: 'Lighting Systems' },
+      { value: 'live-sound-mixing', label: 'Live Sound Mixing' },
+      { value: 'conference-sound', label: 'Conference Sound' },
+      { value: 'stage-equipment', label: 'Stage Equipment' },
+    ],
   },
   {
     value: 'event-planner',
     label: 'Event Planner',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-planning', label: 'Wedding Planning' },
+      { value: 'corporate-events', label: 'Corporate Events' },
+      { value: 'birthday-parties', label: 'Birthday Parties' },
+      { value: 'graduation-events', label: 'Graduation Events' },
+      { value: 'full-service-planning', label: 'Full Service Planning' },
+    ],
   },
-  // {
-  //   value: 'musical-bands',
-  //   label: 'Musical Bands',
-  //   subcategories: [{ value: 'general', label: 'General' }],
-  // },
   {
     value: 'mansaf-cooking',
     label: 'Mansaf & Cooking',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'mansaf', label: 'Mansaf' },
+      { value: 'ouzi', label: 'Ouzi' },
+      { value: 'stuffed-lamb', label: 'Stuffed Lamb' },
+      { value: 'mandi', label: 'Mandi' },
+      { value: 'lamb-buffet', label: 'Lamb Buffet' },
+      { value: 'pastry-buffet', label: 'Pastry Buffet' },
+      { value: 'cold-appetizers', label: 'Cold Appetizers' },
+    ],
   },
-  // {
-  //   value: 'folk-bands',
-  //   label: 'Musical & Folk Bands',
-  //   subcategories: [{ value: 'general', label: 'General' }],
-  // },
   {
     value: 'tents-canopies',
     label: 'Tents & Canopies',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-tents', label: 'Wedding Tents' },
+      { value: 'arabic-majlis-tents', label: 'Arabic Majlis Tents' },
+      { value: 'event-canopies', label: 'Event Canopies' },
+      { value: 'vip-tents', label: 'VIP Tents' },
+      { value: 'ramadan-tents', label: 'Ramadan Tents' },
+      { value: 'indian-style-tents', label: 'Indian Style Tents' },
+    ],
   },
   {
     value: 'valet-parking',
     label: 'Valet Parking',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-valet', label: 'Wedding Valet Service' },
+      { value: 'vip-valet', label: 'VIP Valet Service' },
+      { value: 'corporate-parking', label: 'Corporate Event Parking' },
+    ],
   },
   {
     value: 'balloons',
     label: 'Balloons',
-    subcategories: [{ value: 'general', label: 'General' }],
+    subcategories: [
+      { value: 'wedding-balloon-decor', label: 'Wedding Balloon Décor' },
+      { value: 'balloon-arches', label: 'Balloon Arches' },
+      { value: 'balloon-bouquets', label: 'Balloon Bouquets' },
+      { value: 'balloon-stage-decor', label: 'Stage Decoration' },
+      { value: 'balloon-entrance', label: 'Entrance Design' },
+      { value: 'custom-balloon-art', label: 'Custom Balloon Art' },
+    ],
   },
   {
     value: 'salon-hair',
     label: 'Salon & Hair',
-    subcategories: [{ value: 'general', label: 'General' }],
-  },
-  // Legacy/Existing event types kept to avoid breaking existing data
-  {
-    value: 'wedding',
-    label: 'Wedding',
     subcategories: [
-      { value: 'wedding-halls', label: 'Wedding Halls', contactOnly: true },
-      { value: 'catering', label: 'Catering Services' },
-      { value: 'decoration', label: 'Decoration' },
-      { value: 'photography', label: 'Photography & Video' },
-      { value: 'entertainment', label: 'Entertainment' },
-      { value: 'equipment', label: 'Equipment Rental' },
-      { value: 'chairs', label: 'Chairs & Seating' },
-      { value: 'flowers', label: 'Flowers & Bouquets' },
-      { value: 'tables', label: 'Tables & Settings' },
+      { value: 'bridal-makeup', label: 'Bridal Makeup' },
+      { value: 'hair-styling', label: 'Hair Styling' },
+      { value: 'full-bridal-package', label: 'Full Bridal Package' },
+      { value: 'special-event-makeup', label: 'Special Event Makeup' },
+      { value: 'group-services', label: 'Group Services' },
+      { value: 'home-service', label: 'Home Service' },
+      { value: 'special-offers', label: 'Special Offers' },
     ],
   },
+  {
+    value: 'zaffat',
+    label: 'Zaffat',
+    subcategories: [
+      { value: 'jordanian-zaffa', label: 'Jordanian Zaffa' },
+      { value: 'palestinian-zaffa', label: 'Palestinian Zaffa' },
+      { value: 'mixed-zaffa', label: 'Mixed Zaffa' },
+      { value: 'lebanese-dabke', label: 'Lebanese Dabke Group' },
+      { value: 'syrian-aradah', label: 'Syrian Aradah (Sword & Shield)' },
+      { value: 'egyptian-tanoura', label: 'Egyptian Tanoura Show' },
+    ],
+  },
+  {
+    value: 'entertainment-shows',
+    label: 'Entertainment Shows',
+    subcategories: [
+      { value: 'henna-show', label: 'Full Henna Show' },
+      { value: 'bukharan-show', label: 'Bukharan Show / Smoke Show' },
+      { value: 'drummers-show', label: 'Drummers Show' },
+      { value: 'fireworks-show', label: 'Fireworks Show' },
+      { value: 'bubble-show', label: 'Bubble Show' },
+      { value: 'live-musician', label: 'Live Musician' },
+    ],
+  },
+  // Legacy/Existing event types kept to avoid breaking existing data
+  // {
+  //   value: 'wedding',
+  //   label: 'Wedding',
+  //   subcategories: [
+  //     { value: 'wedding-halls', label: 'Wedding Halls', contactOnly: true },
+  //     { value: 'catering', label: 'Catering Services' },
+  //     { value: 'decoration', label: 'Decoration' },
+  //     { value: 'photography', label: 'Photography & Video' },
+  //     { value: 'entertainment', label: 'Entertainment' },
+  //     { value: 'equipment', label: 'Equipment Rental' },
+  //     { value: 'chairs', label: 'Chairs & Seating' },
+  //     { value: 'flowers', label: 'Flowers & Bouquets' },
+  //     { value: 'tables', label: 'Tables & Settings' },
+  //   ],
+  // },
   {
     value: 'engagement',
     label: 'Engagement',
@@ -232,15 +379,27 @@ export function isContactOnlyService(
 // List of contact-only subcategories for easy reference
 export const CONTACT_ONLY_SUBCATEGORIES = [
   'wedding-halls',
-  'venues',
+  // 'engagement-halls',
   'conference-halls',
   'funeral-halls',
   'tents',
+  'outdoor-farms',
+  'garden-venues',
+  'mountain-view-farms',
+  'villa-farms',
+  'pool-farms',
+  'daily-rental',
+  'hotel-ballrooms',
+  'guest-houses',
+  'open-grounds',
 ];
 
 // List of contact-only categories (entire categories)
 export const CONTACT_ONLY_CATEGORIES = [
-  'farm', // Farm category is entirely contact-only
+  'wedding',
+  // 'engagement',
+  'farm',
+  'halls',
 ];
 
 // Some newly introduced top-level categories correspond to legacy subcategories in existing data.
@@ -269,6 +428,8 @@ export const SUBCATEGORY_TO_CATEGORY_ALIAS: { [key: string]: string } = {
 
 // Client-requested main categories list (for UI prominence / top categories computation)
 export const CLIENT_MAIN_CATEGORIES: string[] = [
+  'wedding',
+  'engagement',
   'chairs',
   'tables',
   'cars',
@@ -278,6 +439,15 @@ export const CLIENT_MAIN_CATEGORIES: string[] = [
   'hospitality',
   'matbaqeat',
   'flowers',
+  'sound-dj',
+  'event-planner',
+  'salon-hair',
+  'valet-parking',
+  'balloons',
+  'mansaf-cooking',
+  'tents-canopies',
+  'zaffat',
+  'entertainment-shows',
 ];
 
 // Icon mapping for display on service cards (Font Awesome classes)
@@ -316,7 +486,15 @@ const SUBCATEGORY_ICON_MAP: { [key: string]: string } = {
 };
 
 const CATEGORY_ICON_MAP: { [key: string]: string } = {
-  // client new categories
+  // Event Types
+  wedding: 'fas fa-ring',
+  engagement: 'fas fa-heart',
+  conference: 'fas fa-microphone',
+  birthday: 'fas fa-birthday-cake',
+  corporate: 'fas fa-briefcase',
+  graduation: 'fas fa-graduation-cap',
+  funeral: 'fas fa-dove',
+  // Service Categories
   chairs: 'fas fa-chair',
   tables: 'fas fa-table',
   cars: 'fas fa-car',
@@ -327,18 +505,14 @@ const CATEGORY_ICON_MAP: { [key: string]: string } = {
   matbaqeat: 'fas fa-concierge-bell',
   flowers: 'fas fa-spa',
   'sound-dj': 'fas fa-music',
-  'musical-bands': 'fas fa-guitar',
+  'event-planner': 'fas fa-tasks',
+  'salon-hair': 'fas fa-cut',
+  'valet-parking': 'fas fa-car-side',
+  balloons: 'fas fa-birthday-cake',
   'mansaf-cooking': 'fas fa-utensils',
-  'folk-bands': 'fas fa-drum',
   'tents-canopies': 'fas fa-campground',
-  // legacy event types
-  wedding: 'fas fa-ring',
-  engagement: 'fas fa-heart',
-  conference: 'fas fa-microphone',
-  birthday: 'fas fa-birthday-cake',
-  corporate: 'fas fa-briefcase',
-  graduation: 'fas fa-graduation-cap',
-  funeral: 'fas fa-dove',
+  zaffat: 'fas fa-drum',
+  'entertainment-shows': 'fas fa-theater-masks',
 };
 
 export function getServiceIconClass(
